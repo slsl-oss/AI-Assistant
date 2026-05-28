@@ -1,0 +1,4 @@
+chat_model_name: qwen3-max
+
+#数据库连接地址
+DB_URI: "postgresql://root:123@192.168.80.101:5432/agent_service?sslmode=disable&options=-csearch_path%3Dagent_service"

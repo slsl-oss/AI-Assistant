@@ -1,0 +1,126 @@
+2026-05-16 11:11:40,167 - agent - ERROR - vector_stores.py:119 - [加载知识库]文件E:\Python-Project\智能客服\data\尺码推荐.txt内容加载到知识库中失败，错误信息：status_code: 400 
+ code: InvalidParameter 
+ message: Model not exist.
+Traceback (most recent call last):
+  File "E:\Python-Project\智能客服\rag\vector_stores.py", line 110, in load_document
+    self.vector_store.add_documents(split_documents)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "E:\Python-Project\智能客服\.venv\Lib\site-packages\langchain_core\vectorstores\base.py", line 258, in add_documents
+    return self.add_texts(texts, metadatas, **kwargs)
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Python-Project\智能客服\.venv\Lib\site-packages\langchain_chroma\vectorstores.py", line 627, in add_texts
+    embeddings = self._embedding_function.embed_documents(texts)
+  File "E:\Python-Project\智能客服\.venv\Lib\site-packages\langchain_community\embeddings\dashscope.py", line 155, in embed_documents
+    embeddings = embed_with_retry(
+        self, input=texts, text_type="document", model=self.model
+    )
+  File "E:\Python-Project\智能客服\.venv\Lib\site-packages\langchain_community\embeddings\dashscope.py", line 83, in embed_with_retry
+    return _embed_with_retry(**kwargs)
+  File "E:\Python-Project\智能客服\.venv\Lib\site-packages\tenacity\__init__.py", line 331, in wrapped_f
+    return copy(f, *args, **kw)
+  File "E:\Python-Project\智能客服\.venv\Lib\site-packages\tenacity\__init__.py", line 470, in __call__
+    do = self.iter(retry_state=retry_state)
+  File "E:\Python-Project\智能客服\.venv\Lib\site-packages\tenacity\__init__.py", line 371, in iter
+    result = action(retry_state)
+  File "E:\Python-Project\智能客服\.venv\Lib\site-packages\tenacity\__init__.py", line 393, in <lambda>
+    self._add_action_func(lambda rs: rs.outcome.result())
+                                     ~~~~~~~~~~~~~~~~~^^
+  File "E:\develop\Python\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ~~~~~~~~~~~~~~~~~^^
+  File "E:\develop\Python\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "E:\Python-Project\智能客服\.venv\Lib\site-packages\tenacity\__init__.py", line 473, in __call__
+    result = fn(*args, **kwargs)
+  File "E:\Python-Project\智能客服\.venv\Lib\site-packages\langchain_community\embeddings\dashscope.py", line 70, in _embed_with_retry
+    raise ValueError(
+    ...<2 lines>...
+    )
+ValueError: status_code: 400 
+ code: InvalidParameter 
+ message: Model not exist.
+2026-05-16 11:11:40,476 - agent - ERROR - vector_stores.py:119 - [加载知识库]文件E:\Python-Project\智能客服\data\洗涤养护.txt内容加载到知识库中失败，错误信息：status_code: 400 
+ code: InvalidParameter 
+ message: Model not exist.
+Traceback (most recent call last):
+  File "E:\Python-Project\智能客服\rag\vector_stores.py", line 110, in load_document
+    self.vector_store.add_documents(split_documents)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "E:\Python-Project\智能客服\.venv\Lib\site-packages\langchain_core\vectorstores\base.py", line 258, in add_documents
+    return self.add_texts(texts, metadatas, **kwargs)
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Python-Project\智能客服\.venv\Lib\site-packages\langchain_chroma\vectorstores.py", line 627, in add_texts
+    embeddings = self._embedding_function.embed_documents(texts)
+  File "E:\Python-Project\智能客服\.venv\Lib\site-packages\langchain_community\embeddings\dashscope.py", line 155, in embed_documents
+    embeddings = embed_with_retry(
+        self, input=texts, text_type="document", model=self.model
+    )
+  File "E:\Python-Project\智能客服\.venv\Lib\site-packages\langchain_community\embeddings\dashscope.py", line 83, in embed_with_retry
+    return _embed_with_retry(**kwargs)
+  File "E:\Python-Project\智能客服\.venv\Lib\site-packages\tenacity\__init__.py", line 331, in wrapped_f
+    return copy(f, *args, **kw)
+  File "E:\Python-Project\智能客服\.venv\Lib\site-packages\tenacity\__init__.py", line 470, in __call__
+    do = self.iter(retry_state=retry_state)
+  File "E:\Python-Project\智能客服\.venv\Lib\site-packages\tenacity\__init__.py", line 371, in iter
+    result = action(retry_state)
+  File "E:\Python-Project\智能客服\.venv\Lib\site-packages\tenacity\__init__.py", line 393, in <lambda>
+    self._add_action_func(lambda rs: rs.outcome.result())
+                                     ~~~~~~~~~~~~~~~~~^^
+  File "E:\develop\Python\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ~~~~~~~~~~~~~~~~~^^
+  File "E:\develop\Python\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "E:\Python-Project\智能客服\.venv\Lib\site-packages\tenacity\__init__.py", line 473, in __call__
+    result = fn(*args, **kwargs)
+  File "E:\Python-Project\智能客服\.venv\Lib\site-packages\langchain_community\embeddings\dashscope.py", line 70, in _embed_with_retry
+    raise ValueError(
+    ...<2 lines>...
+    )
+ValueError: status_code: 400 
+ code: InvalidParameter 
+ message: Model not exist.
+2026-05-16 11:11:40,745 - agent - ERROR - vector_stores.py:119 - [加载知识库]文件E:\Python-Project\智能客服\data\颜色选择.txt内容加载到知识库中失败，错误信息：status_code: 400 
+ code: InvalidParameter 
+ message: Model not exist.
+Traceback (most recent call last):
+  File "E:\Python-Project\智能客服\rag\vector_stores.py", line 110, in load_document
+    self.vector_store.add_documents(split_documents)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "E:\Python-Project\智能客服\.venv\Lib\site-packages\langchain_core\vectorstores\base.py", line 258, in add_documents
+    return self.add_texts(texts, metadatas, **kwargs)
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Python-Project\智能客服\.venv\Lib\site-packages\langchain_chroma\vectorstores.py", line 627, in add_texts
+    embeddings = self._embedding_function.embed_documents(texts)
+  File "E:\Python-Project\智能客服\.venv\Lib\site-packages\langchain_community\embeddings\dashscope.py", line 155, in embed_documents
+    embeddings = embed_with_retry(
+        self, input=texts, text_type="document", model=self.model
+    )
+  File "E:\Python-Project\智能客服\.venv\Lib\site-packages\langchain_community\embeddings\dashscope.py", line 83, in embed_with_retry
+    return _embed_with_retry(**kwargs)
+  File "E:\Python-Project\智能客服\.venv\Lib\site-packages\tenacity\__init__.py", line 331, in wrapped_f
+    return copy(f, *args, **kw)
+  File "E:\Python-Project\智能客服\.venv\Lib\site-packages\tenacity\__init__.py", line 470, in __call__
+    do = self.iter(retry_state=retry_state)
+  File "E:\Python-Project\智能客服\.venv\Lib\site-packages\tenacity\__init__.py", line 371, in iter
+    result = action(retry_state)
+  File "E:\Python-Project\智能客服\.venv\Lib\site-packages\tenacity\__init__.py", line 393, in <lambda>
+    self._add_action_func(lambda rs: rs.outcome.result())
+                                     ~~~~~~~~~~~~~~~~~^^
+  File "E:\develop\Python\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ~~~~~~~~~~~~~~~~~^^
+  File "E:\develop\Python\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "E:\Python-Project\智能客服\.venv\Lib\site-packages\tenacity\__init__.py", line 473, in __call__
+    result = fn(*args, **kwargs)
+  File "E:\Python-Project\智能客服\.venv\Lib\site-packages\langchain_community\embeddings\dashscope.py", line 70, in _embed_with_retry
+    raise ValueError(
+    ...<2 lines>...
+    )
+ValueError: status_code: 400 
+ code: InvalidParameter 
+ message: Model not exist.
+2026-05-16 11:15:36,244 - agent - INFO - vector_stores.py:115 - [加载知识库]文件E:\Python-Project\智能客服\data\尺码推荐.txt内容已经加载到知识库中
+2026-05-16 11:15:39,092 - agent - INFO - vector_stores.py:115 - [加载知识库]文件E:\Python-Project\智能客服\data\洗涤养护.txt内容已经加载到知识库中
+2026-05-16 11:15:39,848 - agent - INFO - vector_stores.py:115 - [加载知识库]文件E:\Python-Project\智能客服\data\颜色选择.txt内容已经加载到知识库中

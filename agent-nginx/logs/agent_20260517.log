@@ -1,0 +1,274 @@
+2026-05-17 11:17:52,317 - agent - INFO - test_mcp_connection.py:25 - 成功加载工具: ['get_forecast', 'get_current_conditions', 'get_alerts', 'search_location', 'check_service_status', 'save_location', 'list_saved_locations', 'get_saved_location', 'remove_saved_location']
+2026-05-17 11:18:09,237 - agent - INFO - test_mcp_connection.py:25 - 成功加载工具: ['get_forecast', 'get_current_conditions', 'get_alerts', 'search_location', 'check_service_status', 'save_location', 'list_saved_locations', 'get_saved_location', 'remove_saved_location']
+2026-05-17 11:18:54,818 - agent - INFO - test_mcp_connection.py:25 - 成功加载工具: ['get_forecast', 'get_current_conditions', 'get_alerts', 'search_location', 'check_service_status', 'save_location', 'list_saved_locations', 'get_saved_location', 'remove_saved_location']
+2026-05-17 11:22:03,073 - agent - INFO - test_mcp_connection.py:25 - 成功加载工具: ['get_forecast', 'get_current_conditions', 'get_alerts', 'search_location', 'check_service_status', 'save_location', 'list_saved_locations', 'get_saved_location', 'remove_saved_location']
+2026-05-17 11:27:02,734 - agent - INFO - test_mcp_connection.py:25 - 成功加载工具: ['get_forecast', 'get_current_conditions', 'get_alerts', 'search_location', 'check_service_status', 'save_location', 'list_saved_locations', 'get_saved_location', 'remove_saved_location']
+2026-05-17 11:31:28,079 - agent - INFO - test_mcp_connection.py:25 - 成功加载工具: ['get_forecast', 'get_current_conditions', 'get_alerts', 'search_location', 'check_service_status', 'save_location', 'list_saved_locations', 'get_saved_location', 'remove_saved_location']
+2026-05-17 11:40:52,133 - agent - INFO - test_mcp_connection.py:25 - 成功加载工具: ['get_weather', 'get_weather_forecast', 'get_current_ip_info', 'get_weather_by_coordinates']
+2026-05-17 11:41:01,278 - agent - INFO - test_mcp_connection.py:25 - 成功加载工具: ['get_weather', 'get_weather_forecast', 'get_current_ip_info', 'get_weather_by_coordinates']
+2026-05-17 11:47:03,269 - agent - INFO - agent_tools.py:41 - 成功加载工具: ['get_weather', 'get_weather_forecast', 'get_current_ip_info', 'get_weather_by_coordinates']
+2026-05-17 11:48:01,805 - agent - INFO - agent_tools.py:41 - 成功加载工具: ['get_weather', 'get_weather_forecast', 'get_current_ip_info', 'get_weather_by_coordinates']
+2026-05-17 11:48:01,805 - agent - INFO - agent_tools.py:47 - 成功加载工具: ['get_weather', 'get_weather_forecast', 'get_current_ip_info', 'get_weather_by_coordinates', 'rag_summarize', 'fill_context_for_other_prompt']
+2026-05-17 11:55:21,598 - agent - INFO - agent_tools.py:46 - 成功加载工具: ['get_weather', 'get_weather_forecast', 'get_current_ip_info', 'get_weather_by_coordinates', 'rag_summarize', 'fill_context_for_other_prompt']
+2026-05-17 12:02:43,301 - agent - INFO - agent_tools.py:46 - 成功加载工具: ['get_weather', 'get_weather_forecast', 'get_current_ip_info', 'get_weather_by_coordinates', 'rag_summarize', 'fill_context_for_other_prompt']
+2026-05-17 12:03:34,561 - agent - INFO - agent_tools.py:46 - 成功加载工具: ['get_weather', 'get_weather_forecast', 'get_current_ip_info', 'get_weather_by_coordinates', 'rag_summarize', 'fill_context_for_other_prompt']
+2026-05-17 12:03:59,710 - agent - INFO - agent_tools.py:46 - 成功加载工具: ['get_weather', 'get_weather_forecast', 'get_current_ip_info', 'get_weather_by_coordinates', 'rag_summarize', 'fill_context_for_other_prompt']
+2026-05-17 12:05:27,161 - agent - INFO - agent_tools.py:46 - 成功加载工具: ['get_weather', 'get_weather_forecast', 'get_current_ip_info', 'get_weather_by_coordinates', 'rag_summarize', 'fill_context_for_other_prompt']
+2026-05-17 12:05:27,174 - agent - INFO - middleware.py:40 - [log_before_model]即将调用模型，带有1条消息
+2026-05-17 12:05:27,175 - agent - DEBUG - middleware.py:42 - [log_before_model] HumanMessage|明天深圳天气怎么样
+2026-05-17 12:15:51,734 - agent - INFO - test_mcp_connection.py:25 - 成功加载工具: ['get_weather', 'get_weather_forecast', 'get_current_ip_info', 'get_weather_by_coordinates']
+2026-05-17 12:16:19,461 - agent - INFO - test_mcp_connection.py:25 - 成功加载工具: ['get_weather', 'get_weather_forecast', 'get_current_ip_info', 'get_weather_by_coordinates']
+2026-05-17 12:19:05,964 - agent - INFO - agent_tools.py:46 - 成功加载工具: ['get_weather', 'get_weather_forecast', 'get_current_ip_info', 'get_weather_by_coordinates', 'rag_summarize', 'fill_context_for_other_prompt']
+2026-05-17 12:19:05,975 - agent - INFO - middleware.py:63 - [log_before_model]即将调用模型，带有1条消息
+2026-05-17 12:19:05,976 - agent - DEBUG - middleware.py:65 - [log_before_model] HumanMessage|明天深圳天气怎么样
+2026-05-17 12:19:07,727 - agent - INFO - middleware.py:43 - [tool monitor]执行工具：get_weather_forecast
+2026-05-17 12:19:07,727 - agent - INFO - middleware.py:44 - [tool monitor]传入参数：{'location': '深圳', 'days': 1}
+2026-05-17 12:19:21,368 - agent - INFO - middleware.py:49 - [tool monitor]调用工具get_weather_forecast成功，
+2026-05-17 12:26:50,299 - agent - INFO - agent_tools.py:46 - 成功加载工具: ['get_weather', 'get_weather_forecast', 'get_current_ip_info', 'get_weather_by_coordinates', 'rag_summarize', 'fill_context_for_other_prompt']
+2026-05-17 12:26:50,313 - agent - INFO - middleware.py:63 - [log_before_model]即将调用模型，带有1条消息
+2026-05-17 12:26:50,313 - agent - DEBUG - middleware.py:65 - [log_before_model] HumanMessage|明天深圳天气怎么样
+2026-05-17 12:26:52,504 - agent - INFO - middleware.py:43 - [tool monitor]执行工具：get_weather_forecast
+2026-05-17 12:26:52,504 - agent - INFO - middleware.py:44 - [tool monitor]传入参数：{'location': '深圳', 'days': 1}
+2026-05-17 12:27:07,483 - agent - INFO - middleware.py:49 - [tool monitor]调用工具get_weather_forecast成功，
+2026-05-17 12:27:07,485 - agent - INFO - middleware.py:63 - [log_before_model]即将调用模型，带有3条消息
+2026-05-17 12:32:54,331 - agent - INFO - agent_tools.py:46 - 成功加载工具: ['get_weather', 'get_weather_forecast', 'get_current_ip_info', 'get_weather_by_coordinates', 'rag_summarize', 'fill_context_for_other_prompt']
+2026-05-17 12:32:54,341 - agent - INFO - middleware.py:63 - [log_before_model]即将调用模型，带有1条消息
+2026-05-17 12:32:54,341 - agent - DEBUG - middleware.py:71 - [log_before_model] HumanMessage|明天深圳天气怎么样
+2026-05-17 12:32:57,003 - agent - INFO - middleware.py:43 - [tool monitor]执行工具：get_weather_forecast
+2026-05-17 12:32:57,003 - agent - INFO - middleware.py:44 - [tool monitor]传入参数：{'location': '深圳', 'days': 1}
+2026-05-17 12:33:09,113 - agent - INFO - middleware.py:49 - [tool monitor]调用工具get_weather_forecast成功，
+2026-05-17 12:33:09,114 - agent - INFO - middleware.py:63 - [log_before_model]即将调用模型，带有3条消息
+2026-05-17 12:33:09,114 - agent - DEBUG - middleware.py:71 - [log_before_model] ToolMessage|{'type': 'text', 'text': '🌤️ **深圳 1天天气预报**\n\n📍 **位置信息:**\n🗺️ 地点: 深圳市, 中国\n📊 坐标: 22.5431, 114.0579\n\n📅 **今天** (2026-05-17)\n🌡️ 温度: 22.4°C - 25.1°C\n☁️ 天气: 中雨\n🌧️ 降水量: 4.8 mm\n\n📡 数据源: Open-Meteo (免费API)', 'id': 'lc_8eeeb985-a0bb-4949-993c-b50818374a6f'}
+2026-05-17 12:41:16,455 - agent - INFO - agent_tools.py:46 - 成功加载工具: ['get_weather', 'get_weather_forecast', 'get_current_ip_info', 'get_weather_by_coordinates', 'rag_summarize', 'fill_context_for_other_prompt']
+2026-05-17 12:41:16,471 - agent - INFO - middleware.py:63 - [log_before_model]即将调用模型，带有1条消息
+2026-05-17 12:41:16,471 - agent - DEBUG - middleware.py:71 - [log_before_model] HumanMessage|今天湘潭天气怎么样，适合穿什么季节的衣服
+2026-05-17 12:41:18,237 - agent - INFO - middleware.py:43 - [tool monitor]执行工具：get_weather
+2026-05-17 12:41:18,237 - agent - INFO - middleware.py:44 - [tool monitor]传入参数：{'location': '湘潭'}
+2026-05-17 12:41:29,300 - agent - INFO - middleware.py:49 - [tool monitor]调用工具get_weather成功，
+2026-05-17 12:41:29,306 - agent - INFO - middleware.py:63 - [log_before_model]即将调用模型，带有3条消息
+2026-05-17 12:41:29,306 - agent - DEBUG - middleware.py:71 - [log_before_model] ToolMessage|{'type': 'text', 'text': 'Error: 获取湘潭天气信息失败: 无法找到地点: 湘潭。请尝试使用更常见的城市名称，如：北京、上海、Tokyo、New York 等，或者使用 get_weather_by_coordinates 工具通过精确坐标查询。', 'id': 'lc_f818ca4c-2edd-4e59-adee-4978dbe54857'}
+2026-05-17 12:41:48,019 - agent - INFO - agent_tools.py:46 - 成功加载工具: ['get_weather', 'get_weather_forecast', 'get_current_ip_info', 'get_weather_by_coordinates', 'rag_summarize', 'fill_context_for_other_prompt']
+2026-05-17 12:41:48,030 - agent - INFO - middleware.py:63 - [log_before_model]即将调用模型，带有1条消息
+2026-05-17 12:41:48,030 - agent - DEBUG - middleware.py:71 - [log_before_model] HumanMessage|今天长沙天气怎么样，适合穿什么季节的衣服
+2026-05-17 12:41:49,794 - agent - INFO - middleware.py:43 - [tool monitor]执行工具：get_weather
+2026-05-17 12:41:49,794 - agent - INFO - middleware.py:44 - [tool monitor]传入参数：{'location': '长沙'}
+2026-05-17 12:42:01,033 - agent - INFO - middleware.py:49 - [tool monitor]调用工具get_weather成功，
+2026-05-17 12:42:01,034 - agent - INFO - middleware.py:63 - [log_before_model]即将调用模型，带有3条消息
+2026-05-17 12:42:01,034 - agent - DEBUG - middleware.py:71 - [log_before_model] ToolMessage|{'type': 'text', 'text': 'Error: 获取长沙天气信息失败: 无法找到地点: 长沙。请尝试使用更常见的城市名称，如：北京、上海、Tokyo、New York 等，或者使用 get_weather_by_coordinates 工具通过精确坐标查询。', 'id': 'lc_026704e6-ae3b-45d3-a2d7-8cd3db9aabeb'}
+2026-05-17 12:42:04,548 - agent - INFO - middleware.py:43 - [tool monitor]执行工具：get_weather_by_coordinates
+2026-05-17 12:42:04,548 - agent - INFO - middleware.py:44 - [tool monitor]传入参数：{'latitude': 28.2282, 'longitude': 112.9388}
+2026-05-17 12:42:07,155 - agent - INFO - middleware.py:49 - [tool monitor]调用工具get_weather_by_coordinates成功，
+2026-05-17 12:42:07,155 - agent - INFO - middleware.py:63 - [log_before_model]即将调用模型，带有5条消息
+2026-05-17 12:42:07,155 - agent - DEBUG - middleware.py:71 - [log_before_model] ToolMessage|{'type': 'text', 'text': '🌤️ **天气信息**\n\n📍 坐标: 28.2282, 112.9388\n🌡️ 温度: 30.5°C\n☁️ 天气: 小雨\n💨 风速: 18.4 km/h\n🧭 风向: 172°\n💧 湿度: 59%\n📊 气压: 1008.8 hPa\n🕐 时间: 2026-05-17T12:30\n📡 数据源: Open-Meteo (免费API)', 'id': 'lc_ad56601c-e7c9-491e-9131-d452de26436c'}
+2026-05-17 12:44:16,129 - agent - INFO - agent_tools.py:46 - 成功加载工具: ['get_weather', 'get_weather_forecast', 'get_current_ip_info', 'get_weather_by_coordinates', 'rag_summarize', 'fill_context_for_other_prompt']
+2026-05-17 12:44:16,140 - agent - INFO - middleware.py:63 - [log_before_model]即将调用模型，带有1条消息
+2026-05-17 12:44:16,140 - agent - DEBUG - middleware.py:71 - [log_before_model] HumanMessage|今天上海天气怎么样，我身高170cm，今天天气适合穿什么季节的衣服，想买衣服有什么尺码推荐
+2026-05-17 12:44:17,721 - agent - INFO - middleware.py:43 - [tool monitor]执行工具：get_weather
+2026-05-17 12:44:17,721 - agent - INFO - middleware.py:44 - [tool monitor]传入参数：{'location': '上海'}
+2026-05-17 12:44:29,926 - agent - INFO - middleware.py:49 - [tool monitor]调用工具get_weather成功，
+2026-05-17 12:44:29,927 - agent - INFO - middleware.py:63 - [log_before_model]即将调用模型，带有3条消息
+2026-05-17 12:44:29,927 - agent - DEBUG - middleware.py:71 - [log_before_model] ToolMessage|{'type': 'text', 'text': '🌤️ **上海 天气信息**\n\n📍 **位置信息:**\n🗺️ 地点: 上海市, 中国\n📊 坐标: 31.2304, 121.4737\n\n🌤️ **天气信息:**\n🌡️ 温度: 29.2°C\n☁️ 天气: 基本晴朗\n💨 风速: 18.3 km/h\n🧭 风向: 167°\n💧 湿度: 41%\n📊 气压: 1016.9 hPa\n🕐 时间: 2026-05-17T12:30\n\n📡 数据源: Open-Meteo (免费API)', 'id': 'lc_d022e128-c95b-400f-af37-39b4ba75231c'}
+2026-05-17 12:51:02,988 - agent - INFO - agent_tools.py:46 - 成功加载工具: ['get_weather', 'get_weather_forecast', 'get_current_ip_info', 'get_weather_by_coordinates', 'rag_summarize', 'fill_context_for_other_prompt']
+2026-05-17 12:51:03,001 - agent - INFO - middleware.py:63 - [log_before_model]即将调用模型，带有1条消息
+2026-05-17 12:52:17,284 - agent - INFO - agent_tools.py:46 - 成功加载工具: ['get_weather', 'get_weather_forecast', 'get_current_ip_info', 'get_weather_by_coordinates', 'rag_summarize', 'fill_context_for_other_prompt']
+2026-05-17 12:52:17,297 - agent - INFO - middleware.py:63 - [log_before_model]即将调用模型，带有1条消息
+2026-05-17 12:52:17,297 - agent - DEBUG - middleware.py:71 - [log_before_model] HumanMessage|我身高170cm，今天上海天气怎么样，适合穿什么季节的衣服，买什么季节衣服，有什么尺码推荐吗
+2026-05-17 12:52:19,995 - agent - INFO - middleware.py:43 - [tool monitor]执行工具：rag_summarize
+2026-05-17 12:52:19,995 - agent - INFO - middleware.py:44 - [tool monitor]传入参数：{'query': '上海天气穿衣指南和尺码推荐'}
+2026-05-17 12:52:19,995 - agent - INFO - middleware.py:43 - [tool monitor]执行工具：get_weather
+2026-05-17 12:52:19,995 - agent - INFO - middleware.py:44 - [tool monitor]传入参数：{'location': '上海'}
+2026-05-17 12:52:22,335 - agent - INFO - middleware.py:49 - [tool monitor]调用工具rag_summarize成功，
+2026-05-17 12:52:32,627 - agent - INFO - middleware.py:49 - [tool monitor]调用工具get_weather成功，
+2026-05-17 12:52:32,628 - agent - INFO - middleware.py:63 - [log_before_model]即将调用模型，带有4条消息
+2026-05-17 12:52:32,628 - agent - DEBUG - middleware.py:71 - [log_before_model] ToolMessage|{'type': 'text', 'text': '🌤️ **上海 天气信息**\n\n📍 **位置信息:**\n🗺️ 地点: 上海市, 中国\n📊 坐标: 31.2304, 121.4737\n\n🌤️ **天气信息:**\n🌡️ 温度: 29.4°C\n☁️ 天气: 基本晴朗\n💨 风速: 18.3 km/h\n🧭 风向: 167°\n💧 湿度: 41%\n📊 气压: 1016.9 hPa\n🕐 时间: 2026-05-17T12:45\n\n📡 数据源: Open-Meteo (免费API)', 'id': 'lc_a08666e7-3e1c-4860-bb5c-0affd772df18'}
+2026-05-17 12:55:01,122 - agent - INFO - agent_tools.py:46 - 成功加载工具: ['get_weather', 'get_weather_forecast', 'get_current_ip_info', 'get_weather_by_coordinates', 'rag_summarize', 'fill_context_for_other_prompt']
+2026-05-17 12:55:01,131 - agent - INFO - middleware.py:63 - [log_before_model]即将调用模型，带有1条消息
+2026-05-17 12:55:01,131 - agent - DEBUG - middleware.py:71 - [log_before_model] HumanMessage|我身高170cm，有什么尺码推荐吗
+2026-05-17 12:55:03,144 - agent - INFO - middleware.py:43 - [tool monitor]执行工具：rag_summarize
+2026-05-17 12:55:03,144 - agent - INFO - middleware.py:44 - [tool monitor]传入参数：{'query': '身高170cm对应的服装尺码推荐'}
+2026-05-17 12:55:05,099 - agent - INFO - middleware.py:49 - [tool monitor]调用工具rag_summarize成功，
+2026-05-17 12:55:05,100 - agent - INFO - middleware.py:63 - [log_before_model]即将调用模型，带有3条消息
+2026-05-17 12:55:05,100 - agent - DEBUG - middleware.py:71 - [log_before_model] ToolMessage|参考资料中未提供身高170cm对应的服装尺码推荐信息。
+2026-05-17 12:57:38,797 - agent - INFO - agent_tools.py:46 - 成功加载工具: ['get_weather', 'get_weather_forecast', 'get_current_ip_info', 'get_weather_by_coordinates', 'rag_summarize', 'fill_context_for_other_prompt']
+2026-05-17 12:57:38,806 - agent - INFO - middleware.py:63 - [log_before_model]即将调用模型，带有1条消息
+2026-05-17 12:57:38,807 - agent - DEBUG - middleware.py:71 - [log_before_model] HumanMessage|我身高170cm，有什么尺码推荐吗
+2026-05-17 12:57:40,917 - agent - INFO - middleware.py:43 - [tool monitor]执行工具：rag_summarize
+2026-05-17 12:57:40,917 - agent - INFO - middleware.py:44 - [tool monitor]传入参数：{'query': '身高170cm对应的服装尺码推荐'}
+2026-05-17 12:57:42,675 - agent - INFO - middleware.py:49 - [tool monitor]调用工具rag_summarize成功，
+2026-05-17 12:57:42,677 - agent - INFO - middleware.py:63 - [log_before_model]即将调用模型，带有3条消息
+2026-05-17 12:57:42,677 - agent - DEBUG - middleware.py:71 - [log_before_model] ToolMessage|参考资料中未提供身高170cm对应的服装尺码推荐信息。
+2026-05-17 13:00:21,665 - agent - INFO - agent_tools.py:46 - 成功加载工具: ['get_weather', 'get_weather_forecast', 'get_current_ip_info', 'get_weather_by_coordinates', 'rag_summarize', 'fill_context_for_other_prompt']
+2026-05-17 13:05:18,801 - agent - INFO - agent_tools.py:46 - 成功加载工具: ['get_weather', 'get_weather_forecast', 'get_current_ip_info', 'get_weather_by_coordinates', 'rag_summarize', 'fill_context_for_other_prompt']
+2026-05-17 13:05:18,810 - agent - INFO - middleware.py:63 - [log_before_model]即将调用模型，带有1条消息
+2026-05-17 13:05:18,810 - agent - DEBUG - middleware.py:71 - [log_before_model] HumanMessage|我身高170cm，有什么尺码推荐吗
+2026-05-17 13:05:20,654 - agent - INFO - middleware.py:43 - [tool monitor]执行工具：rag_summarize
+2026-05-17 13:05:20,654 - agent - INFO - middleware.py:44 - [tool monitor]传入参数：{'query': '身高170cm对应的服装尺码推荐'}
+2026-05-17 13:05:22,215 - agent - INFO - middleware.py:49 - [tool monitor]调用工具rag_summarize成功，
+2026-05-17 13:05:22,217 - agent - INFO - middleware.py:63 - [log_before_model]即将调用模型，带有3条消息
+2026-05-17 13:05:22,217 - agent - DEBUG - middleware.py:71 - [log_before_model] ToolMessage|参考资料中未提供身高170cm对应的服装尺码推荐信息。
+2026-05-17 13:11:10,642 - agent - INFO - agent_tools.py:46 - 成功加载工具: ['get_weather', 'get_weather_forecast', 'get_current_ip_info', 'get_weather_by_coordinates', 'rag_summarize', 'fill_context_for_other_prompt']
+2026-05-17 13:11:10,652 - agent - INFO - middleware.py:63 - [log_before_model]即将调用模型，带有1条消息
+2026-05-17 13:11:10,653 - agent - DEBUG - middleware.py:71 - [log_before_model] HumanMessage|我身高170cm，有什么尺码推荐吗
+2026-05-17 13:11:12,650 - agent - INFO - middleware.py:43 - [tool monitor]执行工具：rag_summarize
+2026-05-17 13:11:12,650 - agent - INFO - middleware.py:44 - [tool monitor]传入参数：{'query': '身高170cm对应的服装尺码推荐'}
+2026-05-17 13:11:13,252 - agent - INFO - vector_stores.py:117 - [加载知识库]文件E:\Python-Project\智能客服\data\尺码推荐.txt内容已经加载到知识库中
+2026-05-17 13:11:15,310 - agent - INFO - vector_stores.py:117 - [加载知识库]文件E:\Python-Project\智能客服\data\洗涤养护.txt内容已经加载到知识库中
+2026-05-17 13:11:16,212 - agent - INFO - vector_stores.py:117 - [加载知识库]文件E:\Python-Project\智能客服\data\颜色选择.txt内容已经加载到知识库中
+2026-05-17 13:11:19,315 - agent - INFO - middleware.py:49 - [tool monitor]调用工具rag_summarize成功，
+2026-05-17 13:11:19,316 - agent - INFO - middleware.py:63 - [log_before_model]即将调用模型，带有3条消息
+2026-05-17 13:11:19,316 - agent - DEBUG - middleware.py:71 - [log_before_model] ToolMessage|身高170cm对应的服装尺码推荐需结合体重判断：若体重90-115斤，建议尺码M；若体重115-135斤，建议尺码L；若体重130-150斤，建议尺码XL。
+2026-05-17 13:13:06,613 - agent - INFO - agent_tools.py:46 - 成功加载工具: ['get_weather', 'get_weather_forecast', 'get_current_ip_info', 'get_weather_by_coordinates', 'rag_summarize', 'fill_context_for_other_prompt']
+2026-05-17 13:13:06,623 - agent - INFO - middleware.py:63 - [log_before_model]即将调用模型，带有1条消息
+2026-05-17 13:13:06,623 - agent - DEBUG - middleware.py:71 - [log_before_model] HumanMessage|今天上海什么天气，适合穿什么季节的衣服，买什么季节的衣服，我身高170cm，有什么尺码推荐吗
+2026-05-17 13:13:09,044 - agent - INFO - middleware.py:43 - [tool monitor]执行工具：rag_summarize
+2026-05-17 13:13:09,044 - agent - INFO - middleware.py:44 - [tool monitor]传入参数：{'query': '上海天气穿衣指南和尺码推荐'}
+2026-05-17 13:13:09,044 - agent - INFO - middleware.py:43 - [tool monitor]执行工具：get_weather
+2026-05-17 13:13:09,045 - agent - INFO - middleware.py:44 - [tool monitor]传入参数：{'location': '上海'}
+2026-05-17 13:13:09,111 - agent - INFO - vector_stores.py:96 - [加载知识库]文件E:\Python-Project\智能客服\data\尺码推荐.txt已经存在知识库中，跳过跳过
+2026-05-17 13:13:09,111 - agent - INFO - vector_stores.py:96 - [加载知识库]文件E:\Python-Project\智能客服\data\洗涤养护.txt已经存在知识库中，跳过跳过
+2026-05-17 13:13:09,112 - agent - INFO - vector_stores.py:96 - [加载知识库]文件E:\Python-Project\智能客服\data\颜色选择.txt已经存在知识库中，跳过跳过
+2026-05-17 13:13:16,095 - agent - INFO - middleware.py:49 - [tool monitor]调用工具rag_summarize成功，
+2026-05-17 13:13:21,618 - agent - INFO - middleware.py:49 - [tool monitor]调用工具get_weather成功，
+2026-05-17 13:13:21,619 - agent - INFO - middleware.py:63 - [log_before_model]即将调用模型，带有4条消息
+2026-05-17 13:13:21,619 - agent - DEBUG - middleware.py:71 - [log_before_model] ToolMessage|{'type': 'text', 'text': '🌤️ **上海 天气信息**\n\n📍 **位置信息:**\n🗺️ 地点: 上海市, 中国\n📊 坐标: 31.2304, 121.4737\n\n🌤️ **天气信息:**\n🌡️ 温度: 29.4°C\n☁️ 天气: 基本晴朗\n💨 风速: 18.5 km/h\n🧭 风向: 167°\n💧 湿度: 37%\n📊 气压: 1016.3 hPa\n🕐 时间: 2026-05-17T13:00\n\n📡 数据源: Open-Meteo (免费API)', 'id': 'lc_c1bae738-c345-443d-af1c-36149ad68a6c'}
+2026-05-17 13:18:09,699 - agent - INFO - agent_tools.py:46 - 成功加载工具: ['get_weather', 'get_weather_forecast', 'get_current_ip_info', 'get_weather_by_coordinates', 'rag_summarize', 'fill_context_for_other_prompt']
+2026-05-17 13:18:09,711 - agent - INFO - middleware.py:63 - [log_before_model]即将调用模型，带有1条消息
+2026-05-17 13:18:09,711 - agent - DEBUG - middleware.py:71 - [log_before_model] HumanMessage|今天上海什么天气，适合穿什么季节的衣服，买什么季节的衣服，我身高170cm，有什么尺码推荐吗
+2026-05-17 13:18:12,813 - agent - INFO - middleware.py:43 - [tool monitor]执行工具：get_weather
+2026-05-17 13:18:12,814 - agent - INFO - middleware.py:44 - [tool monitor]传入参数：{'location': '上海'}
+2026-05-17 13:18:12,814 - agent - INFO - middleware.py:43 - [tool monitor]执行工具：rag_summarize
+2026-05-17 13:18:12,814 - agent - INFO - middleware.py:44 - [tool monitor]传入参数：{'query': '上海今天天气穿衣指南和服装尺码推荐'}
+2026-05-17 13:18:13,395 - agent - INFO - vector_stores.py:96 - [加载知识库]文件E:\Python-Project\智能客服\data\尺码推荐.txt已经存在知识库中，跳过跳过
+2026-05-17 13:18:13,395 - agent - INFO - vector_stores.py:96 - [加载知识库]文件E:\Python-Project\智能客服\data\洗涤养护.txt已经存在知识库中，跳过跳过
+2026-05-17 13:18:13,396 - agent - INFO - vector_stores.py:96 - [加载知识库]文件E:\Python-Project\智能客服\data\颜色选择.txt已经存在知识库中，跳过跳过
+2026-05-17 13:18:20,598 - agent - INFO - middleware.py:49 - [tool monitor]调用工具rag_summarize成功，
+2026-05-17 13:18:26,178 - agent - INFO - middleware.py:49 - [tool monitor]调用工具get_weather成功，
+2026-05-17 13:18:26,179 - agent - INFO - middleware.py:63 - [log_before_model]即将调用模型，带有4条消息
+2026-05-17 13:18:26,179 - agent - DEBUG - middleware.py:71 - [log_before_model] ToolMessage|上海今日天气未在参考资料中提及，无法提供穿衣指南；服装尺码推荐如下：身高155-165cm、体重75-95斤建议S码；160-170cm、90-115斤建议M码；165-175cm、115-135斤建议L码；170-178cm、130-150斤建议XL码；175-182cm、145-165斤建议2XL码；178-185cm、160-180斤建议3XL码；180-190cm、180-210斤建议4XL码；190cm以上、210斤以上建议5XL码。瘦小体型宜选浅色或暖色系服装，避免宽大深色款式。
+2026-05-17 13:25:22,965 - agent - INFO - agent_tools.py:46 - 成功加载工具: ['get_weather', 'get_weather_forecast', 'get_current_ip_info', 'get_weather_by_coordinates', 'rag_summarize', 'fill_context_for_other_prompt']
+2026-05-17 13:25:22,978 - agent - INFO - middleware.py:63 - [log_before_model]即将调用模型，带有1条消息
+2026-05-17 13:25:22,979 - agent - DEBUG - middleware.py:71 - [log_before_model] HumanMessage|今天上海什么天气，适合穿什么季节的衣服，买什么季节的衣服，我身高170cm，有什么尺码推荐吗
+2026-05-17 13:25:25,559 - agent - INFO - middleware.py:43 - [tool monitor]执行工具：get_weather
+2026-05-17 13:25:25,559 - agent - INFO - middleware.py:44 - [tool monitor]传入参数：{'location': '上海'}
+2026-05-17 13:25:25,559 - agent - INFO - middleware.py:43 - [tool monitor]执行工具：rag_summarize
+2026-05-17 13:25:25,559 - agent - INFO - middleware.py:44 - [tool monitor]传入参数：{'query': '上海今天天气穿衣指南和服装尺码推荐'}
+2026-05-17 13:25:26,917 - agent - INFO - vector_stores.py:117 - [加载知识库]文件E:\Python-Project\智能客服\data\天气与穿衣选择.txt内容已经加载到知识库中
+2026-05-17 13:25:26,917 - agent - INFO - vector_stores.py:96 - [加载知识库]文件E:\Python-Project\智能客服\data\尺码推荐.txt已经存在知识库中，跳过跳过
+2026-05-17 13:25:26,918 - agent - INFO - vector_stores.py:96 - [加载知识库]文件E:\Python-Project\智能客服\data\洗涤养护.txt已经存在知识库中，跳过跳过
+2026-05-17 13:25:26,919 - agent - INFO - vector_stores.py:96 - [加载知识库]文件E:\Python-Project\智能客服\data\颜色选择.txt已经存在知识库中，跳过跳过
+2026-05-17 13:25:34,423 - agent - INFO - middleware.py:49 - [tool monitor]调用工具rag_summarize成功，
+2026-05-17 13:25:39,903 - agent - INFO - middleware.py:49 - [tool monitor]调用工具get_weather成功，
+2026-05-17 13:25:39,904 - agent - INFO - middleware.py:63 - [log_before_model]即将调用模型，带有4条消息
+2026-05-17 13:25:39,904 - agent - DEBUG - middleware.py:71 - [log_before_model] ToolMessage|上海今日天气炎热（气温>28℃），建议穿着短袖T恤、背心、短裤、薄长裙等宽松透气的浅色衣物，优选棉麻、真丝或速干面料，并注意防晒。服装尺码推荐：身高155-165cm、体重75-95斤选S；160-170cm、90-115斤选M；165-175cm、115-135斤选L；170-178cm、130-150斤选XL；175-182cm、145-165斤选2XL；178-185cm、160-180斤选3XL；180-190cm、180-210斤选4XL；190cm以上、210斤以上选5XL。
+2026-05-17 13:32:24,366 - agent - INFO - agent_tools.py:46 - 成功加载工具: ['get_weather', 'get_weather_forecast', 'get_current_ip_info', 'get_weather_by_coordinates', 'rag_summarize', 'fill_context_for_other_prompt']
+2026-05-17 13:32:24,380 - agent - INFO - middleware.py:63 - [log_before_model]即将调用模型，带有1条消息
+2026-05-17 13:32:24,380 - agent - DEBUG - middleware.py:71 - [log_before_model] HumanMessage|今天上海什么天气，适合穿什么季节的衣服，买什么季节的衣服，我身高170cm，有什么尺码推荐吗
+2026-05-17 13:32:26,179 - agent - INFO - middleware.py:43 - [tool monitor]执行工具：get_weather
+2026-05-17 13:32:26,179 - agent - INFO - middleware.py:44 - [tool monitor]传入参数：{'location': '上海'}
+2026-05-17 13:32:38,798 - agent - INFO - middleware.py:49 - [tool monitor]调用工具get_weather成功，
+2026-05-17 13:32:38,799 - agent - INFO - middleware.py:63 - [log_before_model]即将调用模型，带有3条消息
+2026-05-17 13:32:38,800 - agent - DEBUG - middleware.py:71 - [log_before_model] ToolMessage|{'type': 'text', 'text': '🌤️ **上海 天气信息**\n\n📍 **位置信息:**\n🗺️ 地点: 上海市, 中国\n📊 坐标: 31.2304, 121.4737\n\n🌤️ **天气信息:**\n🌡️ 温度: 29.4°C\n☁️ 天气: 基本晴朗\n💨 风速: 18.8 km/h\n🧭 风向: 165°\n💧 湿度: 37%\n📊 气压: 1016.3 hPa\n🕐 时间: 2026-05-17T13:30\n\n📡 数据源: Open-Meteo (免费API)', 'id': 'lc_6252a4bc-af04-4b89-994f-24693ceb62af'}
+2026-05-17 13:32:40,581 - agent - INFO - middleware.py:43 - [tool monitor]执行工具：get_weather_forecast
+2026-05-17 13:32:40,581 - agent - INFO - middleware.py:44 - [tool monitor]传入参数：{'location': '上海', 'days': 7}
+2026-05-17 13:32:55,511 - agent - INFO - middleware.py:49 - [tool monitor]调用工具get_weather_forecast成功，
+2026-05-17 13:32:55,512 - agent - INFO - middleware.py:63 - [log_before_model]即将调用模型，带有5条消息
+2026-05-17 13:32:55,512 - agent - DEBUG - middleware.py:71 - [log_before_model] ToolMessage|{'type': 'text', 'text': '🌤️ **上海 7天天气预报**\n\n📍 **位置信息:**\n🗺️ 地点: 上海市, 中国\n📊 坐标: 31.2304, 121.4737\n\n📅 **今天** (2026-05-17)\n🌡️ 温度: 19.3°C - 29.4°C\n☁️ 天气: 部分多云\n🌧️ 降水量: 0 mm\n\n📅 **明天** (2026-05-18)\n🌡️ 温度: 19.9°C - 28.5°C\n☁️ 天气: 阴天\n🌧️ 降水量: 0 mm\n\n📅 **第3天** (2026-05-19)\n🌡️ 温度: 20.3°C - 29.9°C\n☁️ 天气: 中雨\n🌧️ 降水量: 10.8 mm\n\n📅 **第4天** (2026-05-20)\n🌡️ 温度: 21.2°C - 28.2°C\n☁️ 天气: 中雨\n🌧️ 降水量: 21.8 mm\n\n📅 **第5天** (2026-05-21)\n🌡️ 温度: 17.9°C - 24.6°C\n☁️ 天气: 阴天\n🌧️ 降水量: 0 mm\n\n📅 **第6天** (2026-05-22)\n🌡️ 温度: 16°C - 26.8°C\n☁️ 天气: 阴天\n🌧️ 降水量: 0 mm\n\n📅 **第7天** (2026-05-23)\n🌡️ 温度: 20.3°C - 25.9°C\n☁️ 天气: 阵雨（轻）\n🌧️ 降水量: 17.1 mm\n\n📡 数据源: Open-Meteo (免费API)', 'id': 'lc_4da1199f-a94c-492a-a9b7-9daaacbf58a4'}
+2026-05-17 13:32:58,358 - agent - INFO - middleware.py:43 - [tool monitor]执行工具：rag_summarize
+2026-05-17 13:32:58,359 - agent - INFO - middleware.py:44 - [tool monitor]传入参数：{'query': '上海当前天气29.4°C基本晴朗，未来一周气温16-30°C之间，有降雨，身高170cm适合穿什么季节的衣服，买什么季节的衣服，尺码推荐'}
+2026-05-17 13:32:58,922 - agent - INFO - vector_stores.py:96 - [加载知识库]文件E:\Python-Project\智能客服\data\天气与穿衣选择.txt已经存在知识库中，跳过跳过
+2026-05-17 13:32:58,923 - agent - INFO - vector_stores.py:96 - [加载知识库]文件E:\Python-Project\智能客服\data\尺码推荐.txt已经存在知识库中，跳过跳过
+2026-05-17 13:32:58,923 - agent - INFO - vector_stores.py:96 - [加载知识库]文件E:\Python-Project\智能客服\data\洗涤养护.txt已经存在知识库中，跳过跳过
+2026-05-17 13:32:58,924 - agent - INFO - vector_stores.py:96 - [加载知识库]文件E:\Python-Project\智能客服\data\颜色选择.txt已经存在知识库中，跳过跳过
+2026-05-17 13:33:04,264 - agent - INFO - middleware.py:49 - [tool monitor]调用工具rag_summarize成功，
+2026-05-17 13:33:04,265 - agent - INFO - middleware.py:63 - [log_before_model]即将调用模型，带有7条消息
+2026-05-17 13:33:04,265 - agent - DEBUG - middleware.py:71 - [log_before_model] ToolMessage|当前上海气温29.4°C、基本晴朗，属高温炎热天气，未来一周气温16-30°C并有降雨。根据参考资料，170cm身高适合穿着夏季衣物：上装可选短袖T恤、背心、亚麻衬衫；下装推荐短裤、阔腿裤或薄长裙；材质以纯棉、亚麻、真丝或速干面料为佳；颜色宜浅色系，并搭配遮阳帽、墨镜及防晒霜。因有降雨，建议选择速干或防水材质衣物，避免易吸水的牛仔裤。当前及近期应购买夏季服装。
+2026-05-17 13:49:04,802 - agent - INFO - agent_tools.py:46 - 成功加载工具: ['get_weather', 'get_weather_forecast', 'get_current_ip_info', 'get_weather_by_coordinates', 'rag_summarize', 'fill_context_for_other_prompt']
+2026-05-17 13:49:04,815 - agent - INFO - middleware.py:63 - [log_before_model]即将调用模型，带有1条消息
+2026-05-17 13:49:04,815 - agent - DEBUG - middleware.py:71 - [log_before_model] HumanMessage|今天杭州什么天气，适合穿什么季节的衣服，买什么季节的衣服，我身高185cm，有什么尺码推荐吗
+2026-05-17 13:49:06,249 - agent - INFO - middleware.py:43 - [tool monitor]执行工具：get_weather
+2026-05-17 13:49:06,249 - agent - INFO - middleware.py:44 - [tool monitor]传入参数：{'location': '杭州'}
+2026-05-17 13:49:18,861 - agent - INFO - middleware.py:49 - [tool monitor]调用工具get_weather成功，
+2026-05-17 13:49:18,863 - agent - INFO - middleware.py:63 - [log_before_model]即将调用模型，带有3条消息
+2026-05-17 13:49:18,863 - agent - DEBUG - middleware.py:71 - [log_before_model] ToolMessage|{'type': 'text', 'text': '🌤️ **杭州 天气信息**\n\n📍 **位置信息:**\n🗺️ 地点: 杭州市, 中国\n📊 坐标: 30.2741, 120.1551\n\n🌤️ **天气信息:**\n🌡️ 温度: 30.9°C\n☁️ 天气: 晴朗\n💨 风速: 15.5 km/h\n🧭 风向: 147°\n💧 湿度: 40%\n📊 气压: 1014.2 hPa\n🕐 时间: 2026-05-17T13:45\n\n📡 数据源: Open-Meteo (免费API)', 'id': 'lc_b2cb69df-21c1-4bfb-8198-c0c986077717'}
+2026-05-17 13:49:22,314 - agent - INFO - middleware.py:43 - [tool monitor]执行工具：rag_summarize
+2026-05-17 13:49:22,314 - agent - INFO - middleware.py:44 - [tool monitor]传入参数：{'query': '杭州当前30.9°C晴朗天气适合穿什么季节的衣服，买什么季节的衣服，身高185cm的男性尺码推荐'}
+2026-05-17 13:49:24,197 - agent - INFO - vector_stores.py:117 - [加载知识库]文件E:\Python-Project\智能客服\data\天气与穿衣选择.txt内容已经加载到知识库中
+2026-05-17 13:49:24,197 - agent - INFO - vector_stores.py:96 - [加载知识库]文件E:\Python-Project\智能客服\data\尺码推荐.txt已经存在知识库中，跳过跳过
+2026-05-17 13:49:24,197 - agent - INFO - vector_stores.py:96 - [加载知识库]文件E:\Python-Project\智能客服\data\洗涤养护.txt已经存在知识库中，跳过跳过
+2026-05-17 13:49:24,198 - agent - INFO - vector_stores.py:96 - [加载知识库]文件E:\Python-Project\智能客服\data\颜色选择.txt已经存在知识库中，跳过跳过
+2026-05-17 13:49:29,102 - agent - INFO - middleware.py:49 - [tool monitor]调用工具rag_summarize成功，
+2026-05-17 13:49:29,102 - agent - INFO - middleware.py:63 - [log_before_model]即将调用模型，带有5条消息
+2026-05-17 13:49:29,102 - agent - DEBUG - middleware.py:71 - [log_before_model] ToolMessage|杭州当前30.9°C晴朗天气属于高温炎热天气，建议穿着短袖T恤、背心、亚麻衬衫等宽松、吸汗的浅色系衣物，下装可选短裤、阔腿裤等，材质以纯棉、亚麻、真丝或速干面料为佳，并搭配遮阳帽、墨镜等防晒配饰。此温度适合购买夏季服装。身高185cm男性通常对应上装L或XL码，下装腰围根据具体体型选择，但参考资料未提供具体尺码推荐。
+2026-05-17 20:29:48,048 - agent - INFO - agent_tools.py:46 - 成功加载工具: ['get_weather', 'get_weather_forecast', 'get_current_ip_info', 'get_weather_by_coordinates', 'rag_summarize', 'fill_context_for_other_prompt']
+2026-05-17 20:35:34,902 - agent - INFO - agent_tools.py:46 - 成功加载工具: ['get_weather', 'get_weather_forecast', 'get_current_ip_info', 'get_weather_by_coordinates', 'rag_summarize', 'fill_context_for_other_prompt']
+2026-05-17 20:35:53,158 - agent - INFO - middleware.py:63 - [log_before_model]即将调用模型，带有1条消息
+2026-05-17 20:35:53,158 - agent - DEBUG - middleware.py:71 - [log_before_model] HumanMessage|今天上海天气怎么样
+2026-05-17 20:35:54,818 - agent - INFO - middleware.py:43 - [tool monitor]执行工具：get_weather
+2026-05-17 20:35:54,818 - agent - INFO - middleware.py:44 - [tool monitor]传入参数：{'location': '上海'}
+2026-05-17 20:36:23,425 - agent - INFO - middleware.py:49 - [tool monitor]调用工具get_weather成功，
+2026-05-17 20:36:23,426 - agent - INFO - middleware.py:63 - [log_before_model]即将调用模型，带有3条消息
+2026-05-17 20:36:23,426 - agent - DEBUG - middleware.py:71 - [log_before_model] ToolMessage|{'type': 'text', 'text': 'Error: 获取上海天气信息失败: timeout of 10000ms exceeded', 'id': 'lc_a728d758-2c54-49d9-b93c-b30395cbd400'}
+2026-05-17 20:36:40,531 - agent - INFO - middleware.py:43 - [tool monitor]执行工具：get_weather_forecast
+2026-05-17 20:36:40,531 - agent - INFO - middleware.py:44 - [tool monitor]传入参数：{'location': '上海', 'days': 1}
+2026-05-17 20:38:52,722 - agent - INFO - middleware.py:49 - [tool monitor]调用工具get_weather_forecast成功，
+2026-05-17 20:38:52,724 - agent - INFO - middleware.py:63 - [log_before_model]即将调用模型，带有5条消息
+2026-05-17 20:38:52,724 - agent - DEBUG - middleware.py:71 - [log_before_model] ToolMessage|{'type': 'text', 'text': '🌤️ **上海 1天天气预报**\n\n📍 **位置信息:**\n🗺️ 地点: 上海市, 中国\n📊 坐标: 31.2304, 121.4737\n\n📅 **今天** (2026-05-17)\n🌡️ 温度: 19.3°C - 29.6°C\n☁️ 天气: 阴天\n🌧️ 降水量: 0 mm\n\n📡 数据源: Open-Meteo (免费API)', 'id': 'lc_4e30473c-3479-42a1-9afd-5e8c284f393b'}
+2026-05-17 20:38:54,737 - agent - INFO - middleware.py:43 - [tool monitor]执行工具：rag_summarize
+2026-05-17 20:38:54,737 - agent - INFO - middleware.py:44 - [tool monitor]传入参数：{'query': '今天上海天气怎么样？当前温度19.3°C - 29.6°C，天气为阴天，无降水。'}
+2026-05-17 20:38:58,659 - agent - INFO - vector_stores.py:96 - [加载知识库]文件E:\Python-Project\智能客服\data\天气与穿衣选择.txt已经存在知识库中，跳过跳过
+2026-05-17 20:38:58,660 - agent - INFO - vector_stores.py:96 - [加载知识库]文件E:\Python-Project\智能客服\data\尺码推荐.txt已经存在知识库中，跳过跳过
+2026-05-17 20:38:58,660 - agent - INFO - vector_stores.py:96 - [加载知识库]文件E:\Python-Project\智能客服\data\洗涤养护.txt已经存在知识库中，跳过跳过
+2026-05-17 20:38:58,660 - agent - INFO - vector_stores.py:96 - [加载知识库]文件E:\Python-Project\智能客服\data\颜色选择.txt已经存在知识库中，跳过跳过
+2026-05-17 20:39:00,466 - agent - INFO - middleware.py:49 - [tool monitor]调用工具rag_summarize成功，
+2026-05-17 20:39:00,467 - agent - INFO - middleware.py:63 - [log_before_model]即将调用模型，带有7条消息
+2026-05-17 20:39:00,467 - agent - DEBUG - middleware.py:71 - [log_before_model] ToolMessage|今天上海天气为阴天，无降水，气温在19.3°C至29.6°C之间。
+2026-05-17 20:45:18,283 - agent - INFO - agent_tools.py:46 - 成功加载工具: ['get_weather', 'get_weather_forecast', 'get_current_ip_info', 'get_weather_by_coordinates', 'rag_summarize', 'fill_context_for_other_prompt']
+2026-05-17 20:45:45,312 - agent - INFO - middleware.py:63 - [log_before_model]即将调用模型，带有1条消息
+2026-05-17 20:45:45,313 - agent - DEBUG - middleware.py:71 - [log_before_model] HumanMessage|今天上海天气怎么样
+2026-05-17 20:45:47,212 - agent - INFO - middleware.py:43 - [tool monitor]执行工具：get_weather
+2026-05-17 20:45:47,212 - agent - INFO - middleware.py:44 - [tool monitor]传入参数：{'location': '上海'}
+2026-05-17 20:46:01,015 - agent - INFO - middleware.py:49 - [tool monitor]调用工具get_weather成功，
+2026-05-17 20:46:01,017 - agent - INFO - middleware.py:63 - [log_before_model]即将调用模型，带有3条消息
+2026-05-17 20:46:01,017 - agent - DEBUG - middleware.py:71 - [log_before_model] ToolMessage|{'type': 'text', 'text': '🌤️ **上海 天气信息**\n\n📍 **位置信息:**\n🗺️ 地点: 上海市, 中国\n📊 坐标: 31.2304, 121.4737\n\n🌤️ **天气信息:**\n🌡️ 温度: 21.7°C\n☁️ 天气: 晴朗\n💨 风速: 13.4 km/h\n🧭 风向: 143°\n💧 湿度: 68%\n📊 气压: 1015.6 hPa\n🕐 时间: 2026-05-17T20:45\n\n📡 数据源: Open-Meteo (免费API)', 'id': 'lc_aaabfd14-f95f-4595-8053-e6d9b8c2c2ac'}
+2026-05-17 20:46:02,601 - agent - INFO - middleware.py:43 - [tool monitor]执行工具：rag_summarize
+2026-05-17 20:46:02,601 - agent - INFO - middleware.py:44 - [tool monitor]传入参数：{'query': '今天上海天气怎么样'}
+2026-05-17 20:46:02,671 - agent - INFO - vector_stores.py:96 - [加载知识库]文件E:\Python-Project\智能客服\data\天气与穿衣选择.txt已经存在知识库中，跳过跳过
+2026-05-17 20:46:02,671 - agent - INFO - vector_stores.py:96 - [加载知识库]文件E:\Python-Project\智能客服\data\尺码推荐.txt已经存在知识库中，跳过跳过
+2026-05-17 20:46:02,671 - agent - INFO - vector_stores.py:96 - [加载知识库]文件E:\Python-Project\智能客服\data\洗涤养护.txt已经存在知识库中，跳过跳过
+2026-05-17 20:46:02,672 - agent - INFO - vector_stores.py:96 - [加载知识库]文件E:\Python-Project\智能客服\data\颜色选择.txt已经存在知识库中，跳过跳过
+2026-05-17 20:46:04,860 - agent - INFO - middleware.py:49 - [tool monitor]调用工具rag_summarize成功，
+2026-05-17 20:46:04,861 - agent - INFO - middleware.py:63 - [log_before_model]即将调用模型，带有5条消息
+2026-05-17 20:46:04,861 - agent - DEBUG - middleware.py:71 - [log_before_model] ToolMessage|参考资料中未提供今天上海的天气信息。
+2026-05-17 20:52:17,232 - agent - INFO - agent_tools.py:46 - 成功加载工具: ['get_weather', 'get_weather_forecast', 'get_current_ip_info', 'get_weather_by_coordinates', 'rag_summarize', 'fill_context_for_other_prompt']
+2026-05-17 20:52:39,079 - agent - INFO - middleware.py:63 - [log_before_model]即将调用模型，带有1条消息
+2026-05-17 20:52:39,079 - agent - DEBUG - middleware.py:71 - [log_before_model] HumanMessage|今天北京天气怎么样
+2026-05-17 20:52:40,652 - agent - INFO - middleware.py:43 - [tool monitor]执行工具：get_weather
+2026-05-17 20:52:40,652 - agent - INFO - middleware.py:44 - [tool monitor]传入参数：{'location': '北京'}
+2026-05-17 20:52:55,383 - agent - INFO - middleware.py:49 - [tool monitor]调用工具get_weather成功，
+2026-05-17 20:52:55,385 - agent - INFO - middleware.py:63 - [log_before_model]即将调用模型，带有3条消息
+2026-05-17 20:52:55,385 - agent - DEBUG - middleware.py:71 - [log_before_model] ToolMessage|{'type': 'text', 'text': '🌤️ **北京 天气信息**\n\n📍 **位置信息:**\n🗺️ 地点: 北京市, 中国\n📊 坐标: 39.9042, 116.4074\n\n🌤️ **天气信息:**\n🌡️ 温度: 18.8°C\n☁️ 天气: 中雨\n💨 风速: 8.6 km/h\n🧭 风向: 348°\n💧 湿度: 92%\n📊 气压: 1011.1 hPa\n🕐 时间: 2026-05-17T20:45\n\n📡 数据源: Open-Meteo (免费API)', 'id': 'lc_f49e8f35-a788-44ea-85bd-27d23636a2a6'}
+2026-05-17 21:15:52,105 - agent - INFO - agent_tools.py:46 - 成功加载工具: ['get_weather', 'get_weather_forecast', 'get_current_ip_info', 'get_weather_by_coordinates', 'rag_summarize', 'fill_context_for_other_prompt']
+2026-05-17 21:16:24,190 - agent - INFO - middleware.py:63 - [log_before_model]即将调用模型，带有1条消息
+2026-05-17 21:16:24,191 - agent - DEBUG - middleware.py:71 - [log_before_model] HumanMessage|今天上海天气怎么样
+2026-05-17 21:16:27,261 - agent - INFO - middleware.py:43 - [tool monitor]执行工具：get_weather
+2026-05-17 21:16:27,262 - agent - INFO - middleware.py:44 - [tool monitor]传入参数：{'location': '上海'}
+2026-05-17 21:16:41,159 - agent - INFO - middleware.py:49 - [tool monitor]调用工具get_weather成功，
+2026-05-17 21:16:41,160 - agent - INFO - middleware.py:63 - [log_before_model]即将调用模型，带有3条消息
+2026-05-17 21:16:41,160 - agent - DEBUG - middleware.py:71 - [log_before_model] ToolMessage|{'type': 'text', 'text': '🌤️ **上海 天气信息**\n\n📍 **位置信息:**\n🗺️ 地点: 上海市, 中国\n📊 坐标: 31.2304, 121.4737\n\n🌤️ **天气信息:**\n🌡️ 温度: 21.5°C\n☁️ 天气: 基本晴朗\n💨 风速: 13.4 km/h\n🧭 风向: 148°\n💧 湿度: 71%\n📊 气压: 1016.2 hPa\n🕐 时间: 2026-05-17T21:15\n\n📡 数据源: Open-Meteo (免费API)', 'id': 'lc_f792e3e6-49ae-4eff-a813-d690e847e677'}
+2026-05-17 21:20:55,445 - agent - INFO - agent_tools.py:46 - 成功加载工具: ['get_weather', 'get_weather_forecast', 'get_current_ip_info', 'get_weather_by_coordinates', 'rag_summarize', 'fill_context_for_other_prompt']
+2026-05-17 21:28:19,324 - agent - INFO - agent_tools.py:46 - 成功加载工具: ['get_weather', 'get_weather_forecast', 'get_current_ip_info', 'get_weather_by_coordinates', 'rag_summarize', 'fill_context_for_other_prompt']
+2026-05-17 21:29:13,135 - agent - INFO - middleware.py:63 - [log_before_model]即将调用模型，带有1条消息
+2026-05-17 21:29:13,135 - agent - DEBUG - middleware.py:71 - [log_before_model] HumanMessage|今天上海天气怎么样
+2026-05-17 21:29:15,062 - agent - INFO - middleware.py:43 - [tool monitor]执行工具：get_weather
+2026-05-17 21:29:15,063 - agent - INFO - middleware.py:44 - [tool monitor]传入参数：{'location': '上海'}
+2026-05-17 21:29:33,431 - agent - INFO - middleware.py:49 - [tool monitor]调用工具get_weather成功，
+2026-05-17 21:29:33,433 - agent - INFO - middleware.py:63 - [log_before_model]即将调用模型，带有3条消息
+2026-05-17 21:29:33,433 - agent - DEBUG - middleware.py:71 - [log_before_model] ToolMessage|{'type': 'text', 'text': '🌤️ **上海 天气信息**\n\n📍 **位置信息:**\n🗺️ 地点: 上海市, 中国\n📊 坐标: 31.2304, 121.4737\n\n🌤️ **天气信息:**\n🌡️ 温度: 21.5°C\n☁️ 天气: 基本晴朗\n💨 风速: 13.4 km/h\n🧭 风向: 148°\n💧 湿度: 71%\n📊 气压: 1016.2 hPa\n🕐 时间: 2026-05-17T21:15\n\n📡 数据源: Open-Meteo (免费API)', 'id': 'lc_91718420-c152-491e-b051-cdc839899660'}
+2026-05-17 21:30:38,613 - agent - INFO - agent_tools.py:46 - 成功加载工具: ['get_weather', 'get_weather_forecast', 'get_current_ip_info', 'get_weather_by_coordinates', 'rag_summarize', 'fill_context_for_other_prompt']
+2026-05-17 21:30:55,058 - agent - INFO - middleware.py:63 - [log_before_model]即将调用模型，带有1条消息
+2026-05-17 21:30:55,059 - agent - DEBUG - middleware.py:71 - [log_before_model] HumanMessage|今天上海天气怎么样
+2026-05-17 21:30:57,239 - agent - INFO - middleware.py:43 - [tool monitor]执行工具：get_weather
+2026-05-17 21:30:57,239 - agent - INFO - middleware.py:44 - [tool monitor]传入参数：{'location': '上海'}
+2026-05-17 21:31:11,311 - agent - INFO - middleware.py:49 - [tool monitor]调用工具get_weather成功，
+2026-05-17 21:31:11,312 - agent - INFO - middleware.py:63 - [log_before_model]即将调用模型，带有3条消息
+2026-05-17 21:31:11,312 - agent - DEBUG - middleware.py:71 - [log_before_model] ToolMessage|{'type': 'text', 'text': '🌤️ **上海 天气信息**\n\n📍 **位置信息:**\n🗺️ 地点: 上海市, 中国\n📊 坐标: 31.2304, 121.4737\n\n🌤️ **天气信息:**\n🌡️ 温度: 21.3°C\n☁️ 天气: 部分多云\n💨 风速: 13.8 km/h\n🧭 风向: 147°\n💧 湿度: 71%\n📊 气压: 1016.2 hPa\n🕐 时间: 2026-05-17T21:30\n\n📡 数据源: Open-Meteo (免费API)', 'id': 'lc_19162b55-e235-4e34-bbad-5aef8f6e8bd0'}

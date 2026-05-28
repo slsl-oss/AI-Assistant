@@ -1,0 +1,45 @@
+server:
+  port: 8087
+  servlet:
+    context-path: /services
+spring:
+  profiles:
+    active: local
+  datasource:
+    url: jdbc:mysql://${pq.db.host}:3306/hm-agent_service?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&serverTimezone=Asia/Shanghai
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: ${pq.db.pw}
+mybatis-plus:
+  configuration:
+    default-enum-type-handler: com.baomidou.mybatisplus.core.handlers.MybatisEnumTypeHandler
+    map-underscore-to-camel-case: true # 开启下划线转驼峰命名
+  global-config:
+    db-config:
+      update-strategy: not_null
+      id-type: auto
+logging:
+  level:
+    com.pq: debug
+  pattern:
+    dateformat: HH:mm:ss:SSS
+  file:
+    path: "logs/${spring.application.name}"
+knife4j:
+  enable: true
+  openapi:
+    title: 智能助手接口文档
+    description: "智能助手接口文档"
+    email: 2981339467@qq.com
+    concat: pq
+    version: v1.0.0
+    group:
+      default:
+        group-name: default
+        api-rule: package
+        api-rule-resources:
+          - com.pq.agent_service.controller
+agent:
+  python:
+    url: http://localhost:8000
+# keytool -genkeypair -alias hmall -keyalg RSA -keypass hmall123 -keystore hmall.jks -storepass hmall123

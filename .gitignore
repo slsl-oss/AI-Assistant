@@ -1,0 +1,4 @@
+target/
+chroma_db/
+.idea/
+*.log
