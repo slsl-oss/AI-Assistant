@@ -1,0 +1,2 @@
+# AI智能助手 
+这是一个基于langchain，以及langraph架构实现的多智能体系统，可以由lanchain框架将子agent封装成一个tool实现，也可以基于langgraph的工作流编排实现
