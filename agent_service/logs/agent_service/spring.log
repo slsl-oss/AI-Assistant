@@ -1,224 +1,120 @@
-03:06:19:425  WARN 26980 --- [agent_service] [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=3h2m56s493ms208µs400ns).
-09:56:03:534  WARN 26980 --- [agent_service] [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=6h44m43s908ms228µs900ns).
-09:59:28:784  INFO 26980 --- [agent_service] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-09:59:28:958  INFO 26980 --- [agent_service] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
-09:59:33:509  INFO 22580 --- [agent_service] [main] c.p.a.AgentServiceApplication            : Starting AgentServiceApplication using Java 17.0.18 with PID 22580 (E:\Python-Project\AI assistant\agent_service\target\classes started by 29813 in E:\Python-Project\AI assistant\agent_service)
-09:59:33:510 DEBUG 22580 --- [agent_service] [main] c.p.a.AgentServiceApplication            : Running with Spring Boot v3.3.5, Spring v6.1.14
-09:59:33:510  INFO 22580 --- [agent_service] [main] c.p.a.AgentServiceApplication            : The following 1 profile is active: "local"
-09:59:34:449  INFO 22580 --- [agent_service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8087 (http)
-09:59:34:460  INFO 22580 --- [agent_service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-09:59:34:460  INFO 22580 --- [agent_service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.31]
-09:59:34:509  INFO 22580 --- [agent_service] [main] o.a.c.c.C.[.[localhost].[/services]      : Initializing Spring embedded WebApplicationContext
-09:59:34:509  INFO 22580 --- [agent_service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 949 ms
-09:59:35:376  INFO 22580 --- [agent_service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8087 (http) with context path '/services'
-09:59:35:380  INFO 22580 --- [agent_service] [main] c.p.a.AgentServiceApplication            : Started AgentServiceApplication in 2.287 seconds (process running for 2.877)
-10:00:25:222  INFO 22580 --- [agent_service] [http-nio-8087-exec-1] o.a.c.c.C.[.[localhost].[/services]      : Initializing Spring DispatcherServlet 'dispatcherServlet'
-10:00:25:223  INFO 22580 --- [agent_service] [http-nio-8087-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-10:00:25:225  INFO 22580 --- [agent_service] [http-nio-8087-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
-10:00:25:398  INFO 22580 --- [agent_service] [http-nio-8087-exec-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-10:00:25:977  INFO 22580 --- [agent_service] [http-nio-8087-exec-1] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@14ca81c0
-10:00:25:984  INFO 22580 --- [agent_service] [http-nio-8087-exec-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-10:00:25:994 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-1] c.p.a.mapper.SessionMapper.selectList    : ==>  Preparing: SELECT id,status,create_time,update_time FROM service_session ORDER BY create_time DESC
-10:00:26:025 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-1] c.p.a.mapper.SessionMapper.selectList    : ==> Parameters: 
-10:00:26:100 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-1] c.p.a.mapper.SessionMapper.selectList    : <==      Total: 1
-10:00:26:302 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-5] c.p.a.mapper.MessageMapper.selectList    : ==>  Preparing: SELECT id,content,session_id,sender_type,message_type,create_time FROM service_message WHERE (session_id = ?) ORDER BY create_time ASC
-10:00:26:302 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-5] c.p.a.mapper.MessageMapper.selectList    : ==> Parameters: 2026-05-22_22-28-42(String)
-10:00:26:317 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-5] c.p.a.mapper.MessageMapper.selectList    : <==      Total: 2
-10:00:31:987 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-8] c.p.a.mapper.MessageMapper.delete        : ==>  Preparing: DELETE FROM service_message WHERE (session_id = ?)
-10:00:31:988 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-8] c.p.a.mapper.MessageMapper.delete        : ==> Parameters: 2026-05-22_22-28-42(String)
-10:00:32:017 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-8] c.p.a.mapper.MessageMapper.delete        : <==    Updates: 2
-10:00:32:024 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-8] c.p.a.mapper.SessionMapper.deleteById    : ==>  Preparing: DELETE FROM service_session WHERE id=?
-10:00:32:024 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-8] c.p.a.mapper.SessionMapper.deleteById    : ==> Parameters: 2026-05-22_22-28-42(String)
-10:00:32:029 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-8] c.p.a.mapper.SessionMapper.deleteById    : <==    Updates: 1
-10:00:32:685  INFO 22580 --- [agent_service] [reactor-http-nio-2] c.p.a.service.impl.ISessionServiceImpl   : 成功删除会话记忆: sessionId=2026-05-22_22-28-42, response={success=true, message=Session 2026-05-22_22-28-42 memory deleted}
-10:00:39:664 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-10] c.p.a.mapper.SessionMapper.selectById    : ==>  Preparing: SELECT id,status,create_time,update_time FROM service_session WHERE id=?
-10:00:39:665 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-10] c.p.a.mapper.SessionMapper.selectById    : ==> Parameters: 2026-05-28_10-00-39(String)
-10:00:39:668 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-10] c.p.a.mapper.SessionMapper.selectById    : <==      Total: 0
-10:00:39:674 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-10] c.p.a.mapper.SessionMapper.insert        : ==>  Preparing: INSERT INTO service_session ( id, status, create_time, update_time ) VALUES ( ?, ?, ?, ? )
-10:00:39:675 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-10] c.p.a.mapper.SessionMapper.insert        : ==> Parameters: 2026-05-28_10-00-39(String), 1(Integer), 2026-05-28T10:00:39.662004300(LocalDateTime), 2026-05-28T10:00:39.662004300(LocalDateTime)
-10:00:39:694 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-10] c.p.a.mapper.SessionMapper.insert        : <==    Updates: 1
-10:00:39:728 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-2] c.p.a.mapper.SessionMapper.selectById    : ==>  Preparing: SELECT id,status,create_time,update_time FROM service_session WHERE id=?
-10:00:39:728 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-2] c.p.a.mapper.SessionMapper.selectById    : ==> Parameters: 2026-05-28_10-00-39(String)
-10:00:39:732 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-2] c.p.a.mapper.SessionMapper.selectById    : <==      Total: 1
-10:00:39:735 DEBUG 22580 --- [agent_service] [pool-4-thread-1] c.p.a.mapper.MessageMapper.insert        : ==>  Preparing: INSERT INTO service_message ( content, session_id, sender_type, message_type, create_time ) VALUES ( ?, ?, ?, ?, ? )
-10:00:39:736 DEBUG 22580 --- [agent_service] [pool-4-thread-1] c.p.a.mapper.MessageMapper.insert        : ==> Parameters: 今天上海天气怎么样(String), 2026-05-28_10-00-39(String), 1(Integer), 1(Integer), 2026-05-28T10:00:39.733641200(LocalDateTime)
-10:00:39:742 DEBUG 22580 --- [agent_service] [pool-4-thread-1] c.p.a.mapper.MessageMapper.insert        : <==    Updates: 1
-10:00:49:758 DEBUG 22580 --- [agent_service] [reactor-http-nio-3] c.p.a.mapper.MessageMapper.insert        : ==>  Preparing: INSERT INTO service_message ( content, session_id, sender_type, message_type, create_time ) VALUES ( ?, ?, ?, ?, ? )
-10:00:49:759 DEBUG 22580 --- [agent_service] [reactor-http-nio-3] c.p.a.mapper.MessageMapper.insert        : ==> Parameters: (String), 2026-05-28_10-00-39(String), 2(Integer), 1(Integer), 2026-05-28T10:00:49.756144700(LocalDateTime)
-10:00:49:766 DEBUG 22580 --- [agent_service] [reactor-http-nio-3] c.p.a.mapper.MessageMapper.insert        : <==    Updates: 1
-10:00:50:110 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-7] c.p.a.mapper.SessionMapper.selectList    : ==>  Preparing: SELECT id,status,create_time,update_time FROM service_session ORDER BY create_time DESC
-10:00:50:111 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-7] c.p.a.mapper.SessionMapper.selectList    : ==> Parameters: 
-10:00:50:113 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-7] c.p.a.mapper.SessionMapper.selectList    : <==      Total: 1
-10:01:37:234 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-3] c.p.a.mapper.SessionMapper.selectList    : ==>  Preparing: SELECT id,status,create_time,update_time FROM service_session ORDER BY create_time DESC
-10:01:37:234 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-3] c.p.a.mapper.SessionMapper.selectList    : ==> Parameters: 
-10:01:37:236 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-3] c.p.a.mapper.SessionMapper.selectList    : <==      Total: 1
-10:01:37:245 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-9] c.p.a.mapper.MessageMapper.selectList    : ==>  Preparing: SELECT id,content,session_id,sender_type,message_type,create_time FROM service_message WHERE (session_id = ?) ORDER BY create_time ASC
-10:01:37:246 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-9] c.p.a.mapper.MessageMapper.selectList    : ==> Parameters: 2026-05-28_10-00-39(String)
-10:01:37:250 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-9] c.p.a.mapper.MessageMapper.selectList    : <==      Total: 2
-10:01:41:038 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-4] c.p.a.mapper.MessageMapper.selectList    : ==>  Preparing: SELECT id,content,session_id,sender_type,message_type,create_time FROM service_message WHERE (session_id = ?) ORDER BY create_time ASC
-10:01:41:038 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-4] c.p.a.mapper.MessageMapper.selectList    : ==> Parameters: 2026-05-28_10-00-39(String)
-10:01:41:042 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-4] c.p.a.mapper.MessageMapper.selectList    : <==      Total: 2
-10:02:10:614 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-1] c.p.a.mapper.MessageMapper.delete        : ==>  Preparing: DELETE FROM service_message WHERE (session_id = ?)
-10:02:10:614 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-1] c.p.a.mapper.MessageMapper.delete        : ==> Parameters: 2026-05-28_10-00-39(String)
-10:02:10:619 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-1] c.p.a.mapper.MessageMapper.delete        : <==    Updates: 2
-10:02:10:620 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-1] c.p.a.mapper.SessionMapper.deleteById    : ==>  Preparing: DELETE FROM service_session WHERE id=?
-10:02:10:621 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-1] c.p.a.mapper.SessionMapper.deleteById    : ==> Parameters: 2026-05-28_10-00-39(String)
-10:02:10:626 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-1] c.p.a.mapper.SessionMapper.deleteById    : <==    Updates: 1
-10:02:10:641  INFO 22580 --- [agent_service] [reactor-http-nio-4] c.p.a.service.impl.ISessionServiceImpl   : 成功删除会话记忆: sessionId=2026-05-28_10-00-39, response={success=true, message=Session 2026-05-28_10-00-39 memory deleted}
-10:06:30:109 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-5] c.p.a.mapper.SessionMapper.selectById    : ==>  Preparing: SELECT id,status,create_time,update_time FROM service_session WHERE id=?
-10:06:30:126 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-5] c.p.a.mapper.SessionMapper.selectById    : ==> Parameters: 2026-05-28_10-06-30(String)
-10:06:30:168 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-5] c.p.a.mapper.SessionMapper.selectById    : <==      Total: 0
-10:06:30:180 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-5] c.p.a.mapper.SessionMapper.insert        : ==>  Preparing: INSERT INTO service_session ( id, status, create_time, update_time ) VALUES ( ?, ?, ?, ? )
-10:06:30:186 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-5] c.p.a.mapper.SessionMapper.insert        : ==> Parameters: 2026-05-28_10-06-30(String), 1(Integer), 2026-05-28T10:06:30.071327800(LocalDateTime), 2026-05-28T10:06:30.072497100(LocalDateTime)
-10:06:30:204 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-5] c.p.a.mapper.SessionMapper.insert        : <==    Updates: 1
-10:06:30:247 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-8] c.p.a.mapper.SessionMapper.selectById    : ==>  Preparing: SELECT id,status,create_time,update_time FROM service_session WHERE id=?
-10:06:30:252 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-8] c.p.a.mapper.SessionMapper.selectById    : ==> Parameters: 2026-05-28_10-06-30(String)
-10:06:30:259 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-8] c.p.a.mapper.SessionMapper.selectById    : <==      Total: 1
-10:06:30:265 DEBUG 22580 --- [agent_service] [pool-4-thread-2] c.p.a.mapper.MessageMapper.insert        : ==>  Preparing: INSERT INTO service_message ( content, session_id, sender_type, message_type, create_time ) VALUES ( ?, ?, ?, ?, ? )
-10:06:30:265 DEBUG 22580 --- [agent_service] [pool-4-thread-2] c.p.a.mapper.MessageMapper.insert        : ==> Parameters: 今天上海天气怎么样(String), 2026-05-28_10-06-30(String), 1(Integer), 1(Integer), 2026-05-28T10:06:30.264533200(LocalDateTime)
-10:06:30:274 DEBUG 22580 --- [agent_service] [pool-4-thread-2] c.p.a.mapper.MessageMapper.insert        : <==    Updates: 1
-10:06:54:355 DEBUG 22580 --- [agent_service] [reactor-http-nio-5] c.p.a.mapper.MessageMapper.insert        : ==>  Preparing: INSERT INTO service_message ( content, session_id, sender_type, message_type, create_time ) VALUES ( ?, ?, ?, ?, ? )
-10:06:54:356 DEBUG 22580 --- [agent_service] [reactor-http-nio-5] c.p.a.mapper.MessageMapper.insert        : ==> Parameters: (String), 2026-05-28_10-06-30(String), 2(Integer), 1(Integer), 2026-05-28T10:06:54.344364(LocalDateTime)
-10:06:54:360 DEBUG 22580 --- [agent_service] [reactor-http-nio-5] c.p.a.mapper.MessageMapper.insert        : <==    Updates: 1
-10:06:54:398 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-2] c.p.a.mapper.SessionMapper.selectList    : ==>  Preparing: SELECT id,status,create_time,update_time FROM service_session ORDER BY create_time DESC
-10:06:54:399 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-2] c.p.a.mapper.SessionMapper.selectList    : ==> Parameters: 
-10:06:54:408 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-2] c.p.a.mapper.SessionMapper.selectList    : <==      Total: 1
-10:32:58:244  WARN 22580 --- [agent_service] [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=7m1s754ms53µs900ns).
-10:48:26:469 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-6] c.p.a.mapper.SessionMapper.selectList    : ==>  Preparing: SELECT id,status,create_time,update_time FROM service_session ORDER BY create_time DESC
-10:48:26:490 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-6] c.p.a.mapper.SessionMapper.selectList    : ==> Parameters: 
-10:48:26:574 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-6] c.p.a.mapper.SessionMapper.selectList    : <==      Total: 1
-10:48:26:662 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-7] c.p.a.mapper.MessageMapper.selectList    : ==>  Preparing: SELECT id,content,session_id,sender_type,message_type,create_time FROM service_message WHERE (session_id = ?) ORDER BY create_time ASC
-10:48:26:666 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-7] c.p.a.mapper.MessageMapper.selectList    : ==> Parameters: 2026-05-28_10-06-30(String)
-10:48:26:682 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-7] c.p.a.mapper.MessageMapper.selectList    : <==      Total: 2
-10:48:28:765 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-3] c.p.a.mapper.MessageMapper.delete        : ==>  Preparing: DELETE FROM service_message WHERE (session_id = ?)
-10:48:28:766 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-3] c.p.a.mapper.MessageMapper.delete        : ==> Parameters: 2026-05-28_10-06-30(String)
-10:48:28:810 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-3] c.p.a.mapper.MessageMapper.delete        : <==    Updates: 2
-10:48:28:828 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-3] c.p.a.mapper.SessionMapper.deleteById    : ==>  Preparing: DELETE FROM service_session WHERE id=?
-10:48:28:828 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-3] c.p.a.mapper.SessionMapper.deleteById    : ==> Parameters: 2026-05-28_10-06-30(String)
-10:48:28:836 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-3] c.p.a.mapper.SessionMapper.deleteById    : <==    Updates: 1
-10:48:28:926  INFO 22580 --- [agent_service] [reactor-http-nio-6] c.p.a.service.impl.ISessionServiceImpl   : 成功删除会话记忆: sessionId=2026-05-28_10-06-30, response={success=true, message=Session 2026-05-28_10-06-30 memory deleted}
-10:48:36:201 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-9] c.p.a.mapper.SessionMapper.selectById    : ==>  Preparing: SELECT id,status,create_time,update_time FROM service_session WHERE id=?
-10:48:36:201 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-9] c.p.a.mapper.SessionMapper.selectById    : ==> Parameters: 2026-05-28_10-48-36(String)
-10:48:36:205 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-9] c.p.a.mapper.SessionMapper.selectById    : <==      Total: 0
-10:48:36:207 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-9] c.p.a.mapper.SessionMapper.insert        : ==>  Preparing: INSERT INTO service_session ( id, status, create_time, update_time ) VALUES ( ?, ?, ?, ? )
-10:48:36:220 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-9] c.p.a.mapper.SessionMapper.insert        : ==> Parameters: 2026-05-28_10-48-36(String), 1(Integer), 2026-05-28T10:48:36.198603(LocalDateTime), 2026-05-28T10:48:36.198603(LocalDateTime)
-10:48:36:233 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-9] c.p.a.mapper.SessionMapper.insert        : <==    Updates: 1
-10:48:36:248 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-4] c.p.a.mapper.SessionMapper.selectById    : ==>  Preparing: SELECT id,status,create_time,update_time FROM service_session WHERE id=?
-10:48:36:248 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-4] c.p.a.mapper.SessionMapper.selectById    : ==> Parameters: 2026-05-28_10-48-36(String)
-10:48:36:250 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-4] c.p.a.mapper.SessionMapper.selectById    : <==      Total: 1
-10:48:36:254 DEBUG 22580 --- [agent_service] [pool-4-thread-3] c.p.a.mapper.MessageMapper.insert        : ==>  Preparing: INSERT INTO service_message ( content, session_id, sender_type, message_type, create_time ) VALUES ( ?, ?, ?, ?, ? )
-10:48:36:254 DEBUG 22580 --- [agent_service] [pool-4-thread-3] c.p.a.mapper.MessageMapper.insert        : ==> Parameters: 今天上海天气怎么样(String), 2026-05-28_10-48-36(String), 1(Integer), 1(Integer), 2026-05-28T10:48:36.253021400(LocalDateTime)
-10:48:36:260 DEBUG 22580 --- [agent_service] [pool-4-thread-3] c.p.a.mapper.MessageMapper.insert        : <==    Updates: 1
-10:48:48:927 DEBUG 22580 --- [agent_service] [reactor-http-nio-7] c.p.a.mapper.MessageMapper.insert        : ==>  Preparing: INSERT INTO service_message ( content, session_id, sender_type, message_type, create_time ) VALUES ( ?, ?, ?, ?, ? )
-10:48:48:928 DEBUG 22580 --- [agent_service] [reactor-http-nio-7] c.p.a.mapper.MessageMapper.insert        : ==> Parameters: 今天上海的天气为小雨转多云，气温在23°C至31°C之间。当前实时气温为26°C，湿度较高，达到93%，气压为1000 hPa。风向为西南风，风力1级，空气质量优。此外，气象部门已发布雷电预警，请注意防范雷电活动可能带来的影响。(String), 2026-05-28_10-48-36(String), 2(Integer), 1(Integer), 2026-05-28T10:48:48.925452200(LocalDateTime)
-10:48:48:936 DEBUG 22580 --- [agent_service] [reactor-http-nio-7] c.p.a.mapper.MessageMapper.insert        : <==    Updates: 1
-10:48:48:972 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-5] c.p.a.mapper.SessionMapper.selectList    : ==>  Preparing: SELECT id,status,create_time,update_time FROM service_session ORDER BY create_time DESC
-10:48:48:972 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-5] c.p.a.mapper.SessionMapper.selectList    : ==> Parameters: 
-10:48:48:980 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-5] c.p.a.mapper.SessionMapper.selectList    : <==      Total: 1
-10:57:20:703 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-8] c.p.a.mapper.SessionMapper.selectById    : ==>  Preparing: SELECT id,status,create_time,update_time FROM service_session WHERE id=?
-10:57:20:726 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-8] c.p.a.mapper.SessionMapper.selectById    : ==> Parameters: 2026-05-28_10-48-36(String)
-10:57:20:806 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-8] c.p.a.mapper.SessionMapper.selectById    : <==      Total: 1
-10:57:20:839 DEBUG 22580 --- [agent_service] [pool-4-thread-4] c.p.a.mapper.MessageMapper.insert        : ==>  Preparing: INSERT INTO service_message ( content, session_id, sender_type, message_type, create_time ) VALUES ( ?, ?, ?, ?, ? )
-10:57:20:858 DEBUG 22580 --- [agent_service] [pool-4-thread-4] c.p.a.mapper.MessageMapper.insert        : ==> Parameters: 北京呢(String), 2026-05-28_10-48-36(String), 1(Integer), 1(Integer), 2026-05-28T10:57:20.829267300(LocalDateTime)
-10:57:20:907 DEBUG 22580 --- [agent_service] [pool-4-thread-4] c.p.a.mapper.MessageMapper.insert        : <==    Updates: 1
-10:57:38:645 DEBUG 22580 --- [agent_service] [reactor-http-nio-8] c.p.a.mapper.MessageMapper.insert        : ==>  Preparing: INSERT INTO service_message ( content, session_id, sender_type, message_type, create_time ) VALUES ( ?, ?, ?, ?, ? )
-10:57:38:646 DEBUG 22580 --- [agent_service] [reactor-http-nio-8] c.p.a.mapper.MessageMapper.insert        : ==> Parameters: 请提供用户的具体问题，以便我能够正确地分析并分配给相应的agent。根据我查询到的信息，今天北京的天气预报如下：
+03:21:22:960  WARN 57228 --- [agent_service] [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=3h16m3s533ms360µs200ns).
+12:11:26:022  WARN 57228 --- [agent_service] [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=8h49m32s785ms91µs700ns).
+14:03:59:429  WARN 57228 --- [agent_service] [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h2m32s659ms949µs600ns).
+15:10:32:777  WARN 57228 --- [agent_service] [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h1m33s241ms693µs200ns).
+16:04:23:165  WARN 57228 --- [agent_service] [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=48m50s280ms526µs200ns).
+17:05:02:323  WARN 57228 --- [agent_service] [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=53m39s36ms152µs700ns).
+17:06:07:944  INFO 57228 --- [agent_service] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+17:06:08:086  INFO 57228 --- [agent_service] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+17:06:13:797  INFO 1788 --- [agent_service] [main] c.p.a.AgentServiceApplication            : Starting AgentServiceApplication using Java 17.0.18 with PID 1788 (E:\Python-Project\AI assistant\agent_service\target\classes started by 29813 in E:\Python-Project\AI assistant\agent_service)
+17:06:13:799 DEBUG 1788 --- [agent_service] [main] c.p.a.AgentServiceApplication            : Running with Spring Boot v3.3.5, Spring v6.1.14
+17:06:13:800  INFO 1788 --- [agent_service] [main] c.p.a.AgentServiceApplication            : The following 1 profile is active: "local"
+17:06:15:262  INFO 1788 --- [agent_service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8087 (http)
+17:06:15:276  INFO 1788 --- [agent_service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+17:06:15:276  INFO 1788 --- [agent_service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.31]
+17:06:15:328  INFO 1788 --- [agent_service] [main] o.a.c.c.C.[.[localhost].[/services]      : Initializing Spring embedded WebApplicationContext
+17:06:15:329  INFO 1788 --- [agent_service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1473 ms
+17:06:16:213  INFO 1788 --- [agent_service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8087 (http) with context path '/services'
+17:06:16:220  INFO 1788 --- [agent_service] [main] c.p.a.AgentServiceApplication            : Started AgentServiceApplication in 3.05 seconds (process running for 4.037)
+17:06:44:903  INFO 1788 --- [agent_service] [http-nio-8087-exec-1] o.a.c.c.C.[.[localhost].[/services]      : Initializing Spring DispatcherServlet 'dispatcherServlet'
+17:06:44:904  INFO 1788 --- [agent_service] [http-nio-8087-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+17:06:44:906  INFO 1788 --- [agent_service] [http-nio-8087-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+17:06:45:046  INFO 1788 --- [agent_service] [http-nio-8087-exec-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+17:06:45:497  INFO 1788 --- [agent_service] [http-nio-8087-exec-1] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@e3b1c37
+17:06:45:499  INFO 1788 --- [agent_service] [http-nio-8087-exec-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+17:06:45:509 DEBUG 1788 --- [agent_service] [http-nio-8087-exec-1] c.p.a.mapper.SessionMapper.selectList    : ==>  Preparing: SELECT id,status,create_time,update_time FROM service_session ORDER BY create_time DESC
+17:06:45:538 DEBUG 1788 --- [agent_service] [http-nio-8087-exec-1] c.p.a.mapper.SessionMapper.selectList    : ==> Parameters: 
+17:06:45:576 DEBUG 1788 --- [agent_service] [http-nio-8087-exec-1] c.p.a.mapper.SessionMapper.selectList    : <==      Total: 2
+17:06:45:748 DEBUG 1788 --- [agent_service] [http-nio-8087-exec-3] c.p.a.mapper.MessageMapper.selectList    : ==>  Preparing: SELECT id,content,session_id,sender_type,message_type,create_time FROM service_message WHERE (session_id = ?) ORDER BY create_time ASC
+17:06:45:750 DEBUG 1788 --- [agent_service] [http-nio-8087-exec-3] c.p.a.mapper.MessageMapper.selectList    : ==> Parameters: 2026-05-28_23-52-54(String)
+17:06:45:771 DEBUG 1788 --- [agent_service] [http-nio-8087-exec-3] c.p.a.mapper.MessageMapper.selectList    : <==      Total: 2
+17:06:48:013 DEBUG 1788 --- [agent_service] [http-nio-8087-exec-2] c.p.a.mapper.MessageMapper.delete        : ==>  Preparing: DELETE FROM service_message WHERE (session_id = ?)
+17:06:48:015 DEBUG 1788 --- [agent_service] [http-nio-8087-exec-2] c.p.a.mapper.MessageMapper.delete        : ==> Parameters: 2026-05-28_23-52-54(String)
+17:06:48:057 DEBUG 1788 --- [agent_service] [http-nio-8087-exec-2] c.p.a.mapper.MessageMapper.delete        : <==    Updates: 2
+17:06:48:063 DEBUG 1788 --- [agent_service] [http-nio-8087-exec-2] c.p.a.mapper.SessionMapper.deleteById    : ==>  Preparing: DELETE FROM service_session WHERE id=?
+17:06:48:064 DEBUG 1788 --- [agent_service] [http-nio-8087-exec-2] c.p.a.mapper.SessionMapper.deleteById    : ==> Parameters: 2026-05-28_23-52-54(String)
+17:06:48:070 DEBUG 1788 --- [agent_service] [http-nio-8087-exec-2] c.p.a.mapper.SessionMapper.deleteById    : <==    Updates: 1
+17:06:50:093  INFO 1788 --- [agent_service] [reactor-http-nio-2] c.p.a.service.impl.ISessionServiceImpl   : 成功删除会话记忆: sessionId=2026-05-28_23-52-54, response={success=true, message=Session 2026-05-28_23-52-54 memory deleted}
+17:06:50:160 DEBUG 1788 --- [agent_service] [http-nio-8087-exec-4] c.p.a.mapper.MessageMapper.delete        : ==>  Preparing: DELETE FROM service_message WHERE (session_id = ?)
+17:06:50:161 DEBUG 1788 --- [agent_service] [http-nio-8087-exec-4] c.p.a.mapper.MessageMapper.delete        : ==> Parameters: 2026-05-28_23-52-39(String)
+17:06:50:165 DEBUG 1788 --- [agent_service] [http-nio-8087-exec-4] c.p.a.mapper.MessageMapper.delete        : <==    Updates: 2
+17:06:50:166 DEBUG 1788 --- [agent_service] [http-nio-8087-exec-4] c.p.a.mapper.SessionMapper.deleteById    : ==>  Preparing: DELETE FROM service_session WHERE id=?
+17:06:50:166 DEBUG 1788 --- [agent_service] [http-nio-8087-exec-4] c.p.a.mapper.SessionMapper.deleteById    : ==> Parameters: 2026-05-28_23-52-39(String)
+17:06:50:170 DEBUG 1788 --- [agent_service] [http-nio-8087-exec-4] c.p.a.mapper.SessionMapper.deleteById    : <==    Updates: 1
+17:06:56:987  INFO 1788 --- [agent_service] [reactor-http-nio-2] c.p.a.service.impl.ISessionServiceImpl   : 成功删除会话记忆: sessionId=2026-05-28_23-52-39, response={success=true, message=Session 2026-05-28_23-52-39 memory deleted}
+17:07:11:647 DEBUG 1788 --- [agent_service] [http-nio-8087-exec-5] c.p.a.mapper.SessionMapper.selectById    : ==>  Preparing: SELECT id,status,create_time,update_time FROM service_session WHERE id=?
+17:07:11:648 DEBUG 1788 --- [agent_service] [http-nio-8087-exec-5] c.p.a.mapper.SessionMapper.selectById    : ==> Parameters: 2026-05-29_17-07-11(String)
+17:07:11:654 DEBUG 1788 --- [agent_service] [http-nio-8087-exec-5] c.p.a.mapper.SessionMapper.selectById    : <==      Total: 0
+17:07:11:659 DEBUG 1788 --- [agent_service] [http-nio-8087-exec-5] c.p.a.mapper.SessionMapper.insert        : ==>  Preparing: INSERT INTO service_session ( id, status, create_time, update_time ) VALUES ( ?, ?, ?, ? )
+17:07:11:659 DEBUG 1788 --- [agent_service] [http-nio-8087-exec-5] c.p.a.mapper.SessionMapper.insert        : ==> Parameters: 2026-05-29_17-07-11(String), 1(Integer), 2026-05-29T17:07:11.640157400(LocalDateTime), 2026-05-29T17:07:11.640157400(LocalDateTime)
+17:07:11:681 DEBUG 1788 --- [agent_service] [http-nio-8087-exec-5] c.p.a.mapper.SessionMapper.insert        : <==    Updates: 1
+17:07:11:738 DEBUG 1788 --- [agent_service] [http-nio-8087-exec-6] c.p.a.mapper.SessionMapper.selectById    : ==>  Preparing: SELECT id,status,create_time,update_time FROM service_session WHERE id=?
+17:07:11:739 DEBUG 1788 --- [agent_service] [http-nio-8087-exec-6] c.p.a.mapper.SessionMapper.selectById    : ==> Parameters: 2026-05-29_17-07-11(String)
+17:07:11:743 DEBUG 1788 --- [agent_service] [http-nio-8087-exec-6] c.p.a.mapper.SessionMapper.selectById    : <==      Total: 1
+17:07:11:747 DEBUG 1788 --- [agent_service] [pool-4-thread-1] c.p.a.mapper.MessageMapper.insert        : ==>  Preparing: INSERT INTO service_message ( content, session_id, sender_type, message_type, create_time ) VALUES ( ?, ?, ?, ?, ? )
+17:07:11:748 DEBUG 1788 --- [agent_service] [pool-4-thread-1] c.p.a.mapper.MessageMapper.insert        : ==> Parameters: 我喜欢日系简约风格，M码，预算500(String), 2026-05-29_17-07-11(String), 1(Integer), 1(Integer), 2026-05-29T17:07:11.746063900(LocalDateTime)
+17:07:11:757 DEBUG 1788 --- [agent_service] [pool-4-thread-1] c.p.a.mapper.MessageMapper.insert        : <==    Updates: 1
+17:07:25:084 DEBUG 1788 --- [agent_service] [reactor-http-nio-3] c.p.a.mapper.MessageMapper.insert        : ==>  Preparing: INSERT INTO service_message ( content, session_id, sender_type, message_type, create_time ) VALUES ( ?, ?, ?, ?, ? )
+17:07:25:086 DEBUG 1788 --- [agent_service] [reactor-http-nio-3] c.p.a.mapper.MessageMapper.insert        : ==> Parameters: 了解了，您偏好日系简约风格的衣服，通常穿M码，并且您的预算是500元以内。这与我之前了解到的信息基本一致，只是预算上限稍微有所调整。基于这些信息，我会为您推荐合适的衣物。请问您现在需要我帮您找寻具体的商品还是有其他需求呢？(String), 2026-05-29_17-07-11(String), 2(Integer), 1(Integer), 2026-05-29T17:07:25.084186400(LocalDateTime)
+17:07:25:090 DEBUG 1788 --- [agent_service] [reactor-http-nio-3] c.p.a.mapper.MessageMapper.insert        : <==    Updates: 1
+17:07:25:114 DEBUG 1788 --- [agent_service] [http-nio-8087-exec-9] c.p.a.mapper.SessionMapper.selectList    : ==>  Preparing: SELECT id,status,create_time,update_time FROM service_session ORDER BY create_time DESC
+17:07:25:114 DEBUG 1788 --- [agent_service] [http-nio-8087-exec-9] c.p.a.mapper.SessionMapper.selectList    : ==> Parameters: 
+17:07:25:116 DEBUG 1788 --- [agent_service] [http-nio-8087-exec-9] c.p.a.mapper.SessionMapper.selectList    : <==      Total: 1
+17:07:33:969 DEBUG 1788 --- [agent_service] [http-nio-8087-exec-8] c.p.a.mapper.SessionMapper.selectById    : ==>  Preparing: SELECT id,status,create_time,update_time FROM service_session WHERE id=?
+17:07:33:969 DEBUG 1788 --- [agent_service] [http-nio-8087-exec-8] c.p.a.mapper.SessionMapper.selectById    : ==> Parameters: 2026-05-29_17-07-33(String)
+17:07:33:971 DEBUG 1788 --- [agent_service] [http-nio-8087-exec-8] c.p.a.mapper.SessionMapper.selectById    : <==      Total: 0
+17:07:33:971 DEBUG 1788 --- [agent_service] [http-nio-8087-exec-8] c.p.a.mapper.SessionMapper.insert        : ==>  Preparing: INSERT INTO service_session ( id, status, create_time, update_time ) VALUES ( ?, ?, ?, ? )
+17:07:33:972 DEBUG 1788 --- [agent_service] [http-nio-8087-exec-8] c.p.a.mapper.SessionMapper.insert        : ==> Parameters: 2026-05-29_17-07-33(String), 1(Integer), 2026-05-29T17:07:33.967538200(LocalDateTime), 2026-05-29T17:07:33.967538200(LocalDateTime)
+17:07:33:976 DEBUG 1788 --- [agent_service] [http-nio-8087-exec-8] c.p.a.mapper.SessionMapper.insert        : <==    Updates: 1
+17:07:49:096 DEBUG 1788 --- [agent_service] [http-nio-8087-exec-10] c.p.a.mapper.SessionMapper.selectById    : ==>  Preparing: SELECT id,status,create_time,update_time FROM service_session WHERE id=?
+17:07:49:097 DEBUG 1788 --- [agent_service] [http-nio-8087-exec-10] c.p.a.mapper.SessionMapper.selectById    : ==> Parameters: 2026-05-29_17-07-33(String)
+17:07:49:099 DEBUG 1788 --- [agent_service] [http-nio-8087-exec-10] c.p.a.mapper.SessionMapper.selectById    : <==      Total: 1
+17:07:49:100 DEBUG 1788 --- [agent_service] [pool-4-thread-1] c.p.a.mapper.MessageMapper.insert        : ==>  Preparing: INSERT INTO service_message ( content, session_id, sender_type, message_type, create_time ) VALUES ( ?, ?, ?, ?, ? )
+17:07:49:101 DEBUG 1788 --- [agent_service] [pool-4-thread-1] c.p.a.mapper.MessageMapper.insert        : ==> Parameters: 根据我的喜好推荐衣服(String), 2026-05-29_17-07-33(String), 1(Integer), 1(Integer), 2026-05-29T17:07:49.099870900(LocalDateTime)
+17:07:49:107 DEBUG 1788 --- [agent_service] [pool-4-thread-1] c.p.a.mapper.MessageMapper.insert        : <==    Updates: 1
+17:09:24:806 DEBUG 1788 --- [agent_service] [reactor-http-nio-4] c.p.a.mapper.MessageMapper.insert        : ==>  Preparing: INSERT INTO service_message ( content, session_id, sender_type, message_type, create_time ) VALUES ( ?, ?, ?, ?, ? )
+17:09:24:807 DEBUG 1788 --- [agent_service] [reactor-http-nio-4] c.p.a.mapper.MessageMapper.insert        : ==> Parameters: 了解了您的偏好后，我会为您推荐符合日系简约风格、M码大小且价格在300到500元之间的衣服。请稍等片刻，我将根据这些信息为您提供一些建议。根据您的偏好，我为您找到了几款符合日系简约风格、M码大小且价格在300到500元之间的衣服推荐。以下是一些建议：
 
-- 白天：晴
-- 温度范围：17℃至29℃
-- 湿度：61%
-- 风向及风力：西南风 2级
-- 紫外线强度：无
-- 空气质量：优
+1. **雪花棉复古短袖** - 这款短袖以其独特的“雪花肌理”设计而著称，面料柔软亲肤，特别适合追求质感和舒适度的用户。价格约为89元/两件，性价比非常高。这款短袖不仅外观简洁大方，而且细节处理得当，如领口与袖口微微卷边的设计，让整体看起来更加时尚而不失个性。
 
-综上所述，今天北京的天气状况良好，适合外出活动。由于没有降雨预报，您不需要带伞。不过，建议根据个人需要携带防晒用品，并注意适时补水。(String), 2026-05-28_10-48-36(String), 2(Integer), 1(Integer), 2026-05-28T10:57:38.643439600(LocalDateTime)
-10:57:38:667 DEBUG 22580 --- [agent_service] [reactor-http-nio-8] c.p.a.mapper.MessageMapper.insert        : <==    Updates: 1
-10:57:38:706 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-2] c.p.a.mapper.SessionMapper.selectList    : ==>  Preparing: SELECT id,status,create_time,update_time FROM service_session ORDER BY create_time DESC
-10:57:38:706 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-2] c.p.a.mapper.SessionMapper.selectList    : ==> Parameters: 
-10:57:38:715 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-2] c.p.a.mapper.SessionMapper.selectList    : <==      Total: 1
-11:13:04:146 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-6] c.p.a.mapper.MessageMapper.delete        : ==>  Preparing: DELETE FROM service_message WHERE (session_id = ?)
-11:13:04:168 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-6] c.p.a.mapper.MessageMapper.delete        : ==> Parameters: 2026-05-28_10-48-36(String)
-11:13:04:277 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-6] c.p.a.mapper.MessageMapper.delete        : <==    Updates: 4
-11:13:04:305 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-6] c.p.a.mapper.SessionMapper.deleteById    : ==>  Preparing: DELETE FROM service_session WHERE id=?
-11:13:04:305 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-6] c.p.a.mapper.SessionMapper.deleteById    : ==> Parameters: 2026-05-28_10-48-36(String)
-11:13:04:314 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-6] c.p.a.mapper.SessionMapper.deleteById    : <==    Updates: 1
-11:13:04:510  INFO 22580 --- [agent_service] [reactor-http-nio-9] c.p.a.service.impl.ISessionServiceImpl   : 成功删除会话记忆: sessionId=2026-05-28_10-48-36, response={success=true, message=Session 2026-05-28_10-48-36 memory deleted}
-11:13:05:654 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-7] c.p.a.mapper.SessionMapper.selectById    : ==>  Preparing: SELECT id,status,create_time,update_time FROM service_session WHERE id=?
-11:13:05:654 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-7] c.p.a.mapper.SessionMapper.selectById    : ==> Parameters: 2026-05-28_11-13-05(String)
-11:13:05:665 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-7] c.p.a.mapper.SessionMapper.selectById    : <==      Total: 0
-11:13:05:669 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-7] c.p.a.mapper.SessionMapper.insert        : ==>  Preparing: INSERT INTO service_session ( id, status, create_time, update_time ) VALUES ( ?, ?, ?, ? )
-11:13:05:690 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-7] c.p.a.mapper.SessionMapper.insert        : ==> Parameters: 2026-05-28_11-13-05(String), 1(Integer), 2026-05-28T11:13:05.648946300(LocalDateTime), 2026-05-28T11:13:05.648946300(LocalDateTime)
-11:13:05:697 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-7] c.p.a.mapper.SessionMapper.insert        : <==    Updates: 1
-11:13:11:372 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-3] c.p.a.mapper.SessionMapper.selectById    : ==>  Preparing: SELECT id,status,create_time,update_time FROM service_session WHERE id=?
-11:13:11:373 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-3] c.p.a.mapper.SessionMapper.selectById    : ==> Parameters: 2026-05-28_11-13-05(String)
-11:13:11:378 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-3] c.p.a.mapper.SessionMapper.selectById    : <==      Total: 1
-11:13:11:383 DEBUG 22580 --- [agent_service] [pool-4-thread-5] c.p.a.mapper.MessageMapper.insert        : ==>  Preparing: INSERT INTO service_message ( content, session_id, sender_type, message_type, create_time ) VALUES ( ?, ?, ?, ?, ? )
-11:13:11:384 DEBUG 22580 --- [agent_service] [pool-4-thread-5] c.p.a.mapper.MessageMapper.insert        : ==> Parameters: 今天上海天气怎么样(String), 2026-05-28_11-13-05(String), 1(Integer), 1(Integer), 2026-05-28T11:13:11.382233800(LocalDateTime)
-11:13:11:390 DEBUG 22580 --- [agent_service] [pool-4-thread-5] c.p.a.mapper.MessageMapper.insert        : <==    Updates: 1
-11:13:35:264 DEBUG 22580 --- [agent_service] [reactor-http-nio-10] c.p.a.mapper.MessageMapper.insert        : ==>  Preparing: INSERT INTO service_message ( content, session_id, sender_type, message_type, create_time ) VALUES ( ?, ?, ?, ?, ? )
-11:13:35:265 DEBUG 22580 --- [agent_service] [reactor-http-nio-10] c.p.a.mapper.MessageMapper.insert        : ==> Parameters: 今天上海的天气情况如下：
+2. **日系简约风衬衫** - 在阿里巴巴上发现了一些日系简约风格的衬衫，比如苏州婉致衣服饰有限公司出品的一款长袖衬衫（价格约58元），采用纯色设计，版型宽松显瘦，非常适合日常穿着。此外还有广州盛夏佳依服装生产有限公司推出的一款竖条纹衬衫（价格约40元），同样具有不错的性价比。
 
-- **温度**: 26.6°C
-- **天气状况**: 部分多云
-- **风速**: 10.4 km/h
-- **风向**: 342°
-- **湿度**: 72%
-- **气压**: 1009.5 hPa
+3. **棉麻材质连衣裙** - 如果您对连衣裙感兴趣的话，可以考虑一些棉麻质地的选择，比如某品牌推出的米白色棉麻长裙（价格未明确给出，但预计会在预算范围内）。这类裙子通常腰部有抽绳或松紧设计，穿着舒适自然，走起路来裙摆飘逸，非常适合夏季穿着。
 
-以上信息采集自Open-Meteo (免费API)。如果您需要更详细的天气预报或其他相关信息，请随时告诉我！(String), 2026-05-28_11-13-05(String), 2(Integer), 1(Integer), 2026-05-28T11:13:35.263256900(LocalDateTime)
-11:13:35:273 DEBUG 22580 --- [agent_service] [reactor-http-nio-10] c.p.a.mapper.MessageMapper.insert        : <==    Updates: 1
-11:13:35:303 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-4] c.p.a.mapper.SessionMapper.selectList    : ==>  Preparing: SELECT id,status,create_time,update_time FROM service_session ORDER BY create_time DESC
-11:13:35:303 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-4] c.p.a.mapper.SessionMapper.selectList    : ==> Parameters: 
-11:13:35:310 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-4] c.p.a.mapper.SessionMapper.selectList    : <==      Total: 1
-11:13:58:044 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-1] c.p.a.mapper.SessionMapper.selectById    : ==>  Preparing: SELECT id,status,create_time,update_time FROM service_session WHERE id=?
-11:13:58:045 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-1] c.p.a.mapper.SessionMapper.selectById    : ==> Parameters: 2026-05-28_11-13-05(String)
-11:13:58:047 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-1] c.p.a.mapper.SessionMapper.selectById    : <==      Total: 1
-11:13:58:048 DEBUG 22580 --- [agent_service] [pool-4-thread-5] c.p.a.mapper.MessageMapper.insert        : ==>  Preparing: INSERT INTO service_message ( content, session_id, sender_type, message_type, create_time ) VALUES ( ?, ?, ?, ?, ? )
-11:13:58:049 DEBUG 22580 --- [agent_service] [pool-4-thread-5] c.p.a.mapper.MessageMapper.insert        : ==> Parameters: 北京呢(String), 2026-05-28_11-13-05(String), 1(Integer), 1(Integer), 2026-05-28T11:13:58.047705600(LocalDateTime)
-11:13:58:054 DEBUG 22580 --- [agent_service] [pool-4-thread-5] c.p.a.mapper.MessageMapper.insert        : <==    Updates: 1
-11:14:25:227 DEBUG 22580 --- [agent_service] [reactor-http-nio-11] c.p.a.mapper.MessageMapper.insert        : ==>  Preparing: INSERT INTO service_message ( content, session_id, sender_type, message_type, create_time ) VALUES ( ?, ?, ?, ?, ? )
-11:14:25:227 DEBUG 22580 --- [agent_service] [reactor-http-nio-11] c.p.a.mapper.MessageMapper.insert        : ==> Parameters: 今天北京的天气情况如下：
+4. **休闲裤** - 对于下装来说，您可以选择一条舒适的棉麻阔腿裤或者不规则半身裙来搭配上述提到的上衣。这些款式既保留了日系穿搭的轻松自在感，又能很好地修饰身形，展现出一种随性而不失优雅的气质。
 
-- **温度**: 25.1°C
-- **天气状况**: 晴朗
-- **风速**: 17.9 km/h
-- **风向**: 343°
-- **湿度**: 34%
-- **气压**: 1011.5 hPa
+以上推荐均基于您的个人喜好以及当前流行趋势精选而来，希望能帮助您找到心仪的衣物。如果您需要更详细的购买链接或其他信息，请随时告诉我！根据您的体型、场合以及季节的不同，可以这样选择衣服颜色：瘦小体型适合穿浅色或暖色系如白色、米色、浅黄等来显得更加饱满；日常通勤推荐基础色如黑白灰、米色、藏蓝，并可适当添加低饱和度亮色作为点缀；正式场合建议选用深色系比如黑色、藏蓝、深灰色以保持专业形象；春季宜选清新柔和色彩例如樱花粉、薄荷绿等；夏天则更适合冷色调和浅色系如白色、天蓝色；秋天则倾向于暖色调及大地色系如焦糖色、卡其色。根据您的喜好，这里为您总结了几款符合日系简约风格、M码大小且价格在300到500元之间的衣服推荐：
 
-以上信息采集自Open-Meteo (免费API)。如果您需要更详细的天气预报或其他相关信息，请随时告诉我！(String), 2026-05-28_11-13-05(String), 2(Integer), 1(Integer), 2026-05-28T11:14:25.222569800(LocalDateTime)
-11:14:25:232 DEBUG 22580 --- [agent_service] [reactor-http-nio-11] c.p.a.mapper.MessageMapper.insert        : <==    Updates: 1
-11:14:25:257 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-8] c.p.a.mapper.SessionMapper.selectList    : ==>  Preparing: SELECT id,status,create_time,update_time FROM service_session ORDER BY create_time DESC
-11:14:25:258 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-8] c.p.a.mapper.SessionMapper.selectList    : ==> Parameters: 
-11:14:25:259 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-8] c.p.a.mapper.SessionMapper.selectList    : <==      Total: 1
-11:38:38:599 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-10] c.p.a.mapper.SessionMapper.selectList    : ==>  Preparing: SELECT id,status,create_time,update_time FROM service_session ORDER BY create_time DESC
-11:38:38:615 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-10] c.p.a.mapper.SessionMapper.selectList    : ==> Parameters: 
-11:38:38:741 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-10] c.p.a.mapper.SessionMapper.selectList    : <==      Total: 1
-11:38:38:819 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-2] c.p.a.mapper.MessageMapper.selectList    : ==>  Preparing: SELECT id,content,session_id,sender_type,message_type,create_time FROM service_message WHERE (session_id = ?) ORDER BY create_time ASC
-11:38:38:821 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-2] c.p.a.mapper.MessageMapper.selectList    : ==> Parameters: 2026-05-28_11-13-05(String)
-11:38:38:858 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-2] c.p.a.mapper.MessageMapper.selectList    : <==      Total: 4
-11:38:39:627 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-6] c.p.a.mapper.MessageMapper.selectList    : ==>  Preparing: SELECT id,content,session_id,sender_type,message_type,create_time FROM service_message WHERE (session_id = ?) ORDER BY create_time ASC
-11:38:39:630 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-6] c.p.a.mapper.MessageMapper.selectList    : ==> Parameters: 2026-05-28_11-13-05(String)
-11:38:39:650 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-6] c.p.a.mapper.MessageMapper.selectList    : <==      Total: 4
-11:38:41:305 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-7] c.p.a.mapper.MessageMapper.delete        : ==>  Preparing: DELETE FROM service_message WHERE (session_id = ?)
-11:38:41:307 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-7] c.p.a.mapper.MessageMapper.delete        : ==> Parameters: 2026-05-28_11-13-05(String)
-11:38:41:362 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-7] c.p.a.mapper.MessageMapper.delete        : <==    Updates: 4
-11:38:41:378 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-7] c.p.a.mapper.SessionMapper.deleteById    : ==>  Preparing: DELETE FROM service_session WHERE id=?
-11:38:41:378 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-7] c.p.a.mapper.SessionMapper.deleteById    : ==> Parameters: 2026-05-28_11-13-05(String)
-11:38:41:384 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-7] c.p.a.mapper.SessionMapper.deleteById    : <==    Updates: 1
-11:38:41:488  INFO 22580 --- [agent_service] [reactor-http-nio-12] c.p.a.service.impl.ISessionServiceImpl   : 成功删除会话记忆: sessionId=2026-05-28_11-13-05, response={success=true, message=Session 2026-05-28_11-13-05 memory deleted}
-11:38:47:481 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-3] c.p.a.mapper.SessionMapper.selectById    : ==>  Preparing: SELECT id,status,create_time,update_time FROM service_session WHERE id=?
-11:38:47:481 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-3] c.p.a.mapper.SessionMapper.selectById    : ==> Parameters: 2026-05-28_11-38-47(String)
-11:38:47:484 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-3] c.p.a.mapper.SessionMapper.selectById    : <==      Total: 0
-11:38:47:486 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-3] c.p.a.mapper.SessionMapper.insert        : ==>  Preparing: INSERT INTO service_session ( id, status, create_time, update_time ) VALUES ( ?, ?, ?, ? )
-11:38:47:488 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-3] c.p.a.mapper.SessionMapper.insert        : ==> Parameters: 2026-05-28_11-38-47(String), 1(Integer), 2026-05-28T11:38:47.478296500(LocalDateTime), 2026-05-28T11:38:47.478296500(LocalDateTime)
-11:38:47:494 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-3] c.p.a.mapper.SessionMapper.insert        : <==    Updates: 1
-11:38:47:513 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-9] c.p.a.mapper.SessionMapper.selectById    : ==>  Preparing: SELECT id,status,create_time,update_time FROM service_session WHERE id=?
-11:38:47:513 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-9] c.p.a.mapper.SessionMapper.selectById    : ==> Parameters: 2026-05-28_11-38-47(String)
-11:38:47:518 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-9] c.p.a.mapper.SessionMapper.selectById    : <==      Total: 1
-11:38:47:526 DEBUG 22580 --- [agent_service] [pool-4-thread-6] c.p.a.mapper.MessageMapper.insert        : ==>  Preparing: INSERT INTO service_message ( content, session_id, sender_type, message_type, create_time ) VALUES ( ?, ?, ?, ?, ? )
-11:38:47:526 DEBUG 22580 --- [agent_service] [pool-4-thread-6] c.p.a.mapper.MessageMapper.insert        : ==> Parameters: 今天上海天气怎么样(String), 2026-05-28_11-38-47(String), 1(Integer), 1(Integer), 2026-05-28T11:38:47.524507500(LocalDateTime)
-11:38:47:533 DEBUG 22580 --- [agent_service] [pool-4-thread-6] c.p.a.mapper.MessageMapper.insert        : <==    Updates: 1
-11:39:09:655 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-1] c.p.a.mapper.SessionMapper.selectList    : ==>  Preparing: SELECT id,status,create_time,update_time FROM service_session ORDER BY create_time DESC
-11:39:09:655 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-1] c.p.a.mapper.SessionMapper.selectList    : ==> Parameters: 
-11:39:09:657 DEBUG 22580 --- [agent_service] [http-nio-8087-exec-1] c.p.a.mapper.SessionMapper.selectList    : <==      Total: 1
+- **雪花棉复古短袖**：这款短袖以其独特的“雪花肌理”设计著称，面料柔软亲肤。领口与袖口的微妙卷边设计增加了细节美感，整体外观简洁大方。价格约为89元/两件，非常适合夏季穿着。
+
+- **日系简约风衬衫**：阿里巴巴上有几款性价比高的选择，例如苏州婉致衣服饰有限公司出品的一款长袖衬衫（约58元），采用纯色设计，版型宽松显瘦；还有广州盛夏佳依服装生产有限公司推出的一款竖条纹衬衫（约40元），同样具有不错的质感和舒适度。
+
+- **棉麻材质连衣裙**：如果喜欢裙子，可以考虑棉麻质地的款式，如某品牌的米白色棉麻长裙。这类裙子通常腰部有抽绳或松紧设计，穿着舒适自然，适合夏季穿着。
+
+- **休闲裤**：对于下装，推荐舒适的棉麻阔腿裤或者不规则半身裙来搭配上述提到的上衣。这些款式既保留了日系穿搭的轻松自在感，又能很好地修饰身形，展现出一种随性而不失优雅的气质。
+
+根据不同的季节和个人体型特点，在颜色选择上也有所建议：
+- 瘦小体型适合浅色或暖色系如白色、米色、浅黄等，以增加视觉上的丰满感。
+- 日常通勤时，基础色如黑白灰、米色、藏蓝是不错的选择，并可适当添加低饱和度亮色作为点缀。
+- 正式场合建议选用深色系如黑色、藏蓝、深灰色，以保持专业形象。
+- 春季适合清新柔和色彩如樱花粉、薄荷绿；夏季则更适合冷色调和浅色系如白色、天蓝色；秋天倾向于暖色调及大地色系如焦糖色、卡其色。
+
+希望这些建议能够帮助您找到心仪的衣物！如果您需要更详细的购买链接或其他信息，请随时告诉我。(String), 2026-05-29_17-07-33(String), 2(Integer), 1(Integer), 2026-05-29T17:09:24.805049700(LocalDateTime)
+17:09:24:819 DEBUG 1788 --- [agent_service] [reactor-http-nio-4] c.p.a.mapper.MessageMapper.insert        : <==    Updates: 1
+17:09:24:828 DEBUG 1788 --- [agent_service] [http-nio-8087-exec-3] c.p.a.mapper.SessionMapper.selectList    : ==>  Preparing: SELECT id,status,create_time,update_time FROM service_session ORDER BY create_time DESC
+17:09:24:829 DEBUG 1788 --- [agent_service] [http-nio-8087-exec-3] c.p.a.mapper.SessionMapper.selectList    : ==> Parameters: 
+17:09:24:832 DEBUG 1788 --- [agent_service] [http-nio-8087-exec-3] c.p.a.mapper.SessionMapper.selectList    : <==      Total: 2
+17:09:30:586 DEBUG 1788 --- [agent_service] [http-nio-8087-exec-2] c.p.a.mapper.MessageMapper.delete        : ==>  Preparing: DELETE FROM service_message WHERE (session_id = ?)
+17:09:30:588 DEBUG 1788 --- [agent_service] [http-nio-8087-exec-2] c.p.a.mapper.MessageMapper.delete        : ==> Parameters: 2026-05-29_17-07-33(String)
+17:09:30:596 DEBUG 1788 --- [agent_service] [http-nio-8087-exec-2] c.p.a.mapper.MessageMapper.delete        : <==    Updates: 2
+17:09:30:597 DEBUG 1788 --- [agent_service] [http-nio-8087-exec-2] c.p.a.mapper.SessionMapper.deleteById    : ==>  Preparing: DELETE FROM service_session WHERE id=?
+17:09:30:599 DEBUG 1788 --- [agent_service] [http-nio-8087-exec-2] c.p.a.mapper.SessionMapper.deleteById    : ==> Parameters: 2026-05-29_17-07-33(String)
+17:09:30:603 DEBUG 1788 --- [agent_service] [http-nio-8087-exec-2] c.p.a.mapper.SessionMapper.deleteById    : <==    Updates: 1
+17:09:31:660  INFO 1788 --- [agent_service] [reactor-http-nio-5] c.p.a.service.impl.ISessionServiceImpl   : 成功删除会话记忆: sessionId=2026-05-29_17-07-33, response={success=true, message=Session 2026-05-29_17-07-33 memory deleted}
+17:09:32:537 DEBUG 1788 --- [agent_service] [http-nio-8087-exec-4] c.p.a.mapper.MessageMapper.delete        : ==>  Preparing: DELETE FROM service_message WHERE (session_id = ?)
+17:09:32:538 DEBUG 1788 --- [agent_service] [http-nio-8087-exec-4] c.p.a.mapper.MessageMapper.delete        : ==> Parameters: 2026-05-29_17-07-11(String)
+17:09:32:542 DEBUG 1788 --- [agent_service] [http-nio-8087-exec-4] c.p.a.mapper.MessageMapper.delete        : <==    Updates: 2
+17:09:32:543 DEBUG 1788 --- [agent_service] [http-nio-8087-exec-4] c.p.a.mapper.SessionMapper.deleteById    : ==>  Preparing: DELETE FROM service_session WHERE id=?
+17:09:32:543 DEBUG 1788 --- [agent_service] [http-nio-8087-exec-4] c.p.a.mapper.SessionMapper.deleteById    : ==> Parameters: 2026-05-29_17-07-11(String)
+17:09:32:547 DEBUG 1788 --- [agent_service] [http-nio-8087-exec-4] c.p.a.mapper.SessionMapper.deleteById    : <==    Updates: 1
+17:09:38:001  INFO 1788 --- [agent_service] [reactor-http-nio-5] c.p.a.service.impl.ISessionServiceImpl   : 成功删除会话记忆: sessionId=2026-05-29_17-07-11, response={success=true, message=Session 2026-05-29_17-07-11 memory deleted}

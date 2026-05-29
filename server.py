@@ -7,7 +7,8 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 # from agent.react_agent import ReactAgent
 from agent.supervisor_agent import SupervisorAgent
-
+import warnings
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 app = FastAPI()
 
 app.add_middleware(
@@ -21,6 +22,7 @@ app.add_middleware(
 class StreamRequest(BaseModel):
     query: str
     session_id: str = ""
+    user_id: str = "default_user"
 
 
 # 单例模式：全局共享一个 SupervisorAgent 实例
@@ -41,14 +43,15 @@ async def agent_service_stream(
     if not actual_query:
         raise HTTPException(status_code=400, detail="query is required")
 
-    # 获取 session_id（由 Java 后端传递过来）
+    # 获取 session_id 和 user_id（由 Java 后端传递过来）
     session_id = body.session_id if body else ""
+    user_id = body.user_id if body else "default_user"
 
     async def generate():
         first_chunk = True
         yield f"data: {json.dumps({'thinking': True})}\n\n"
 
-        async for chunk in supervisor_agent.execute_stream(actual_query, session_id):
+        async for chunk in supervisor_agent.execute_stream(actual_query, session_id, user_id):
             if first_chunk:
                 first_chunk = False
                 yield f"data: {json.dumps({'thinking': False})}\n\n"
@@ -68,21 +71,19 @@ async def agent_service_stream(
 
 
 @app.delete("/sessions/{session_id}/memory")
-async def delete_session_memory(session_id: str):
+async def delete_session_memory(session_id: str, user_id: str = "default_user"):
     """
-    删除指定会话的记忆（checkpointer中的历史记录）
-    
+    删除指定会话的记忆（checkpointer中的历史记录），删除前提取关键事实到长期记忆
+
     Args:
         session_id: 会话ID
-        
-    Returns:
-        删除结果
+        user_id: 用户ID（用于长期记忆）
     """
     if not session_id:
         raise HTTPException(status_code=400, detail="session_id is required")
-    
+
     try:
-        await supervisor_agent.delete_session_memory(session_id)
+        await supervisor_agent.delete_session_memory(session_id, user_id)
         return {"success": True, "message": f"Session {session_id} memory deleted"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to delete session memory: {str(e)}")

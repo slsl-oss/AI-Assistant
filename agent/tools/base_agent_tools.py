@@ -5,6 +5,7 @@ from utils.logger_handler import logger
 from rag.rag_service import RagSummarizeService
 import requests
 import os
+from memory.memory_tools import save_memory, search_memory
 
 
 
@@ -56,7 +57,10 @@ def fill_context_for_other_prompt():
 
 
 
-base_tools =  [rag_summarize,fill_context_for_other_prompt,baidu_web_search]
+
+
+base_tools =  [rag_summarize,fill_context_for_other_prompt,baidu_web_search,
+               save_memory, search_memory]
 logger.info(f"成功加载工具: {[tool.name for tool in base_tools]}")
 
 

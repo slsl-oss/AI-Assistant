@@ -20,6 +20,7 @@ class MultiAgentState(TypedDict):
     task_results: dict
     final_answer: str
     session_id: str
+    user_id: str
 
 
 def create_agent_node(agent_name: str, system_prompt: str, tools: list):
@@ -242,28 +243,41 @@ class SupervisorAgent:
 
         return workflow.compile(checkpointer=self._checkpointer)
 
-    async def execute_stream(self, query: str, session_id: str = ""):
+    async def execute_stream(self, query: str, session_id: str = "",
+                             user_id: str = "default_user"):
         """
         执行流式查询
-        
+
         Args:
             query: 用户查询
             session_id: 会话ID
-        
+            user_id: 用户ID（用于长期记忆）
+
         Yields:
             流式输出的文本片段
         """
+        from memory.mem0_service import mem0_service
+
+        memories = mem0_service.search(query, user_id=user_id)
+        memory_context = mem0_service.format_memories_for_prompt(memories)
+
+        augmented_query = query
+        if memory_context:
+            augmented_query = f"{memory_context}\n\n[用户当前问题]\n{query}"
+
         input_state = {
-            "messages": [HumanMessage(content=query)],
+            "messages": [HumanMessage(content=augmented_query)],
             "current_agent": "",
             "task_results": {},
             "final_answer": "",
-            "session_id": session_id
+            "session_id": session_id,
+            "user_id": user_id
         }
-        
+
         config = {
             "configurable": {
-                "thread_id": session_id
+                "thread_id": session_id,
+                "user_id": user_id
             }
         }
         
@@ -335,15 +349,47 @@ class SupervisorAgent:
 
         return "".join(result_chunks)
 
-    async def delete_session_memory(self, session_id: str):
+    async def delete_session_memory(self, session_id: str,
+                                     user_id: str = "default_user"):
         """
-        删除指定会话的记忆
+        删除指定会话的记忆，删除前将对话中的关键事实提取到长期记忆
 
         Args:
             session_id: 会话ID
+            user_id: 用户ID（用于长期记忆）
         """
         if not session_id:
             return
+
+        try:
+            config = {"configurable": {"thread_id": session_id}}
+            checkpoint_tuple = await self._checkpointer.aget_tuple(config)
+
+            if checkpoint_tuple and checkpoint_tuple.checkpoint:
+                channel_values = checkpoint_tuple.checkpoint.get("channel_values", {})
+                messages = channel_values.get("messages", [])
+
+                if messages:
+                    conversation = []
+                    for msg in messages:
+                        role = "user" if (hasattr(msg, "type") and msg.type == "human") else "assistant"
+                        content = msg.content if hasattr(msg, "content") else str(msg)
+                        if content:
+                            conversation.append({"role": role, "content": content})
+
+                    if conversation:
+                        from memory.mem0_service import mem0_service
+                        mem0_service.add(
+                            conversation,
+                            user_id=user_id,
+                            metadata={"source_session_id": session_id}
+                        )
+                        logger.info(
+                            f"[delete_session_memory] 已提取长期记忆，"
+                            f"session: {session_id}, 消息数: {len(conversation)}"
+                        )
+        except Exception as e:
+            logger.warning(f"[delete_session_memory] 提取长期记忆失败: {e}")
 
         if hasattr(self._checkpointer, 'delete_thread'):
             self._checkpointer.delete_thread(session_id)

@@ -1,0 +1,6 @@
+# Mem0 长期记忆配置
+collection_name: long_term_memory
+chroma_path: ./memory_db
+history_db_path: ./memory_db/mem0_history.db
+k: 5
+default_user_id: "default_user"
