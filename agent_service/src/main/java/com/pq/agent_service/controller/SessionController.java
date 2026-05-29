@@ -19,6 +19,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import com.pq.agent_service.utils.UserContext;
+
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -38,14 +40,17 @@ public class SessionController {
     @PostMapping
     @ApiOperation("创建新会话")
     public SessionVO createSession() {
-        Session session = sessionService.createSession();
+        Long userId = UserContext.getUser().getId();
+        Session session = sessionService.createSession(userId);
         return BeanUtils.copyBean(session, SessionVO.class);
     }
 
     @GetMapping
     @ApiOperation("获取所有会话列表")
     public List<SessionVO> listSessions() {
+        Long userId = UserContext.getUser().getId();
         List<Session> sessions = sessionService.lambdaQuery()
+            .eq(Session::getUserId, userId)
             .orderByDesc(Session::getCreateTime)
             .list();
         return BeanUtils.copyList(sessions, SessionVO.class);
@@ -65,14 +70,15 @@ public class SessionController {
     @DeleteMapping("/{id}")
     @ApiOperation("删除会话及其所有消息")
     public void deleteSession(@PathVariable String id) {
+        Long userId = UserContext.getUser().getId();
         // 1. 删除数据库中的消息和会话
         messageService.lambdaUpdate()
             .eq(Message::getSessionId, id)
             .remove();
         sessionService.removeById(id);
-        
+
         // 2. 调用 Python 后端删除 checkpointer 中的会话记忆
-        sessionService.deleteSessionMemory(id);
+        sessionService.deleteSessionMemory(id, userId);
     }
 
 
@@ -89,8 +95,9 @@ public class SessionController {
     @PostMapping("/{id}/messages/stream")
     @ApiOperation("发送消息并获取AI流式回复")
     public SseEmitter chatStream(@PathVariable String id, @RequestBody MessageDTO dto) {
+        Long userId = UserContext.getUser().getId();
         sessionService.updateSession(id);
-        return messageService.sendMessage(id, dto);
+        return messageService.sendMessage(id, dto, userId);
 
     }
 

@@ -21,19 +21,17 @@ public class ISessionServiceImpl extends ServiceImpl<SessionMapper, Session> imp
     private final WebClient webClient;
 
     @Override
-    public Session createSession() {
+    public Session createSession(Long userId) {
         Session session = new Session();
         session.setCreateTime(LocalDateTime.now());
         session.setUpdateTime(LocalDateTime.now());
         session.setStatus(1);
+        session.setUserId(userId);
 
         String sessionId = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss"));
         session.setId(sessionId);
 
-
-        //保存会话到数据库
         saveOrUpdate(session);
-
         return session;
     }
 
@@ -42,19 +40,19 @@ public class ISessionServiceImpl extends ServiceImpl<SessionMapper, Session> imp
         Session session = getById(id);
         session.setUpdateTime(LocalDateTime.now());
         session.setStatus(1);
-
+        saveOrUpdate(session);
     }
 
     @Override
-    public void deleteSessionMemory(String id) {
+    public void deleteSessionMemory(String id, Long userId) {
         try {
             webClient.delete()
-                    .uri("/sessions/{sessionId}/memory", id)
+                    .uri("/sessions/{sessionId}/memory?user_id={userId}", id, userId)
                     .retrieve()
                     .bodyToMono(Map.class)
                     .subscribe(
                             response -> log.info("成功删除会话记忆: sessionId={}, response={}", id, response),
-                            error -> log.error("删除会话记忆失败: sessionId={},     error={}", id, error.getMessage())
+                            error -> log.error("删除会话记忆失败: sessionId={}, error={}", id, error.getMessage())
                     );
         } catch (Exception e) {
             log.error("调用 Python 后端删除会话记忆异常: sessionId={}", id, e);

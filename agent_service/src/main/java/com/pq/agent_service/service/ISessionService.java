@@ -7,9 +7,9 @@ import com.pq.agent_service.domain.po.Session;
 public interface ISessionService extends IService<Session> {
 
 
-    Session createSession();
+    Session createSession(Long userId);
 
     void updateSession(String id);
 
-    void deleteSessionMemory(String id);
+    void deleteSessionMemory(String id, Long userId);
 }

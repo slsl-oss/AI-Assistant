@@ -13,36 +13,17 @@ import java.time.LocalDateTime;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("service_session")
-public class Session implements Serializable {
+@TableName("service_user")
+public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    /**
-     * 会话id
-     */
-    @TableId(value = "id", type = IdType.INPUT)
-    private String id;
+    @TableId(value = "id", type = IdType.AUTO)
+    private Long id;
 
+    private String username;
 
-    /**
-     *会话状态：1-活跃  0-结束
-     */
-    private Integer status;
+    private String password;
 
-    /**
-     * 创建时间
-     */
     private LocalDateTime createTime;
-
-    /**
-     * 更新时间
-     */
-    private LocalDateTime updateTime;
-
-    /**
-     * 用户ID
-     */
-    private Long userId;
-
 }

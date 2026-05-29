@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI Assistant</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%231a1a2e'/><circle cx='35' cy='42' r='8' fill='%234d6bfe'/><circle cx='65' cy='42' r='8' fill='%234d6bfe'/><rect x='28' y='58' width='44' height='6' rx='3' fill='%234d6bfe'/><rect x='35' y='72' width='30' height='8' rx='4' fill='%2321213a'/><circle cx='50' cy='76' r='2' fill='%234d6bfe'/></svg>">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -36,9 +37,10 @@
   }
 
   #app {
-    display: flex;
+    display: none;
     height: 100vh;
   }
+  #app.visible { display: flex; }
 
   .sidebar-toggle {
     display: none;
@@ -70,13 +72,27 @@
   }
 
   .sidebar-header {
-    padding: 16px 16px 8px;
+    padding: 20px 16px 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
   }
+  .sidebar-header .brand-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
+    background: var(--accent-surface);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .sidebar-header .brand-icon svg { width: 18px; height: 18px; color: var(--accent); }
   .sidebar-header .brand {
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     font-weight: 700;
     color: var(--text-primary);
-    letter-spacing: 0.01em;
+    letter-spacing: -0.02em;
   }
 
   .new-session-btn {
@@ -386,6 +402,200 @@
   }
   .sidebar-overlay.visible { display: block; }
 
+  .auth-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: var(--bg-primary);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+  .auth-overlay.visible { display: flex; }
+  .auth-back-btn {
+    position: absolute;
+    top: 24px;
+    left: 24px;
+    background: none;
+    border: 1px solid var(--border-primary);
+    color: var(--text-secondary);
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+  }
+  .auth-back-btn:hover { color: var(--text-primary); border-color: var(--border-subtle); background: var(--bg-elevated); }
+  .auth-modal {
+    background: var(--bg-elevated);
+    border-radius: 20px;
+    padding: 40px 32px 32px;
+    width: 380px;
+    max-width: 90vw;
+    border: 1px solid var(--border-primary);
+    box-shadow: 0 24px 80px rgba(0,0,0,0.4);
+  }
+  .auth-modal h2 { font-size: 1.5rem; font-weight: 600; margin-bottom: 8px; text-align: center; letter-spacing: -0.02em; }
+  .auth-subtitle { text-align: center; color: var(--text-muted); font-size: 0.85rem; margin-bottom: 28px; }
+  .auth-modal label { display: block; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 6px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
+  .auth-modal input {
+    display: block;
+    width: 100%;
+    padding: 12px 14px;
+    margin-bottom: 16px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-primary);
+    background: var(--bg-input);
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s ease;
+  }
+  .auth-modal input:focus { border-color: var(--accent); }
+  .auth-modal .auth-btn {
+    width: 100%;
+    padding: 12px;
+    margin-top: 4px;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: var(--accent);
+    color: #fff;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s ease;
+  }
+  .auth-modal .auth-btn:hover { background: var(--accent-hover); transform: translateY(-1px); }
+  .auth-modal .auth-btn:active { transform: scale(0.98); }
+  .auth-modal .auth-switch {
+    text-align: center;
+    margin-top: 16px;
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+  }
+  .auth-modal .auth-switch a { color: var(--accent); cursor: pointer; text-decoration: none; font-weight: 500; }
+  .auth-modal .auth-switch a:hover { text-decoration: underline; }
+
+  /* Landing Page */
+  .landing-page {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: var(--bg-primary);
+    z-index: 100;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .landing-page.visible { display: flex; }
+  .landing-bg-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.12;
+    pointer-events: none;
+  }
+  .landing-bg-orb.orb-1 {
+    width: 500px; height: 500px;
+    background: var(--accent);
+    top: -15%; left: -10%;
+    animation: orbFloat 20s ease-in-out infinite;
+  }
+  .landing-bg-orb.orb-2 {
+    width: 350px; height: 350px;
+    background: #6366f1;
+    bottom: -10%; right: -8%;
+    animation: orbFloat 24s ease-in-out infinite reverse;
+  }
+  @keyframes orbFloat {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    25% { transform: translate(40px, -30px) scale(1.08); }
+    50% { transform: translate(-20px, 20px) scale(0.95); }
+    75% { transform: translate(30px, 10px) scale(1.04); }
+  }
+  .landing-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 40px 24px;
+  }
+  .landing-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 28px;
+    border-radius: 18px;
+    background: var(--accent-surface);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .landing-icon svg { width: 32px; height: 32px; color: var(--accent); }
+  .landing-title {
+    font-size: clamp(2.2rem, 5vw, 3.4rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin-bottom: 16px;
+    color: var(--text-primary);
+  }
+  .landing-title span { color: var(--accent); }
+  .landing-desc {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    max-width: 480px;
+    margin: 0 auto 40px;
+    line-height: 1.6;
+  }
+  .landing-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 36px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    letter-spacing: -0.01em;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 4px 24px rgba(77, 107, 254, 0.3);
+  }
+  .landing-cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(77, 107, 254, 0.4);
+  }
+  .landing-cta:active { transform: scale(0.97); }
+  .landing-cta svg { width: 20px; height: 20px; }
+  .landing-footer {
+    position: absolute;
+    bottom: 28px;
+    z-index: 1;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+
+  .logout-btn {
+    background: none;
+    border: 1px solid var(--border-primary);
+    border-radius: 6px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 0.75rem;
+    padding: 4px 10px;
+    font-family: inherit;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+  }
+  .logout-btn:hover { color: var(--danger); border-color: var(--danger); }
+
   @media (max-width: 768px) {
     #sidebar {
       position: fixed;
@@ -407,6 +617,30 @@
 </head>
 <body>
 
+<div id="landingPage" class="landing-page visible">
+  <div class="landing-bg-orb orb-1"></div>
+  <div class="landing-bg-orb orb-2"></div>
+  <div class="landing-content">
+    <div class="landing-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="18" height="18" rx="5"/>
+        <circle cx="9" cy="10" r="1.5" fill="currentColor" stroke="none"/>
+        <circle cx="15" cy="10" r="1.5" fill="currentColor" stroke="none"/>
+        <path d="M8 15c0 0 1.5 2.5 4 2.5s4-2.5 4-2.5"/>
+      </svg>
+    </div>
+    <h1 class="landing-title">AI <span>Assistant</span></h1>
+    <p class="landing-desc">智能AI助手，支持个性化定制。为您提供智能问答、天气查询、日期查询和个性化服装推荐服务。</p>
+    <button id="landingCta" class="landing-cta">
+      <span>开启对话</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 12h14M12 5l7 7-7 7"/>
+      </svg>
+    </button>
+  </div>
+  <div class="landing-footer">Powered by AI Agent</div>
+</div>
+
 <div id="app">
   <button id="sidebarToggle" class="sidebar-toggle" aria-label="Toggle sidebar">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
@@ -418,7 +652,15 @@
 
   <aside id="sidebar">
     <div class="sidebar-header">
-      <h1 class="brand">AI Assistant</h1>
+      <div class="brand-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="5"/>
+          <circle cx="9" cy="10" r="1.5" fill="currentColor" stroke="none"/>
+          <circle cx="15" cy="10" r="1.5" fill="currentColor" stroke="none"/>
+          <path d="M8 15c0 0 1.5 2.5 4 2.5s4-2.5 4-2.5"/>
+        </svg>
+      </div>
+      <h1 class="brand">AI <span style="color:var(--accent);">Assistant</span></h1>
     </div>
     <button id="newSessionBtn" class="new-session-btn">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
@@ -430,8 +672,9 @@
     <div id="sessionList" class="session-list"></div>
     <div class="sidebar-footer">
       <div class="user-area">
-        <div class="avatar">U</div>
-        <span class="username">用户</span>
+        <div class="avatar" id="userAvatar">U</div>
+        <span class="username" id="userNameDisplay">未登录</span>
+        <button id="logoutBtn" class="logout-btn" style="display:none;">退出</button>
       </div>
     </div>
   </aside>
@@ -463,6 +706,22 @@
   </main>
 </div>
 
+<div id="authOverlay" class="auth-overlay">
+  <button id="authBackBtn" class="auth-back-btn">&larr; 返回</button>
+  <div class="auth-modal">
+    <h2 id="authTitle">登录</h2>
+    <p class="auth-subtitle">登录后即可开启智能对话</p>
+    <label for="authUsername">用户名</label>
+    <input type="text" id="authUsername" placeholder="请输入用户名" autocomplete="username" />
+    <label for="authPassword">密码</label>
+    <input type="password" id="authPassword" placeholder="请输入密码" autocomplete="current-password" />
+    <button id="authBtn" class="auth-btn">登录</button>
+    <div class="auth-switch">
+      <span id="authSwitchText">没有账号？</span> <a id="authSwitchLink">注册</a>
+    </div>
+  </div>
+</div>
+
 <div id="toast" class="toast"></div>
 
 <script>
@@ -477,6 +736,121 @@
   const sidebarOverlay = $('#sidebarOverlay');
   const toast = $('#toast');
   const newSessionBtn = $('#newSessionBtn');
+  const landingPage = $('#landingPage');
+  const landingCta = $('#landingCta');
+  const authOverlay = $('#authOverlay');
+  const authBackBtn = $('#authBackBtn');
+  const authTitle = $('#authTitle');
+  const authUsername = $('#authUsername');
+  const authPassword = $('#authPassword');
+  const authBtn = $('#authBtn');
+  const authSwitchText = $('#authSwitchText');
+  const authSwitchLink = $('#authSwitchLink');
+  const logoutBtn = $('#logoutBtn');
+  const userAvatar = $('#userAvatar');
+  const userNameDisplay = $('#userNameDisplay');
+  const appContainer = $('#app');
+
+  let isLoginMode = true;
+
+  function updateAuthUI() {
+    authTitle.textContent = isLoginMode ? '登录' : '注册';
+    authBtn.textContent = isLoginMode ? '登录' : '注册';
+    authSwitchText.textContent = isLoginMode ? '没有账号？' : '已有账号？';
+    authSwitchLink.textContent = isLoginMode ? '注册' : '登录';
+    $('.auth-subtitle').textContent = isLoginMode ? '登录后即可开启智能对话' : '注册新账号开始使用';
+  }
+
+  function showLanding() {
+    landingPage.classList.add('visible');
+    authOverlay.classList.remove('visible');
+    appContainer.classList.remove('visible');
+  }
+
+  function showAuth() {
+    landingPage.classList.remove('visible');
+    authOverlay.classList.add('visible');
+    appContainer.classList.remove('visible');
+    logoutBtn.style.display = 'none';
+    userAvatar.textContent = 'U';
+    userNameDisplay.textContent = '未登录';
+  }
+
+  function hideAuth() {
+    authOverlay.classList.remove('visible');
+    appContainer.classList.add('visible');
+    const username = localStorage.getItem('ai_username') || '用户';
+    userNameDisplay.textContent = username;
+    userAvatar.textContent = username.charAt(0).toUpperCase();
+    logoutBtn.style.display = 'inline';
+  }
+
+  function getToken() {
+    return localStorage.getItem('ai_token');
+  }
+
+  function logout() {
+    localStorage.removeItem('ai_token');
+    localStorage.removeItem('ai_username');
+    state.currentSessionId = null;
+    state.sessions = [];
+    chatMessages.innerHTML = '';
+    emptyState.classList.remove('hidden');
+    chatMessages.classList.add('hidden');
+    renderSessionList();
+    showLanding();
+    showToast('已退出登录');
+  }
+
+  async function handleAuth() {
+    const username = authUsername.value.trim();
+    const password = authPassword.value;
+    if (!username || !password) { showToast('请输入用户名和密码'); return; }
+    const endpoint = isLoginMode ? '/users/login' : '/users/register';
+    try {
+      const res = await fetch('/api' + endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+      if (!res.ok) {
+        const errText = await res.text();
+        throw new Error(errText || '请求失败');
+      }
+      const data = await res.json();
+      localStorage.setItem('ai_token', data.token);
+      localStorage.setItem('ai_username', data.username);
+      hideAuth();
+      showToast((isLoginMode ? '登录' : '注册') + '成功');
+      await loadSessions();
+      const savedId = localStorage.getItem('ai_session');
+      if (savedId && state.sessions.find(s => s.id === savedId)) {
+        await switchSession(savedId);
+      } else if (state.sessions.length > 0) {
+        await switchSession(state.sessions[0].id);
+      }
+    } catch (e) {
+      showToast(e.message || '操作失败');
+    }
+  }
+
+  landingCta.addEventListener('click', () => {
+    showAuth();
+  });
+
+  authBackBtn.addEventListener('click', () => {
+    showLanding();
+  });
+
+  authBtn.addEventListener('click', handleAuth);
+  authPassword.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') handleAuth();
+  });
+  authSwitchLink.addEventListener('click', () => {
+    isLoginMode = !isLoginMode;
+    updateAuthUI();
+  });
+  logoutBtn.addEventListener('click', logout);
 
   const state = {
     currentSessionId: null,
@@ -576,10 +950,14 @@
   }
 
   async function api(path, options = {}) {
-    const res = await fetch('/api' + path, {
-      headers: { 'Content-Type': 'application/json', ...options.headers },
-      ...options
-    });
+    const token = getToken();
+    const headers = { 'Content-Type': 'application/json', ...options.headers };
+    if (token) { headers['Authorization'] = 'Bearer ' + token; }
+    const res = await fetch('/api' + path, { headers, ...options });
+    if (res.status === 401) {
+      logout();
+      throw new Error('登录已过期，请重新登录');
+    }
     if (!res.ok) {
       const msg = res.status === 404 ? '资源不存在' : '请求失败 (' + res.status + ')';
       throw new Error(msg);
@@ -709,12 +1087,16 @@
     let fullAiResponse = '';
 
     try {
+      const headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'text/event-stream'
+      };
+      const token = getToken();
+      if (token) { headers['Authorization'] = 'Bearer ' + token; }
+
       const res = await fetch('/api/sessions/' + sessionId + '/messages/stream', {
         method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Accept': 'text/event-stream'
-        },
+        headers,
         body: JSON.stringify({ content: text.trim(), messageType: 1 })
       });
 
@@ -843,12 +1225,24 @@
   sidebarOverlay.addEventListener('click', closeSidebar);
 
   async function init() {
-    await loadSessions();
-    const savedId = localStorage.getItem('ai_session');
-    if (savedId && state.sessions.find(s => s.id === savedId)) {
-      await switchSession(savedId);
-    } else if (state.sessions.length > 0) {
-      await switchSession(state.sessions[0].id);
+    const token = getToken();
+    if (!token) {
+      showLanding();
+      return;
+    }
+    hideAuth();
+    try {
+      await loadSessions();
+      const savedId = localStorage.getItem('ai_session');
+      if (savedId && state.sessions.find(s => s.id === savedId)) {
+        await switchSession(savedId);
+      } else if (state.sessions.length > 0) {
+        await switchSession(state.sessions[0].id);
+      }
+    } catch (e) {
+      if (e.message.includes('登录已过期')) {
+        logout();
+      }
     }
   }
 

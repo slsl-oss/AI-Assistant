@@ -33,23 +33,23 @@ public class IMessageServiceImpl extends ServiceImpl<MessageMapper, Message> imp
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
-    public SseEmitter sendMessage(String sessionId, MessageDTO dto) {
+    public SseEmitter sendMessage(String sessionId, MessageDTO dto, Long userId) {
         SseEmitter emitter = new SseEmitter(300000L);
         AtomicReference<String> fullResponse = new AtomicReference<>("");
         AtomicReference<Boolean> isCompleted = new AtomicReference<>(false);
-        
+
         executorService.execute(() -> {
             try {
                 saveUserMessage(sessionId, dto);
                 dto.setSessionId(sessionId);
-                callPythonServiceStream(dto, emitter, fullResponse, isCompleted);
-                
+                callPythonServiceStream(dto, emitter, fullResponse, isCompleted, userId);
+
             } catch (Exception e) {
                 log.error("发送消息失败", e);
                 safeComplete(emitter, isCompleted);
             }
         });
-        
+
         return emitter;
     }
 
@@ -63,7 +63,7 @@ public class IMessageServiceImpl extends ServiceImpl<MessageMapper, Message> imp
         this.save(userMessage);
     }
 
-    private void callPythonServiceStream(MessageDTO dto, SseEmitter emitter, AtomicReference<String> fullResponse, AtomicReference<Boolean> isCompleted) {
+    private void callPythonServiceStream(MessageDTO dto, SseEmitter emitter, AtomicReference<String> fullResponse, AtomicReference<Boolean> isCompleted, Long userId) {
         StringBuilder responseBuilder = new StringBuilder();
 
         try {
@@ -72,7 +72,8 @@ public class IMessageServiceImpl extends ServiceImpl<MessageMapper, Message> imp
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(Map.of(
                     "query", dto.getContent(),
-                    "session_id", dto.getSessionId() != null ? dto.getSessionId() : ""
+                    "session_id", dto.getSessionId() != null ? dto.getSessionId() : "",
+                    "user_id", String.valueOf(userId)
                 ))
                 .accept(MediaType.TEXT_EVENT_STREAM)
                 .retrieve()
