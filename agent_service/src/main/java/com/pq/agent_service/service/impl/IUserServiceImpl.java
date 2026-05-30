@@ -11,7 +11,9 @@ import com.pq.agent_service.service.IUserService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
@@ -30,10 +32,10 @@ public class IUserServiceImpl extends ServiceImpl<UserMapper, User> implements I
     }
 
     @Override
-    public UserVO register(UserDTO dto) {
+    public LoginVO register(UserDTO dto) {
         User exist = lambdaQuery().eq(User::getUsername, dto.getUsername()).one();
         if (exist != null) {
-            throw new RuntimeException("用户名已存在");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "用户名已存在");
         }
 
         User user = new User();
@@ -42,8 +44,17 @@ public class IUserServiceImpl extends ServiceImpl<UserMapper, User> implements I
         user.setCreateTime(LocalDateTime.now());
         save(user);
 
-        UserVO vo = new UserVO();
-        vo.setId(user.getId());
+        String token = Jwts.builder()
+                .subject(String.valueOf(user.getId()))
+                .claim("username", user.getUsername())
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + JWT_EXPIRATION_MS))
+                .signWith(getSigningKey())
+                .compact();
+
+        LoginVO vo = new LoginVO();
+        vo.setToken(token);
+        vo.setUserId(user.getId());
         vo.setUsername(user.getUsername());
         return vo;
     }

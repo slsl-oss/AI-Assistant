@@ -1,7 +1,7 @@
 import json
 import asyncio
 import uvicorn
-from fastapi import FastAPI, Query, HTTPException
+from fastapi import FastAPI, Query, HTTPException, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
@@ -87,6 +87,18 @@ async def delete_session_memory(session_id: str, user_id: str = "default_user"):
         return {"success": True, "message": f"Session {session_id} memory deleted"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to delete session memory: {str(e)}")
+
+
+@app.post("/rag/documents/upload")
+async def upload_document(file: UploadFile = File(...), user_id: str = Form("default_user")):
+    try:
+        contents = await file.read()
+        from rag.upload_service import DocumentUploadService
+        svc = DocumentUploadService()
+        result = svc.upload(contents, file.filename, user_id)
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 if __name__ == '__main__':

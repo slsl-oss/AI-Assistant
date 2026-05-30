@@ -2,7 +2,6 @@ package com.pq.agent_service.controller;
 
 import com.pq.agent_service.domain.dto.UserDTO;
 import com.pq.agent_service.domain.vo.LoginVO;
-import com.pq.agent_service.domain.vo.UserVO;
 import com.pq.agent_service.service.IUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -24,7 +23,7 @@ public class UserController {
 
     @PostMapping("/register")
     @ApiOperation("用户注册")
-    public UserVO register(@RequestBody UserDTO dto) {
+    public LoginVO register(@RequestBody UserDTO dto) {
         return userService.register(dto);
     }
 

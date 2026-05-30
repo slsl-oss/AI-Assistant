@@ -696,6 +696,12 @@
     <div class="input-area">
       <div class="input-wrapper">
         <textarea id="input" rows="1" placeholder="输入你的问题..." autofocus></textarea>
+        <input type="file" id="fileInput" accept=".txt,.pdf" style="display:none;" />
+        <button id="uploadBtn" class="send-btn" aria-label="上传文件" title="上传知识文档" style="background:var(--bg-elevated);border:1px solid var(--border-primary);margin-right:4px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+        </button>
         <button id="sendBtn" class="send-btn" aria-label="发送">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
@@ -815,7 +821,12 @@
       });
       if (!res.ok) {
         const errText = await res.text();
-        throw new Error(errText || '请求失败');
+        let errMsg = errText;
+        try {
+          const errJson = JSON.parse(errText);
+          errMsg = errJson.message || errJson.error || errText;
+        } catch (_) {}
+        throw new Error(errMsg || '请求失败');
       }
       const data = await res.json();
       localStorage.setItem('ai_token', data.token);
@@ -850,6 +861,34 @@
     isLoginMode = !isLoginMode;
     updateAuthUI();
   });
+  const fileInput = $('#fileInput');
+  const uploadBtn = $('#uploadBtn');
+
+  uploadBtn.addEventListener('click', () => fileInput.click());
+
+  fileInput.addEventListener('change', async () => {
+    const file = fileInput.files[0];
+    if (!file) return;
+    const userId = localStorage.getItem('ai_username') || 'default_user';
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('user_id', userId);
+
+    showToast('正在上传 ' + file.name + '...');
+    try {
+      const res = await fetch('/rag/documents/upload', { method: 'POST', body: formData });
+      const data = await res.json();
+      if (data.success) {
+        showToast('上传成功！已添加 ' + data.chunks + ' 个知识片段');
+      } else {
+        showToast('上传失败: ' + (data.error || '未知错误'));
+      }
+    } catch (e) {
+      showToast('上传失败: ' + e.message);
+    }
+    fileInput.value = '';
+  });
+
   logoutBtn.addEventListener('click', logout);
 
   const state = {

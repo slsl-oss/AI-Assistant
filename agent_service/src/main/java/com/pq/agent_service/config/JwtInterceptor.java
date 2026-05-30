@@ -15,8 +15,16 @@ public class JwtInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
                              Object handler) {
+        String path = request.getRequestURI();
+        log.info("[JwtInterceptor] path={}", path);
+        if (path.contains("/users/") || path.contains("/error")) {
+            log.info("[JwtInterceptor] skip auth for path={}", path);
+            return true;
+        }
+
         String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            log.warn("[JwtInterceptor] No valid Authorization header, return 401, path={}", path);
             response.setStatus(401);
             return false;
         }

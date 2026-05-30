@@ -2,7 +2,7 @@ import asyncio
 
 from langchain.agents import create_agent
 from model.factory import chat_model
-from utils.prompts_loader import load_system_prompt
+from utils.prompts_loader import load_react_prompt
 from .tools.base_agent_tools import base_tools
 from .tools.middleware import tool_monitor, log_before_model
 from .date_agent import call_date_agent
@@ -46,8 +46,9 @@ class ReactAgent(object):
         """创建 agent 实例"""
         return create_agent(
             model=chat_model,
-            system_prompt=load_system_prompt(),
-            tools=base_tools + [call_date_agent, call_weather_agent],
+            system_prompt=load_react_prompt(),
+            # tools=base_tools + [call_date_agent, call_weather_agent],这是langchain框架下将子agent封装成tool的多agent系统写法
+            tools = base_tools(),
             middleware=[tool_monitor, log_before_model],
             # checkpointer=self._checkpointer
         )

@@ -6,7 +6,7 @@ from langchain_core.messages import HumanMessage, AIMessage, SystemMessage, Base
 import operator
 import asyncio
 from model.factory import chat_model
-from utils.prompts_loader import load_system_prompt, load_date_prompt, load_weather_prompt
+from utils.prompts_loader import load_react_prompt, load_date_prompt, load_weather_prompt
 from utils.logger_handler import logger
 from agent.tools.base_agent_tools import base_tools
 from agent.tools.date_agent_tools import date_tools
@@ -179,7 +179,7 @@ class SupervisorAgent:
 
         react_agent_node = create_agent_node(
             "react_agent",
-            load_system_prompt(),
+            load_react_prompt(),
             base_tools
         )
 

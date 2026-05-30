@@ -11,13 +11,14 @@ from model.factory import chat_model
 
 
 class RagSummarizeService:
-    def __init__(self):
+    def __init__(self, user_id: str = None):
+        self.user_id = user_id
         self.vector_store = VectorStoreService()
-        self.retriever = self.vector_store.get_retriever()
-        self.prompt_text = load_rag_prompt()    # 提示词文本本身
-        self.prompt_template = PromptTemplate.from_template(self.prompt_text)  # 提示词模板
+        self.retriever = self.vector_store.get_retriever(user_id=self.user_id)
+        self.prompt_text = load_rag_prompt()
+        self.prompt_template = PromptTemplate.from_template(self.prompt_text)
         self.model = chat_model
-        self.chain = self.__int_chain()  # 总结链
+        self.chain = self.__int_chain()
 
 
 
@@ -70,9 +71,22 @@ class RagSummarizeService:
 
 
 if __name__ == '__main__':
-    rag = RagSummarizeService()
+    print("=== 测试1：无 user_id（查全库）===")
+    rag1 = RagSummarizeService()
+    docs = rag1.retriever_docs("身高170cm,尺码推荐")
+    print(f"检索到 {len(docs)} 条")
+    for d in docs:
+        print(f"  user_id={d.metadata.get('user_id', 'N/A')} | {d.page_content[:60]}...")
 
-    print(rag.rag_summarize("身高170cm,尺码推荐"))
+    print("\n=== 测试2：user_id='default_user' ===")
+    rag2 = RagSummarizeService(user_id="default_user")
+    docs2 = rag2.retriever_docs("身高170cm,尺码推荐")
+    print(f"检索到 {len(docs2)} 条")
+    for d in docs2:
+        print(f"  user_id={d.metadata.get('user_id', 'N/A')} | {d.page_content[:60]}...")
+
+    if len(docs2) == 0:
+        print("\n!!! context 为空原因：旧数据无 user_id metadata，需清理 chroma_db 重建")
 
 
 

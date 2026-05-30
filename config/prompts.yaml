@@ -3,3 +3,4 @@ rag_summarize_prompt_path: prompts/rag_summarize.txt
 date_prompt_path: prompts/date_agent_prompt.txt
 weather_prompt_path: prompts/weather_agent_prompt.txt
 supervisor_prompt_path: prompts/supervisor_agent_prompt.txt
+react_prompt_path: prompts/react_agent_prompt.txt

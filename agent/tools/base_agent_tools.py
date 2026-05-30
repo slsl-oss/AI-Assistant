@@ -5,7 +5,7 @@ from utils.logger_handler import logger
 from rag.rag_service import RagSummarizeService
 import requests
 import os
-from memory.memory_tools import save_memory, search_memory
+from memory.memory_tools import save_memory, search_memory, _get_current_user_id
 
 
 
@@ -41,8 +41,9 @@ def baidu_web_search(query: str) -> str:
 
 
 @tool(description="从向量存储中检索参考资料")
-def  rag_summarize(query: str) -> str:
-    rag_service = RagSummarizeService()
+def rag_summarize(query: str) -> str:
+    user_id = _get_current_user_id()
+    rag_service = RagSummarizeService(user_id=user_id)
     return rag_service.rag_summarize(query)
 
 
