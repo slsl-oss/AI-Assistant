@@ -56,21 +56,41 @@ class Mem0Service:
 
     def add(self, messages, user_id=None, metadata=None):
         """
-        添加记忆，Mem0 自动从消息中提取关键事实
-
-        Args:
-            messages: 消息列表 [{"role": "user", "content": "..."}, ...] 或单条消息
-            user_id: 用户ID
-            metadata: 额外元数据
+        添加记忆，Mem0 自动提取事实 → 向量化 → 评分
         """
         user_id = user_id or memory_conf["default_user_id"]
         try:
             result = self.memory.add(messages, user_id=user_id, metadata=metadata)
             logger.info(f"[Mem0Service] 添加记忆成功，user_id: {user_id}")
+            self._score_new_memories(user_id)
             return result
         except Exception as e:
             logger.error(f"[Mem0Service] 添加记忆失败: {e}")
             return None
+
+    def _score_new_memories(self, user_id: str):
+        """对新记忆（未在 memory_index 中的）进行重要性评分"""
+        try:
+            from memory import memory_index
+            from memory.memory_scorer import score_memories
+            all_memories = self.get_all(user_id)
+            items = all_memories.get("results") if isinstance(all_memories, dict) else all_memories
+            if not isinstance(items, list) or not items:
+                return
+            new_items = []
+            for item in items:
+                h = item.get("hash") or item.get("id")
+                if h and not memory_index.has_hash(h):
+                    new_items.append({"memory_hash": h, "memory_text": item.get("memory", "")})
+            if new_items:
+                scores = score_memories(new_items)
+                memory_index.batch_upsert([
+                    {"memory_hash": s["memory_hash"], "user_id": user_id,
+                     "importance": s["importance"]} for s in scores
+                ])
+                logger.info(f"[Mem0Service] 评分 {len(scores)} 条新记忆")
+        except Exception as e:
+            logger.warning(f"[Mem0Service] 评分新记忆失败: {e}")
 
     def search(self, query, user_id=None, k=None):
         """
@@ -109,6 +129,37 @@ class Mem0Service:
         except Exception as e:
             logger.error(f"[Mem0Service] 获取全部记忆失败: {e}")
             return []
+
+    def delete(self, memory_id):
+        """删除单条记忆"""
+        try:
+            self.memory.delete(memory_id)
+            return True
+        except Exception as e:
+            logger.error(f"[Mem0Service] 删除记忆失败: {e}")
+            return False
+
+    def delete_by_hash(self, memory_hash, user_id=None):
+        """通过 hash 查找 memory_id 并删除"""
+        user_id = user_id or memory_conf["default_user_id"]
+        all_memories = self.get_all(user_id)
+        items = all_memories.get("results") if isinstance(all_memories, dict) else all_memories
+        if not isinstance(items, list):
+            return False
+        for item in items:
+            if item.get("hash") == memory_hash or item.get("id") == memory_hash:
+                return self.delete(item.get("id") or memory_hash)
+        return False
+
+    def delete_all(self, user_id=None):
+        """删除用户全部记忆"""
+        user_id = user_id or memory_conf["default_user_id"]
+        try:
+            self.memory.delete_all(user_id=user_id)
+            return True
+        except Exception as e:
+            logger.error(f"[Mem0Service] 删除全部记忆失败: {e}")
+            return False
 
     def format_memories_for_prompt(self, search_results):
         """将搜索结果格式化为 Prompt 上下文"""

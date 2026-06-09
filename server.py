@@ -29,6 +29,29 @@ class StreamRequest(BaseModel):
 supervisor_agent = SupervisorAgent()
 
 
+@app.on_event("startup")
+async def start_periodic_cleanup():
+    """每 7 天跑一次全量记忆清理"""
+    async def _run():
+        while True:
+            await asyncio.sleep(7 * 86400)
+            try:
+                from memory.memory_cleanup import cleanup
+                from memory.mem0_service import mem0_service
+                users = set()
+                all_memories = mem0_service.get_all()
+                items = all_memories.get("results") if isinstance(all_memories, dict) else all_memories
+                if isinstance(items, list):
+                    for item in items:
+                        uid = item.get("user_id") or item.get("metadata", {}).get("user_id", "default_user")
+                        users.add(uid)
+                for uid in users:
+                    cleanup(uid)
+            except Exception:
+                pass
+    asyncio.create_task(_run())
+
+
 @app.get("/health")
 async def health():
     return {"status": "ok"}

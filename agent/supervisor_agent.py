@@ -1,153 +1,189 @@
+import json
 from langgraph.graph import StateGraph, END
 from langgraph.checkpoint.memory import MemorySaver
-from langgraph.prebuilt import ToolNode
-from typing import TypedDict, Annotated, List, Literal, Union
-from langchain_core.messages import HumanMessage, AIMessage, SystemMessage, BaseMessage
+from langgraph.types import Send
+from typing import TypedDict, Annotated, List
+from langchain_core.messages import HumanMessage, AIMessage, SystemMessage, BaseMessage, ToolMessage
 import operator
 import asyncio
 from model.factory import chat_model
-from utils.prompts_loader import load_react_prompt, load_date_prompt, load_weather_prompt
+from utils.prompts_loader import load_react_prompt, load_date_prompt, load_weather_prompt, load_supervisor_prompt
 from utils.logger_handler import logger
 from agent.tools.base_agent_tools import base_tools
-from agent.tools.date_agent_tools import date_tools
-from agent.tools.weather_agent_tools import weather_tools
-from utils.prompts_loader import load_supervisor_prompt
+from agent.tools.date_agent_tools import date_tools, get_current_time_by_timezone, get_timezone_list, get_city_time, compare_time
+from agent.tools.weather_agent_tools import weather_tools as weather_tool_list
 
 
 class MultiAgentState(TypedDict):
     messages: Annotated[List[BaseMessage], operator.add]
-    current_agent: str
-    task_results: dict
+    sub_tasks: list
+    agent_results: Annotated[list, operator.add]
     final_answer: str
     session_id: str
     user_id: str
 
 
-def create_agent_node(agent_name: str, system_prompt: str, tools: list):
-    """
-    创建一个 agent 节点函数
+DECOMPOSE_PROMPT = load_supervisor_prompt()
 
-    Args:
-        agent_name: agent 名称
-        system_prompt: 系统提示词
-        tools: 工具列表
+AGENT_TOOLS = {
+    "date_agent":    {t.name: t for t in date_tools},
+    "weather_agent": {t.name: t for t in weather_tool_list},
+    "react_agent":   {t.name: t for t in base_tools},
+}
 
-    Returns:
-        节点函数
-    """
+AGENT_PROMPTS = {
+    "date_agent":    load_date_prompt,
+    "weather_agent": load_weather_prompt,
+    "react_agent":   load_react_prompt,
+}
 
-    async def agent_node(state: MultiAgentState) -> dict:
-        messages = state["messages"]
-
-        if not messages:
-            return {"messages": [], "current_agent": agent_name}
-
-        system_message = SystemMessage(content=system_prompt)
-        full_messages = [system_message] + messages
-
-        try:
-            if tools:
-                model_with_tools = chat_model.bind_tools(tools)
-                response = await model_with_tools.ainvoke(full_messages)
-            else:
-                response = await chat_model.ainvoke(full_messages)
-
-            logger.info(f"[{agent_name}] 模型响应: {response.content[:100] if response.content else 'No content'}")
-
-            return {
-                "messages": [response],
-                "current_agent": agent_name
-            }
-        except Exception as e:
-            logger.error(f"[{agent_name}] 执行失败: {str(e)}")
-            error_message = AIMessage(content=f"Agent {agent_name} 执行失败: {str(e)}")
-            return {
-                "messages": [error_message],
-                "current_agent": agent_name
-            }
-
-    return agent_node
+AGENT_TOOL_LIST = {
+    "date_agent":    date_tools,
+    "weather_agent": weather_tool_list,
+    "react_agent":   base_tools,
+}
 
 
-async def supervisor_node(state: MultiAgentState) -> dict:
-    """
-    Supervisor 节点：分析用户问题并决定调用哪个 agent
-    
-    利用 checkpointer 自动恢复的完整对话历史来理解上下文
-    """
-    messages = state["messages"]
-
-    if not messages:
-        return {"current_agent": "react_agent"}
-
-    user_message = None
-    history_messages = []
-    
-    for msg in messages:
-        if isinstance(msg, HumanMessage):
-            user_message = msg.content
-            history_messages.append({"role": "user", "content": msg.content})
-        elif isinstance(msg, AIMessage):
-            history_messages.append({"role": "assistant", "content": msg.content})
-
-    if not user_message:
-        return {"current_agent": "react_agent"}
-
-    system_prompt = load_supervisor_prompt()
-    conversation = [{"role": "system", "content": system_prompt}]
-    conversation.extend(history_messages)
-
+async def _exec_tool(tool_call: dict, agent_name: str) -> str:
+    name = tool_call.get("name", "")
+    args = tool_call.get("args", {})
+    fn = AGENT_TOOLS.get(agent_name, {}).get(name)
+    if not fn:
+        return f"未知工具: {name}"
     try:
-        response = await chat_model.ainvoke(conversation)
-        decision = response.content.strip().lower()
-
-        valid_agents = ["date_agent", "weather_agent", "react_agent"]
-        if decision not in valid_agents:
-            decision = "react_agent"
-
-        logger.info(f"[Supervisor] 路由决策: {decision}")
-
-        return {"current_agent": decision}
+        if hasattr(fn, 'ainvoke'):
+            return str(await asyncio.wait_for(fn.ainvoke(args), timeout=60))
+        elif hasattr(fn, 'invoke'):
+            loop = asyncio.get_running_loop()
+            return str(await loop.run_in_executor(None, fn.invoke, args))
+        else:
+            return str(fn(**args))
+    except asyncio.TimeoutError:
+        return f"工具执行超时: {name}"
     except Exception as e:
-        logger.error(f"[Supervisor] 路由失败: {str(e)}")
-        return {"current_agent": "react_agent"}
+        return f"工具执行失败: {e}"
 
 
-def should_continue(state: MultiAgentState) -> Literal["tools", "end"]:
-    """
-    判断是否需要继续执行工具调用
-    """
-    messages = state["messages"]
-    if not messages:
-        return "end"
+async def decompose_query(query: str) -> list[dict]:
+    try:
+        resp = await chat_model.ainvoke([
+            {"role": "system", "content": DECOMPOSE_PROMPT},
+            {"role": "user", "content": query}
+        ])
+        text = resp.content.strip()
+        if text.startswith("```"):
+            text = text.split("\n", 1)[1].rsplit("\n", 1)[0]
+            if text.startswith("json"):
+                text = text[4:]
+        tasks = json.loads(text)
+        if isinstance(tasks, list) and len(tasks) > 0:
+            valid = {"date_agent", "weather_agent", "react_agent"}
+            tasks = [t for t in tasks if t.get("agent") in valid]
+            if tasks:
+                logger.info(f"[Decompose] {len(tasks)} tasks: {[t['agent'] for t in tasks]}")
+                return tasks
+    except Exception as e:
+        logger.warning(f"[Decompose] failed: {e}")
+    return [{"agent": "react_agent", "task": query}]
 
-    last_message = messages[-1]
 
-    if hasattr(last_message, "tool_calls") and last_message.tool_calls:
-        return "tools"
+async def supervisor_node(state: MultiAgentState):
+    msgs = state["messages"]
+    if not msgs:
+        return {"sub_tasks": [{"agent": "react_agent", "task": ""}]}
+    user_query = ""
+    for m in reversed(msgs):
+        if isinstance(m, HumanMessage):
+            user_query = m.content
+            break
+    if not user_query:
+        return {"sub_tasks": [{"agent": "react_agent", "task": ""}]}
+    tasks = await decompose_query(user_query)
+    logger.info(f"[Supervisor] {len(tasks)} tasks: {[t['agent'] for t in tasks]}")
+    return {"sub_tasks": tasks}
 
-    return "end"
+
+def route_after_supervisor(state: MultiAgentState):
+    tasks = state.get("sub_tasks", [])
+    if not tasks:
+        return "react_agent"
+    if len(tasks) == 1:
+        return tasks[0]["agent"]
+    sends = [Send(t["agent"], {"task": t["task"], "agent_name": t["agent"]}) for t in tasks]
+    logger.info(f"[Route] fan-out to {len(sends)} agents")
+    return sends
 
 
-def route_to_agent(state: MultiAgentState) -> Literal["date_agent", "weather_agent", "react_agent"]:
-    """
-    根据 supervisor 的决策路由到相应的 agent
-    """
-    current_agent = state.get("current_agent", "react_agent")
-    return current_agent
+async def agent_node(state: MultiAgentState, agent_name: str):
+    task_text = state.get("task", "")
+    actual = state.get("agent_name", agent_name)
+    prompt_fn = AGENT_PROMPTS.get(actual, load_react_prompt)
+    tools_list = AGENT_TOOL_LIST.get(actual, base_tools)
+
+    local = list(state.get("local_messages", []) or [])
+    if task_text and not local:
+        local = [HumanMessage(content=f"请帮我完成以下任务：{task_text}。直接执行，不要反问或追问。不要使用emoji表情符号。")]
+    elif not task_text and not local:
+        local = list(state.get("messages", []))
+
+    msgs = [SystemMessage(content=prompt_fn())] + local
+    model = chat_model.bind_tools(tools_list) if tools_list else chat_model
+
+    for _ in range(5):
+        resp = await model.ainvoke(msgs)
+        msgs.append(resp)
+        if not (hasattr(resp, "tool_calls") and resp.tool_calls):
+            break
+        for tc in resp.tool_calls:
+            result = await _exec_tool(tc, actual)
+            msgs.append(ToolMessage(content=result, tool_call_id=tc["id"]))
+            logger.info(f"[{actual}] tool {tc['name']} result: {result[:200]}")
+
+    content = resp.content or ""
+    logger.info(f"[{actual}] result: {content[:80]}")
+
+    out = {"agent_results": [{"agent": actual, "task": task_text, "content": content}]}
+    if task_text:
+        out["local_messages"] = msgs
+    else:
+        out["messages"] = [resp]
+    return out
+
+
+async def date_agent_node(state):    return await agent_node(state, "date_agent")
+async def weather_agent_node(state): return await agent_node(state, "weather_agent")
+async def react_agent_node(state):   return await agent_node(state, "react_agent")
+
+
+async def summarizer_node(state: MultiAgentState) -> dict:
+    results = state.get("agent_results", [])
+    if not results:
+        lm = state.get("messages", [])[-1] if state.get("messages") else None
+        c = lm.content if lm and hasattr(lm, "content") else ""
+        return {"final_answer": c, "messages": [AIMessage(content=c)] if c else []}
+    if len(results) == 1:
+        c = results[0].get("content", "")
+        resp = await chat_model.ainvoke(f"整理以下回答使其简洁清晰，不要使用emoji表情符号：\n{c}")
+        c2 = resp.content or c
+        return {"final_answer": c2, "messages": [AIMessage(content=c2)]}
+    parts = "\n".join([f"[{r['agent']}]: {r.get('content','')}" for r in results])
+    prompt = f"基于以下子任务的回答，合成一个完整连贯的回复给用户。简洁明了，不使用emoji表情符号，也不要提及子任务或agent名称：\n{parts}"
+    try:
+        resp = await chat_model.ainvoke(prompt)
+        c = resp.content or ""
+        logger.info(f"[Summarizer] {c[:100]}")
+        return {"final_answer": c, "messages": [AIMessage(content=c)]}
+    except Exception as e:
+        logger.error(f"[Summarizer] failed: {e}")
+        return {"final_answer": parts, "messages": [AIMessage(content=parts)]}
 
 
 class SupervisorAgent:
-    """
-    基于 LangGraph 的多智能体调度系统
-    """
-
     def __init__(self):
         self._checkpointer = self._init_checkpointer()
         self._graph = self._build_graph()
 
     def _init_checkpointer(self):
-        """初始化 checkpointer"""
         try:
             from utils.postgres_checkpointer import AsyncPostgresSaver
             from utils.config_handler import agent_conf
@@ -161,236 +197,142 @@ class SupervisorAgent:
         return MemorySaver()
 
     def _build_graph(self) -> StateGraph:
-        """构建多智能体状态图"""
+        wf = StateGraph(MultiAgentState)
+        wf.add_node("supervisor", supervisor_node)
+        wf.add_node("date_agent", date_agent_node)
+        wf.add_node("weather_agent", weather_agent_node)
+        wf.add_node("react_agent", react_agent_node)
+        wf.add_node("summarizer", summarizer_node)
+        wf.set_entry_point("supervisor")
+        wf.add_conditional_edges("supervisor", route_after_supervisor,
+            {"date_agent": "date_agent", "weather_agent": "weather_agent", "react_agent": "react_agent"})
+        for a in ["date_agent", "weather_agent", "react_agent"]:
+            wf.add_edge(a, "summarizer")
+        wf.add_edge("summarizer", END)
+        return wf.compile(checkpointer=self._checkpointer)
 
-        workflow = StateGraph(MultiAgentState)
-
-        date_agent_node = create_agent_node(
-            "date_agent",
-            load_date_prompt(),
-            date_tools
-        )
-
-        weather_agent_node = create_agent_node(
-            "weather_agent",
-            load_weather_prompt(),
-            weather_tools
-        )
-
-        react_agent_node = create_agent_node(
-            "react_agent",
-            load_react_prompt(),
-            base_tools
-        )
-
-        date_tool_node = ToolNode(date_tools)
-        weather_tool_node = ToolNode(weather_tools)
-        react_tool_node = ToolNode(base_tools)
-
-        workflow.add_node("supervisor", supervisor_node)
-        workflow.add_node("date_agent", date_agent_node)
-        workflow.add_node("weather_agent", weather_agent_node)
-        workflow.add_node("react_agent", react_agent_node)
-        workflow.add_node("date_tools", date_tool_node)
-        workflow.add_node("weather_tools", weather_tool_node)
-        workflow.add_node("react_tools", react_tool_node)
-
-        workflow.set_entry_point("supervisor")
-
-        # 条件边：Supervisor -> Agent
-        workflow.add_conditional_edges(
-            "supervisor",
-            route_to_agent,
-            {
-                "date_agent": "date_agent",
-                "weather_agent": "weather_agent",
-                "react_agent": "react_agent"
-            }
-        )
-
-        # 条件边：Agent -> Tools 或 END
-        workflow.add_conditional_edges(
-            "date_agent",
-            should_continue,
-            {
-                "tools": "date_tools",
-                "end": END
-            }
-        )
-
-        workflow.add_conditional_edges(
-            "weather_agent",
-            should_continue,
-            {
-                "tools": "weather_tools",
-                "end": END
-            }
-        )
-
-        workflow.add_conditional_edges(
-            "react_agent",
-            should_continue,
-            {
-                "tools": "react_tools",
-                "end": END
-            }
-        )
-
-        # 工具执行完成后返回对应 Agent
-        workflow.add_edge("date_tools", "date_agent")
-        workflow.add_edge("weather_tools", "weather_agent")
-        workflow.add_edge("react_tools", "react_agent")
-
-        return workflow.compile(checkpointer=self._checkpointer)
-
-    async def execute_stream(self, query: str, session_id: str = "",
-                             user_id: str = "default_user"):
-        """
-        执行流式查询
-
-        Args:
-            query: 用户查询
-            session_id: 会话ID
-            user_id: 用户ID（用于长期记忆）
-
-        Yields:
-            流式输出的文本片段
-        """
+    async def execute_stream(self, query: str, session_id: str = "", user_id: str = "default_user"):
         from memory.mem0_service import mem0_service
+        mems = mem0_service.search(query, user_id=user_id)
+        ctx = mem0_service.format_memories_for_prompt(mems)
+        aq = f"{ctx}\n\n[用户当前问题]\n{query}" if ctx else query
 
-        memories = mem0_service.search(query, user_id=user_id)
-        memory_context = mem0_service.format_memories_for_prompt(memories)
+        await self._ensure_context_budget(session_id, user_id)
 
-        augmented_query = query
-        if memory_context:
-            augmented_query = f"{memory_context}\n\n[用户当前问题]\n{query}"
-
-        input_state = {
-            "messages": [HumanMessage(content=augmented_query)],
-            "current_agent": "",
-            "task_results": {},
-            "final_answer": "",
-            "session_id": session_id,
-            "user_id": user_id
-        }
-
-        config = {
-            "configurable": {
-                "thread_id": session_id,
-                "user_id": user_id
-            }
-        }
-        
+        st = {"messages": [HumanMessage(content=aq)], "sub_tasks": [], "agent_results": [],
+              "final_answer": "", "session_id": session_id, "user_id": user_id}
+        cfg = {"configurable": {"thread_id": session_id, "user_id": user_id}}
         try:
-            logger.info(f"[execute_stream] 开始执行查询: {query}")
-            
-            async for event in self._graph.astream_events(input_state, config, version="v2"):
-                kind = event["event"]
-                logger.debug(f"[Event] {kind}")
-                
-                if kind == "on_chat_model_stream":
-                    content = event["data"]["chunk"].content
-                    if content:
-                        logger.debug(f"[Stream] {content}")
-                        yield content
-                
-                elif kind == "on_chat_model_end":
-                    logger.debug(f"[Model End] Event data: {event}")
-                    
-                    output = event.get("data", {}).get("output", None)
-                    
-                    if not output or not hasattr(output, 'content') or not output.content:
+            async for ev in self._graph.astream_events(st, cfg, version="v2"):
+                k = ev["event"]
+                if k == "on_chat_model_stream":
+                    c = ev["data"]["chunk"].content
+                    if c: yield c
+                elif k == "on_chat_model_end":
+                    o = ev.get("data", {}).get("output", None)
+                    if not o or not hasattr(o, 'content') or not o.content: continue
+                    c = o.content
+                    if isinstance(c, list): c = "".join(str(x) for x in c)
+                    if c.strip().startswith("[") and "\"agent\"" in c: continue
+                    if not c.strip(): continue
+                    node = ev.get("metadata", {}).get("langgraph_node", "")
+                    if node in ("date_agent", "weather_agent", "react_agent"):
                         continue
-                    
-                    content = output.content
-                    if isinstance(content, list):
-                        content = "".join(str(c) for c in content)
-                    
-                    valid_agents = {"date_agent", "weather_agent", "react_agent"}
-                    if content.strip() in valid_agents:
-                        logger.info(f"[Model End] 跳过 supervisor 的路由决策: {content}")
-                        continue
-                    
-                    logger.info(f"[Model End] Content: {content}")
-                    yield content
-                
-                elif kind == "on_tool_start":
-                    tool_name = event["name"]
-                    logger.info(f"[Tool Start] {tool_name}")
-                
-                elif kind == "on_tool_end":
-                    tool_name = event["name"]
-                    logger.info(f"[Tool End] {tool_name}")
-                
-                elif kind == "on_end":
-                    logger.info(f"[Graph End] 图执行结束")
-            
-            logger.info(f"[execute_stream] 执行完成")
-        
+                    yield c
+            await self._maybe_batch_extract(session_id, user_id)
         except Exception as e:
-            logger.error(f"[execute_stream] 执行失败: {str(e)}")
             yield f"执行失败: {str(e)}"
 
-    async def run_agent(self, query: str, session_id: str = "") -> str:
-        """
-        运行 agent 并返回完整结果
-
-        Args:
-            query: 用户查询
-            session_id: 会话ID
-
-        Returns:
-            完整的响应文本
-        """
-        result_chunks = []
-        async for chunk in self.execute_stream(query, session_id):
-            result_chunks.append(chunk)
-            print(chunk, end="", flush=True)
-
-        return "".join(result_chunks)
-
-    async def delete_session_memory(self, session_id: str,
-                                     user_id: str = "default_user"):
-        """
-        删除指定会话的记忆，删除前将对话中的关键事实提取到长期记忆
-
-        Args:
-            session_id: 会话ID
-            user_id: 用户ID（用于长期记忆）
-        """
-        if not session_id:
-            return
-
+    async def _maybe_batch_extract(self, session_id: str, user_id: str):
         try:
-            config = {"configurable": {"thread_id": session_id}}
-            checkpoint_tuple = await self._checkpointer.aget_tuple(config)
-
-            if checkpoint_tuple and checkpoint_tuple.checkpoint:
-                channel_values = checkpoint_tuple.checkpoint.get("channel_values", {})
-                messages = channel_values.get("messages", [])
-
-                if messages:
-                    conversation = []
-                    for msg in messages:
-                        role = "user" if (hasattr(msg, "type") and msg.type == "human") else "assistant"
-                        content = msg.content if hasattr(msg, "content") else str(msg)
-                        if content:
-                            conversation.append({"role": role, "content": content})
-
-                    if conversation:
-                        from memory.mem0_service import mem0_service
-                        mem0_service.add(
-                            conversation,
-                            user_id=user_id,
-                            metadata={"source_session_id": session_id}
-                        )
-                        logger.info(
-                            f"[delete_session_memory] 已提取长期记忆，"
-                            f"session: {session_id}, 消息数: {len(conversation)}"
-                        )
+            ck = await self._checkpointer.aget_tuple(
+                {"configurable": {"thread_id": session_id, "user_id": user_id}})
+            if not ck or not ck.checkpoint: return
+            msgs = ck.checkpoint.get("channel_values", {}).get("messages", [])
+            pairs = []; um = None
+            for m in msgs:
+                if hasattr(m, "type") and m.type == "human" and m.content: um = m.content
+                elif hasattr(m, "type") and m.type == "ai" and m.content and um:
+                    pairs.append((um, m.content)); um = None
+            if len(pairs) < 10: return
+            last = pairs[-10:]; conv = []
+            for u, a in last:
+                conv.append({"role": "user", "content": u[:500]})
+                conv.append({"role": "assistant", "content": a[:500]})
+            from memory.mem0_service import mem0_service
+            mem0_service.add(conv, user_id=user_id,
+                           metadata={"source_session_id": session_id, "auto_extracted": True})
+            logger.info(f"[BatchExtract] session={session_id}, {len(last)}轮 → Mem0")
         except Exception as e:
-            logger.warning(f"[delete_session_memory] 提取长期记忆失败: {e}")
+            logger.warning(f"[BatchExtract] 失败: {e}")
 
+    async def _ensure_context_budget(self, session_id: str, user_id: str):
+        TOKEN_BUDGET = 20000
+        config = {"configurable": {"thread_id": session_id, "user_id": user_id}}
+        ck = await self._checkpointer.aget_tuple(config)
+        if not ck or not ck.checkpoint: return
+        msgs = ck.checkpoint.get("channel_values", {}).get("messages", [])
+        if not msgs: return
+        pairs = []; um = None
+        for m in msgs:
+            if hasattr(m, "type") and m.type == "human" and m.content: um = m.content
+            elif hasattr(m, "type") and m.type == "ai" and m.content and um:
+                pairs.append((um, m.content)); um = None
+
+        def _est(t):
+            zh = sum(1 for c in t if '一' <= c <= '鿿')
+            return int(zh * 1.5 + (len(t) - zh) * 0.25)
+
+        total = 0; cutoff = 0
+        for i in range(len(pairs) - 1, -1, -1):
+            u, a = pairs[i]; total += _est(u[:500]) + _est(a[:500])
+            if total > TOKEN_BUDGET: cutoff = i + 1; break
+        if cutoff == 0: return
+
+        old_summary = ""
+        if hasattr(msgs[0], "type") and msgs[0].type == "system":
+            old_summary = msgs[0].content
+        text = (f"[前序摘要]\n{old_summary}\n\n" if old_summary else "")
+        for u, a in pairs[:cutoff]:
+            text += f"用户：{u[:500]}\nAI：{a[:500]}\n"
+        try:
+            resp = await chat_model.ainvoke(
+                "总结以下对话的关键信息，保留用户偏好、个人事实、重要决策。用简洁中文。\n\n" + text)
+            new_summary = resp.content.strip()
+            if not new_summary: return
+        except Exception: return
+        from langchain_core.messages import SystemMessage
+        ck.checkpoint["channel_values"]["messages"] = [
+            SystemMessage(content=f"[历史对话摘要]\n{new_summary}")]
+        await self._checkpointer.aput(config, ck.checkpoint, ck.metadata,
+                                      ck.checkpoint.get("channel_versions", {}))
+        logger.info(f"[Compress] session={session_id}, {cutoff}/{len(pairs)}轮→摘要({len(new_summary)}字)")
+
+    async def run_agent(self, query: str, session_id: str = "") -> str:
+        r = []
+        async for c in self.execute_stream(query, session_id):
+            r.append(c); print(c, end="", flush=True)
+        return "".join(r)
+
+    async def delete_session_memory(self, session_id: str, user_id: str = "default_user"):
+        if not session_id: return
+        try:
+            ck = await self._checkpointer.aget_tuple({"configurable": {"thread_id": session_id}})
+            if ck and ck.checkpoint:
+                ms = ck.checkpoint.get("channel_values", {}).get("messages", [])
+                if ms:
+                    cv = []
+                    for m in ms:
+                        role = "user" if (hasattr(m, "type") and m.type == "human") else "assistant"
+                        if hasattr(m, "content") and m.content:
+                            cv.append({"role": role, "content": m.content})
+                    if cv:
+                        from memory.mem0_service import mem0_service
+                        mem0_service.add(cv, user_id=user_id, metadata={"source_session_id": session_id})
+                        from memory.memory_cleanup import cleanup
+                        cleanup(user_id)
+        except Exception as e:
+            logger.warning(f"[delete] failed: {e}")
         if hasattr(self._checkpointer, 'delete_thread'):
             self._checkpointer.delete_thread(session_id)
         elif hasattr(self._checkpointer, 'adelete_thread'):
@@ -401,16 +343,11 @@ supervisor_agent = SupervisorAgent()
 
 if __name__ == '__main__':
     async def test():
-        print("测试日期查询:")
-        await supervisor_agent.run_agent("今天是几号？星期几？", "test_session_1")
-        print("\n" + "=" * 50 + "\n")
-
-        print("测试天气查询:")
-        await supervisor_agent.run_agent("上海今天天气怎么样？", "test_session_2")
-        print("\n" + "=" * 50 + "\n")
-
-        print("测试通用查询:")
-        await supervisor_agent.run_agent("你好，介绍一下你自己", "test_session_3")
-
-
+        print("简单日期:"); await supervisor_agent.run_agent("今天是几号？星期几？", "t1")
+        print("\n" + "=" * 50 + "\n简单天气:")
+        await supervisor_agent.run_agent("上海今天天气怎么样？", "t2")
+        print("\n" + "=" * 50 + "\n复合:")
+        await supervisor_agent.run_agent("今天星期几，上海天气怎么样", "t3")
+        print("\n" + "=" * 50 + "\n通用:")
+        await supervisor_agent.run_agent("你好", "t4")
     asyncio.run(test())

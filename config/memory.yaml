@@ -4,3 +4,8 @@ chroma_path: ./memory_db
 history_db_path: ./memory_db/mem0_history.db
 k: 5
 default_user_id: "default_user"
+
+# 记忆遗忘策略
+memory_limit_per_user: 100
+importance_threshold: 0.3
+retention_days: 30
