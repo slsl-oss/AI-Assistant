@@ -375,6 +375,55 @@
   .send-btn:disabled { opacity: 0.3; cursor: default; }
   .send-btn svg { width: 17px; height: 17px; }
 
+  .stop-btn {
+    flex-shrink: 0;
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    border: none;
+    background: var(--danger);
+    color: #fff;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s ease, opacity 0.15s ease;
+  }
+  .stop-btn:hover { background: #dc2626; }
+  .stop-btn:active { transform: scale(0.98); }
+  .stop-btn.visible { display: flex; }
+  .stop-btn svg { width: 17px; height: 17px; }
+
+  .continue-btn {
+    display: none;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1px solid var(--accent);
+    background: transparent;
+    color: var(--accent);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin: 0 auto 8px;
+    transition: all 0.15s ease;
+  }
+  .continue-btn:hover { background: var(--accent-surface); }
+  .continue-btn.visible { display: flex; }
+  .continue-btn svg { width: 14px; height: 14px; }
+
+  .cancelled-notice {
+    display: none;
+    text-align: center;
+    padding: 8px 24px;
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    font-style: italic;
+  }
+  .cancelled-notice.visible { display: block; }
+
   .toast {
     position: fixed;
     bottom: 100px;
@@ -693,6 +742,14 @@
 
     <div id="chatMessages" class="chat-messages hidden"></div>
 
+    <div id="continueBtn" class="continue-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="5 3 19 12 5 21 5 3"/>
+      </svg>
+      <span>继续执行</span>
+    </div>
+    <div id="cancelledNotice" class="cancelled-notice">任务已停止</div>
+
     <div class="input-area">
       <div class="input-wrapper">
         <textarea id="input" rows="1" placeholder="输入你的问题..." autofocus></textarea>
@@ -700,6 +757,11 @@
         <button id="uploadBtn" class="send-btn" aria-label="上传文件" title="上传知识文档" style="background:var(--bg-elevated);border:1px solid var(--border-primary);margin-right:4px;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+        </button>
+        <button id="stopBtn" class="stop-btn" aria-label="停止生成">
+          <svg viewBox="0 0 24 24" fill="currentColor" stroke="none">
+            <rect x="4" y="4" width="16" height="16" rx="2"/>
           </svg>
         </button>
         <button id="sendBtn" class="send-btn" aria-label="发送">
@@ -756,6 +818,10 @@
   const userAvatar = $('#userAvatar');
   const userNameDisplay = $('#userNameDisplay');
   const appContainer = $('#app');
+
+  const stopBtn = $('#stopBtn');
+  const continueBtn = $('#continueBtn');
+  const cancelledNotice = $('#cancelledNotice');
 
   let isLoginMode = true;
 
@@ -894,8 +960,9 @@
   const state = {
     currentSessionId: null,
     sessions: [],
-    isStreaming: false,
-    sessionTitles: {}
+    streamingState: 'idle',  // 'idle' | 'streaming' | 'stopped'
+    sessionTitles: {},
+    abortController: null
   };
 
   try {
@@ -905,6 +972,25 @@
 
   function saveTitles() {
     try { localStorage.setItem('ai_titles', JSON.stringify(state.sessionTitles)); } catch (_) {}
+  }
+
+  function updateInputUI() {
+    if (state.streamingState === 'streaming') {
+      sendBtn.style.display = 'none';
+      stopBtn.classList.add('visible');
+      continueBtn.classList.remove('visible');
+      cancelledNotice.classList.remove('visible');
+    } else if (state.streamingState === 'stopped') {
+      sendBtn.style.display = 'flex';
+      stopBtn.classList.remove('visible');
+      continueBtn.classList.add('visible');
+      cancelledNotice.classList.add('visible');
+    } else {
+      sendBtn.style.display = 'flex';
+      stopBtn.classList.remove('visible');
+      continueBtn.classList.remove('visible');
+      cancelledNotice.classList.remove('visible');
+    }
   }
 
   function showToast(msg) {
@@ -1052,7 +1138,7 @@
   }
 
   async function switchSession(sessionId) {
-    if (state.isStreaming) {
+    if (state.streamingState !== 'idle') {
       showToast('正在回复中，请等待完成后再切换');
       return;
     }
@@ -1097,17 +1183,17 @@
   }
 
   async function sendMessage(text) {
-    if (state.isStreaming || !text.trim()) return;
-    state.isStreaming = true;
-    sendBtn.disabled = true;
+    if (state.streamingState !== 'idle' || !text.trim()) return;
+    state.streamingState = 'streaming';
+    updateInputUI();
     input.value = '';
     input.style.height = 'auto';
 
     if (!state.currentSessionId) {
       try { await createSession(); } catch (e) {
         showToast('创建会话失败');
-        state.isStreaming = false;
-        sendBtn.disabled = false;
+        state.streamingState = 'idle';
+        updateInputUI();
         return;
       }
     }
@@ -1125,6 +1211,9 @@
     let aiBubble = null;
     let fullAiResponse = '';
 
+    const abortController = new AbortController();
+    state.abortController = abortController;
+
     try {
       const headers = {
         'Content-Type': 'application/json',
@@ -1136,7 +1225,8 @@
       const res = await fetch('/api/sessions/' + sessionId + '/messages/stream', {
         method: 'POST',
         headers,
-        body: JSON.stringify({ content: text.trim(), messageType: 1 })
+        body: JSON.stringify({ content: text.trim(), messageType: 1 }),
+        signal: abortController.signal
       });
 
       if (!res.ok) {
@@ -1147,53 +1237,59 @@
       const reader = res.body.getReader();
       const decoder = new TextDecoder('utf-8');
       let buffer = '';
-      let eventCount = 0;
 
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
 
-        const text = decoder.decode(value, { stream: true });
-        buffer += text;
-        eventCount++;
-        console.log('收到数据块', eventCount, ':', text);
+        const chunk = decoder.decode(value, { stream: true });
+        buffer += chunk;
 
         const lines = buffer.split('\n');
         buffer = lines.pop();
 
         for (const line of lines) {
-          console.log('处理行:', line);
           if (!line.trim()) continue;
           if (line.startsWith('event:')) continue;
           if (!line.startsWith('data:')) continue;
           try {
             const payload = JSON.parse(line.slice(5).trim());
-            console.log('解析成功:', payload);
+            if (payload.cancelled) {
+              if (aiBubble) aiBubble.classList.remove('streaming-cursor');
+              state.streamingState = 'stopped';
+              updateInputUI();
+              scrollDown();
+              return;
+            }
             if (payload.done) {
-              console.log('收到done事件');
               break;
             }
             if (payload.thinking === false) {
               removeThinking();
               aiBubble = createAiRow();
-              console.log('thinking=false, 创建aiBubble');
             } else if (payload.thinking === true) {
-              console.log('thinking=true, 保持思考状态');
+              // 保持思考状态
             } else if (payload.chunk != null && aiBubble) {
               aiBubble.textContent += payload.chunk;
               fullAiResponse += payload.chunk;
               scrollDown();
-              console.log('收到chunk, 当前内容长度:', fullAiResponse.length);
             }
           } catch (e) {
             console.warn('解析失败:', line, e);
           }
         }
       }
-      console.log('流式响应结束, 总数据块:', eventCount, '总内容:', fullAiResponse);
 
       loadSessions();
     } catch (err) {
+      if (err.name === 'AbortError') {
+        // 用户点击停止按钮导致 fetch 中断，这是预期行为
+        state.streamingState = 'stopped';
+        updateInputUI();
+        removeThinking();
+        if (aiBubble) aiBubble.classList.remove('streaming-cursor');
+        return;
+      }
       removeThinking();
       if (!fullAiResponse) {
         if (aiBubble) aiBubble.textContent = '抱歉，请求失败，请稍后重试';
@@ -1202,11 +1298,39 @@
       showToast('网络请求失败，请稍后重试');
       console.error(err);
     } finally {
+      if (state.streamingState !== 'stopped') {
+        state.streamingState = 'idle';
+        updateInputUI();
+      }
       if (aiBubble) aiBubble.classList.remove('streaming-cursor');
-      state.isStreaming = false;
-      sendBtn.disabled = false;
+      state.abortController = null;
       input.focus();
     }
+  }
+
+  async function cancelStream() {
+    const sessionId = state.currentSessionId;
+    if (!sessionId || state.streamingState !== 'streaming') return;
+
+    if (state.abortController) {
+      state.abortController.abort();
+    }
+
+    try {
+      await api('/sessions/' + sessionId + '/messages/cancel', { method: 'POST' });
+    } catch (e) {
+      console.warn('取消API调用失败:', e);
+    }
+
+    state.streamingState = 'stopped';
+    removeThinking();
+    updateInputUI();
+    scrollDown();
+  }
+
+  async function continueSession() {
+    if (state.streamingState !== 'stopped') return;
+    await sendMessage('请继续执行');
   }
 
   function openSidebar() {
@@ -1219,6 +1343,9 @@
   }
 
   sendBtn.addEventListener('click', () => sendMessage(input.value));
+
+  stopBtn.addEventListener('click', cancelStream);
+  continueBtn.addEventListener('click', continueSession);
 
   input.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -1233,7 +1360,7 @@
   });
 
   newSessionBtn.addEventListener('click', async () => {
-    if (state.isStreaming) {
+    if (state.streamingState !== 'idle') {
       showToast('正在回复中，请等待完成后再创建新对话');
       return;
     }
@@ -1264,6 +1391,7 @@
   sidebarOverlay.addEventListener('click', closeSidebar);
 
   async function init() {
+    updateInputUI();
     const token = getToken();
     if (!token) {
       showLanding();

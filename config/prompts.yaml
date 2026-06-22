@@ -1,6 +1,10 @@
 main_prompt_path: prompts/main_prompt.txt
 rag_summarize_prompt_path: prompts/rag_summarize.txt
-date_prompt_path: prompts/date_agent_prompt.txt
-weather_prompt_path: prompts/weather_agent_prompt.txt
 supervisor_prompt_path: prompts/supervisor_agent_prompt.txt
 react_prompt_path: prompts/react_agent_prompt.txt
+research_prompt_path: prompts/research_agent_prompt.txt
+editor_prompt_path: prompts/editor_agent_prompt.txt
+writer_prompt_path: prompts/writer_agent_prompt.txt
+reviewer_prompt_path: prompts/reviewer_agent_prompt.txt
+reviser_prompt_path: prompts/reviser_agent_prompt.txt
+publisher_prompt_path: prompts/publisher_agent_prompt.txt

@@ -38,40 +38,6 @@ def load_rag_prompt():
         raise e
 
 
-def load_date_prompt():
-    """
-    加载日期agent的提示词
-    :return:
-    """
-    try:
-        date_prompt_path = get_abs_path(prompts_conf["date_prompt_path"])
-    except KeyError as e:
-        logger.error(f"[load_date_prompt]在yaml中没有配置date_prompt_path")
-        raise e
-
-    try:
-        return open(date_prompt_path, "r", encoding="utf-8").read()
-    except Exception as e:
-        logger.error(f"[load_date_prompt]解析提示词出错，{str(e)}")
-        raise e
-
-def load_weather_prompt():
-    """
-    加载天气agent的提示词
-    :return:
-    """
-    try:
-        weather_prompt_path = get_abs_path(prompts_conf["weather_prompt_path"])
-    except KeyError as e:
-        logger.error(f"[load_weather_prompt]在yaml中没有配置weather_prompt_path")
-        raise e
-
-    try:
-        return open(weather_prompt_path, "r", encoding="utf-8").read()
-    except Exception as e:
-        logger.error(f"[load_weather_prompt]解析提示词出错，{str(e)}")
-        raise e
-
 def load_supervisor_prompt():
     """
     加载在langgraph框架下调度agent的提示词，根据用户问题做决策，将问题转发给适合的子agent解决
@@ -104,6 +70,83 @@ def load_react_prompt():
         return open(react_prompt_path, "r", encoding="utf-8").read()
     except Exception as e:
         logger.error(f"[load_react_prompt]解析提示词出错，{str(e)}")
+        raise e
+
+def load_research_prompt():
+    """
+    加载research_agent的提示词
+    :return:
+    """
+    try:
+        research_prompt_path = get_abs_path(prompts_conf["research_prompt_path"])
+    except KeyError as e:
+        logger.error(f"[load_research_prompt]在yaml中没有配置research_prompt_path")
+        raise e
+
+    try:
+        return open(research_prompt_path, "r", encoding="utf-8").read()
+    except Exception as e:
+        logger.error(f"[load_research_prompt]解析提示词出错，{str(e)}")
+        raise e
+
+def load_editor_prompt():
+    try:
+        path = get_abs_path(prompts_conf["editor_prompt_path"])
+    except KeyError as e:
+        logger.error(f"[load_editor_prompt]在yaml中没有配置editor_prompt_path")
+        raise e
+    try:
+        return open(path, "r", encoding="utf-8").read()
+    except Exception as e:
+        logger.error(f"[load_editor_prompt]解析提示词出错，{str(e)}")
+        raise e
+
+def load_writer_prompt():
+    try:
+        path = get_abs_path(prompts_conf["writer_prompt_path"])
+    except KeyError as e:
+        logger.error(f"[load_writer_prompt]在yaml中没有配置writer_prompt_path")
+        raise e
+    try:
+        return open(path, "r", encoding="utf-8").read()
+    except Exception as e:
+        logger.error(f"[load_writer_prompt]解析提示词出错，{str(e)}")
+        raise e
+
+def load_reviewer_prompt():
+    try:
+        path = get_abs_path(prompts_conf["reviewer_prompt_path"])
+    except KeyError as e:
+        logger.error(f"[load_reviewer_prompt]在yaml中没有配置reviewer_prompt_path")
+        raise e
+    try:
+        return open(path, "r", encoding="utf-8").read()
+    except Exception as e:
+        logger.error(f"[load_reviewer_prompt]解析提示词出错，{str(e)}")
+        raise e
+
+def load_reviser_prompt():
+    try:
+        path = get_abs_path(prompts_conf["reviser_prompt_path"])
+    except KeyError as e:
+        logger.error(f"[load_reviser_prompt]在yaml中没有配置reviser_prompt_path")
+        raise e
+    try:
+        return open(path, "r", encoding="utf-8").read()
+    except Exception as e:
+        logger.error(f"[load_reviser_prompt]解析提示词出错，{str(e)}")
+        raise e
+
+def load_publisher_prompt():
+    try:
+        path = get_abs_path(prompts_conf["publisher_prompt_path"])
+    except KeyError as e:
+        logger.error(f"[load_publisher_prompt]在yaml中没有配置publisher_prompt_path")
+        raise e
+    try:
+        return open(path, "r", encoding="utf-8").read()
+    except Exception as e:
+        logger.error(f"[load_publisher_prompt]解析提示词出错，{str(e)}")
         raise e
 
 if __name__ == '__main__':

@@ -1,12 +1,14 @@
 import json
 import asyncio
 import uvicorn
-from fastapi import FastAPI, Query, HTTPException, UploadFile, File, Form
+from fastapi import FastAPI, Query, HTTPException, UploadFile, File, Form, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 # from agent.react_agent import ReactAgent
-from agent.supervisor_agent import SupervisorAgent
+from agent.supervisor_agent import SupervisorAgent, CANCELLED_SIGNAL
+from utils.cancellation import TaskCancelledError
+from utils.logger_handler import logger
 import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 app = FastAPI()
@@ -60,7 +62,8 @@ async def health():
 @app.post("/sessions/messages/stream")
 async def agent_service_stream(
         query: str = Query(None),
-        body: StreamRequest = None
+        body: StreamRequest = None,
+        request: Request = None
 ):
     actual_query = query or (body.query if body else None)
     if not actual_query:
@@ -74,23 +77,55 @@ async def agent_service_stream(
         first_chunk = True
         yield f"data: {json.dumps({'thinking': True})}\n\n"
 
-        async for chunk in supervisor_agent.execute_stream(actual_query, session_id, user_id):
-            if first_chunk:
-                first_chunk = False
-                yield f"data: {json.dumps({'thinking': False})}\n\n"
-                await asyncio.sleep(0.1)
+        try:
+            async for chunk in supervisor_agent.execute_stream(actual_query, session_id, user_id):
+                # 检查客户端是否断开连接
+                if request and await request.is_disconnected():
+                    supervisor_agent.cancel_session(session_id)
+                    logger.info(f"[SSE] 客户端断开连接 session={session_id}")
+                    yield f"data: {json.dumps({'cancelled': True})}\n\n"
+                    return
 
-            # 将chunk拆分成更小的片段，实现真正的流式效果
-            chunk_size = 5  # 每次发送5个字符
-            for i in range(0, len(chunk), chunk_size):
-                small_chunk = chunk[i: i + chunk_size]
-                payload = json.dumps({"chunk": small_chunk}, ensure_ascii=False)
-                yield f"data: {payload}\n\n"
-                await asyncio.sleep(0.05)  # 控制发送速率
+                # 检测取消信号哨兵值（使用 is 进行对象身份比较）
+                if chunk is CANCELLED_SIGNAL:
+                    yield f"data: {json.dumps({'cancelled': True})}\n\n"
+                    return
 
-        yield f"data: {json.dumps({'done': True})}\n\n"
+                if first_chunk:
+                    first_chunk = False
+                    yield f"data: {json.dumps({'thinking': False})}\n\n"
+                    await asyncio.sleep(0.1)
+
+                # 将chunk拆分成更小的片段，实现真正的流式效果
+                chunk_size = 5  # 每次发送5个字符
+                for i in range(0, len(chunk), chunk_size):
+                    small_chunk = chunk[i: i + chunk_size]
+                    payload = json.dumps({"chunk": small_chunk}, ensure_ascii=False)
+                    yield f"data: {payload}\n\n"
+                    await asyncio.sleep(0.05)  # 控制发送速率
+
+            yield f"data: {json.dumps({'done': True})}\n\n"
+        except (asyncio.CancelledError, TaskCancelledError):
+            # 捕获 asyncio.CancelledError（可能在 await sleep 时注入）
+            # 和 TaskCancelledError（合作式取消异常）
+            logger.info(f"[SSE] 任务取消 session={session_id}")
+            yield f"data: {json.dumps({'cancelled': True})}\n\n"
 
     return StreamingResponse(generate(), media_type="text/event-stream")
+
+
+@app.post("/sessions/{session_id}/cancel")
+async def cancel_session(session_id: str):
+    """取消指定会话的活跃流式任务。
+
+    客户端（Java 后端或前端）调用此端点来取消正在执行的 Agent 任务。
+    取消是合作式的：不会强制终止，而是在下一个 yield 检查点优雅退出。
+    LangGraph 的 Checkpoint 状态在取消前已持久化，可以后续恢复。
+    """
+    if not session_id:
+        raise HTTPException(status_code=400, detail="session_id is required")
+    cancelled = supervisor_agent.cancel_session(session_id)
+    return {"success": cancelled, "session_id": session_id}
 
 
 @app.delete("/sessions/{session_id}/memory")

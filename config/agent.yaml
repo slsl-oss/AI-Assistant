@@ -1,4 +1,17 @@
-chat_model_name: qwen-max
+chat_model_name: deepseek-v4-pro
+
+# 多Agent角色→模型映射（未配置的角色默认使用 chat_model_name）
+agent_models:
+  supervisor:      deepseek-v4-pro    # 主编排/任务拆解
+  summarizer:      deepseek-v4-flash    # 结果合成
+  react_agent:     deepseek-v4-flash    # 通用推理
+  research_agent:  deepseek-v4-pro    # 深度研究（三级并行流水线）
+  editor:          deepseek-v4-pro    # 子编排/大纲规划
+  writer:          deepseek-v4-pro    # 引言/结论撰写
+  reviewer:        deepseek-v4-pro    # 草稿审查
+  reviser:         deepseek-v4-pro    # 草稿修改
+  publisher:       deepseek-v4-flash    # 排版导出
+  human:           deepseek-v4-flash    # 人工审批
 
 #数据库连接地址
 DB_URI: "postgresql://root:123@192.168.80.101:5432/agent_service?sslmode=disable&options=-csearch_path%3Dagent_service"

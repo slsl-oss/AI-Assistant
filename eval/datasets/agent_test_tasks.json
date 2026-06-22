@@ -1,0 +1,76 @@
+{
+  "agent_tasks": [
+    {
+      "task": "帮我搜索最近AI领域的最新进展",
+      "expected_tool": "baidu_web_search",
+      "expected_tool_category": "search",
+      "difficulty": "easy"
+    },
+    {
+      "task": "根据之前上传的尺码表，我的身高175体重80kg应该选什么码",
+      "expected_tool": "rag_summarize",
+      "expected_tool_category": "rag",
+      "difficulty": "medium"
+    },
+    {
+      "task": "你好，请介绍一下你自己",
+      "expected_tool": "",
+      "expected_tool_category": "none",
+      "difficulty": "easy"
+    },
+    {
+      "task": "现在北京时间几点",
+      "expected_tool": "get_current_time_by_timezone",
+      "expected_tool_category": "datetime",
+      "difficulty": "easy"
+    },
+    {
+      "task": "上海今天天气怎么样",
+      "expected_tool": "get_weather_by_city",
+      "expected_tool_category": "weather",
+      "difficulty": "easy"
+    },
+    {
+      "task": "帮我记住我喜欢深色系的衣服",
+      "expected_tool": "save_memory",
+      "expected_tool_category": "memory",
+      "difficulty": "easy"
+    },
+    {
+      "task": "我上次搜索过什么偏好",
+      "expected_tool": "search_memory",
+      "expected_tool_category": "memory",
+      "difficulty": "medium"
+    },
+    {
+      "task": "我之前上传的文档里关于面料养护的内容是什么",
+      "expected_tool": "rag_summarize",
+      "expected_tool_category": "rag",
+      "difficulty": "medium"
+    },
+    {
+      "task": "纽约现在几点，和北京差几个小时",
+      "expected_tool": "compare_time",
+      "expected_tool_category": "datetime",
+      "difficulty": "medium"
+    },
+    {
+      "task": "2024年诺贝尔物理学奖得主是谁",
+      "expected_tool": "baidu_web_search",
+      "expected_tool_category": "search",
+      "difficulty": "easy"
+    },
+    {
+      "task": "你今天能帮我做哪些事情",
+      "expected_tool": "list_agents",
+      "expected_tool_category": "meta",
+      "difficulty": "easy"
+    },
+    {
+      "task": "太阳从哪边升起",
+      "expected_tool": "",
+      "expected_tool_category": "none",
+      "difficulty": "easy"
+    }
+  ]
+}

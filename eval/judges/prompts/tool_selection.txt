@@ -1,0 +1,10 @@
+你是一个评估专家。请判断以下工具选择是否适合该查询。
+
+查询：{query}
+
+实际调用的工具：{actual_tool}
+
+预期调用的工具：{expected_tool}
+
+请判断工具选择是否正确，输出 JSON 格式：
+{{"correct": true/false, "reasoning": "简短说明原因"}}

@@ -1,0 +1,79 @@
+{
+  "rag_queries": [
+    {
+      "query": "合成数据-尺码推荐查询示例一",
+      "relevant_doc_ids": ["doc_size_chart_001", "doc_size_guide_002"],
+      "category": "size_recommendation"
+    },
+    {
+      "query": "合成数据-面料养护查询示例二",
+      "relevant_doc_ids": ["doc_fabric_care_003", "doc_polyester_004"],
+      "category": "fabric_care"
+    },
+    {
+      "query": "合成数据-羊毛清洗查询示例三",
+      "relevant_doc_ids": ["doc_fabric_care_003", "doc_wool_005"],
+      "category": "fabric_care"
+    },
+    {
+      "query": "合成数据-羽绒服选购查询示例四",
+      "relevant_doc_ids": ["doc_down_jacket_006", "doc_size_guide_002"],
+      "category": "product_guide"
+    },
+    {
+      "query": "合成数据-真丝面料查询示例五",
+      "relevant_doc_ids": ["doc_silk_007", "doc_fabric_care_003"],
+      "category": "fabric_knowledge"
+    },
+    {
+      "query": "合成数据-棉麻混纺查询示例六",
+      "relevant_doc_ids": ["doc_cotton_linen_008"],
+      "category": "fabric_knowledge"
+    },
+    {
+      "query": "合成数据-运动面料查询示例七",
+      "relevant_doc_ids": ["doc_sportswear_009", "doc_fabric_care_003"],
+      "category": "product_guide"
+    },
+    {
+      "query": "合成数据-洗涤符号查询示例八",
+      "relevant_doc_ids": ["doc_care_label_010"],
+      "category": "fabric_care"
+    },
+    {
+      "query": "合成数据-婴幼儿标准查询示例九",
+      "relevant_doc_ids": ["doc_safety_standard_011", "doc_baby_clothes_012"],
+      "category": "safety_standard"
+    },
+    {
+      "query": "合成数据-冲锋衣指数查询示例十",
+      "relevant_doc_ids": ["doc_outdoor_013", "doc_product_guide_014"],
+      "category": "product_guide"
+    },
+    {
+      "query": "合成数据-西装定制查询示例十一",
+      "relevant_doc_ids": ["doc_suit_015", "doc_size_guide_002"],
+      "category": "service_guide"
+    },
+    {
+      "query": "合成数据-针织衫起球查询示例十二",
+      "relevant_doc_ids": ["doc_knitwear_016", "doc_fabric_care_003"],
+      "category": "fabric_care"
+    },
+    {
+      "query": "合成数据-牛仔裤面料查询示例十三",
+      "relevant_doc_ids": ["doc_denim_017"],
+      "category": "fabric_knowledge"
+    },
+    {
+      "query": "合成数据-皮衣存放查询示例十四",
+      "relevant_doc_ids": ["doc_leather_018", "doc_fabric_care_003"],
+      "category": "fabric_care"
+    },
+    {
+      "query": "合成数据-石墨烯保暖查询示例十五",
+      "relevant_doc_ids": ["doc_graphene_019", "doc_product_guide_014"],
+      "category": "fabric_knowledge"
+    }
+  ]
+}

@@ -1,12 +1,10 @@
 import asyncio
 
 from langchain.agents import create_agent
-from model.factory import chat_model
+from model.factory import react_agent_model
 from utils.prompts_loader import load_react_prompt
 from .tools.base_agent_tools import base_tools
 from .tools.middleware import tool_monitor, log_before_model
-from .date_agent import call_date_agent
-from .weather_agent import call_weather_agent
 from langgraph.checkpoint.memory import MemorySaver
 from utils.config_handler import agent_conf
 
@@ -45,15 +43,15 @@ class ReactAgent(object):
     def _create_agent(self):
         """创建 agent 实例"""
         return create_agent(
-            model=chat_model,
+            model=react_agent_model,
             system_prompt=load_react_prompt(),
             # tools=base_tools + [call_date_agent, call_weather_agent],这是langchain框架下将子agent封装成tool的多agent系统写法
-            tools = base_tools(),
+            tools = base_tools,
             middleware=[tool_monitor, log_before_model],
             # checkpointer=self._checkpointer
         )
 
-    async def execute_stream(self, query: str, session_id: str):
+    async def execute_stream(self, query: str, session_id: str = ""):
         """执行流式查询"""
         # 构建输入消息
         input_dict = {
@@ -111,6 +109,8 @@ class ReactAgent(object):
     #     elif hasattr(self._checkpointer, 'adelete_thread'):
     #         await self._checkpointer.adelete_thread(session_id)
 
+
+react_agent = ReactAgent()
 
 if __name__ == '__main__':
     asyncio.run(ReactAgent().run_agent("我的身高175cm，尺码推荐", "test_session_id"))

@@ -1,6 +1,6 @@
 collection_name: agent
 persist_directory: chroma_db
-k: 3
+k: 5
 data_path: data
 md5_hex_store: md5.txt
 allow_knowledge_type: ["txt","pdf","docx","pptx","xlsx","html","csv","json","xml","md","png","jpg","jpeg","gif","webp","mp3","wav","ogg","m4a"]
@@ -11,9 +11,10 @@ chunk_tokens: 500
 # 是否启用精排（false 时回退到纯 RRF）
 rerank_enabled: true
 # 粗排候选数倍数（粗排取 k * multiplier 个候选送入精排，保证召回率）
-coarse_k_multiplier: 3
+# k=5, multiplier=10 → 粗排召回 50 条候选
+coarse_k_multiplier: 10
 # 精排后最终返回数量（≤ 粗排候选数）
-rerank_top_k: 3
+rerank_top_k: 5
 # Cross-Encoder 模型名（中英双语，业界标准）
 rerank_model: "BAAI/bge-reranker-v2-m3"
 # 组合动态阈值 — 基于最高分的相对比例（0~1）

@@ -14,7 +14,7 @@ class RagSummarizeService:
     def __init__(self, user_id: str = None):
         self.user_id = user_id
         self.vector_store = VectorStoreService()
-        self.retriever = self.vector_store.get_retriever(user_id=self.user_id)
+        self.retriever = self.vector_store.get_hybrid_retriever(user_id=self.user_id)
         self.prompt_text = load_rag_prompt()
         self.prompt_template = PromptTemplate.from_template(self.prompt_text)
         self.model = chat_model
@@ -68,6 +68,22 @@ class RagSummarizeService:
                 "context":context
             }
         )
+    
+    def local_rag_context(self,query:str) -> str:
+        """
+        本地 RAG 上下文构建：仅检索相关文档，不调用模型生成总结
+        :param query:
+        :return:
+        """
+        context_docs: list[Document] = self.retriever_docs(query)
+
+        context = ""
+        counter = 0
+        for doc in context_docs:
+            counter += 1
+            context += f"【参考资料{counter}】：内容：{doc.page_content} | 元数据：{doc.metadata}\n"
+
+        return context
 
 
 if __name__ == '__main__':

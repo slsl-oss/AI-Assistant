@@ -1,306 +1,246 @@
-# AI 智能助手 - 多智能体协作系统
+# AI 智能助手 — 基于 STORM 架构的深度研究系统
 
 ## 项目简介
 
-这是一个基于 LangChain 和 LangGraph 架构实现的**多智能体协作系统**，整合了 RAG 检索增强生成、长期记忆管理、智能任务分解等技术，为用户提供智能化的对话服务。
+基于 **STORM（Synthesis of Topic Outlines through Retrieval and Multi-perspective）** 架构实现的多智能体深度研究系统，集成 RAG 混合检索、长期记忆管理、三级并行研究流水线、可观测性追踪和评估框架，能够根据用户问题自动生成结构化的深度研究报告。
 
 ### 技术栈
 
 | 层级 | 技术 | 说明 |
 |------|------|------|
-| **前端** | Vue/HTML | 用户交互界面 |
+| **前端** | HTML/SSE | 用户交互界面，流式输出 |
 | **后端** | Java Spring Boot | 用户认证、会话管理、业务编排 |
 | **AI 服务** | Python FastAPI | Agent 核心逻辑、RAG、记忆管理 |
-| **大模型** | 通义千问 (Qwen-Max) | 核心推理能力 |
-| **向量数据库** | Chroma | 文档与记忆存储 |
-| **LLM 框架** | LangChain + LangGraph | Agent 编排与工作流 |
+| **大模型** | DeepSeek-v4-pro / v4-flash | 核心推理能力（阿里云 DashScope） |
+| **向量数据库** | Chroma | 文档、报告与记忆存储 |
+| **Agent 框架** | LangChain + LangGraph | Agent 编排与状态图工作流 |
+| **评估框架** | eval/ | RAG/Agent/研究/端到端四维评估 |
 
 ---
 
 ## 系统架构
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                              前端 (Vue/HTML)                                 │
-│                     SSE 流式输出 / 任务控制 (停止/继续)                        │
-└────────────────────────────────────┬────────────────────────────────────────┘
-                                     │ HTTP/SSE
-┌────────────────────────────────────▼────────────────────────────────────────┐
-│                          Java Spring Boot 后端                               │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────┐ │
-│  │ UserController│ │SessionController│ │MessageController│ │ SSE 事件推送     │ │
-│  └─────────────┘  └─────────────┘  └─────────────┘  └─────────────────────┘ │
-└────────────────────────────────────┬────────────────────────────────────────┘
-                                     │ HTTP/SSE
-                                     │ 任务中断恢复
-┌────────────────────────────────────▼────────────────────────────────────────┐
-│                          Python FastAPI 服务                                 │
-│  ┌─────────────────────────────────────────────────────────────────────────┐ │
-│  │                        Supervisor Agent (总调度)                         │ │
-│  │  ┌────────────────┐    ┌────────────────┐    ┌────────────────────────┐ │ │
-│  │  │ Task Decompose │ →  │ Parallel Exec  │ →  │ Result Aggregation     │ │ │
-│  │  │   (任务分解)    │    │  (并行执行)     │    │   (结果聚合)           │ │ │
-│  │  └────────────────┘    └───────┬────────┘    └────────────────────────┘ │ │
-│  │                               │                                        │ │
-│  │         ┌─────────────────────┼─────────────────────┐                   │ │
-│  │         ▼                     ▼                     ▼                   │ │
-│  │  ┌─────────────┐      ┌─────────────┐      ┌─────────────┐             │ │
-│  │  │ Date Agent  │      │Weather Agent│      │ React Agent │             │ │
-│  │  │  (日期工具)  │      │ (天气查询)   │      │ (通用推理)   │             │ │
-│  │  └─────────────┘      └─────────────┘      └─────────────┘             │ │
-│  └─────────────────────────────────────────────────────────────────────────┘ │
-│                                                                              │
-│  ┌─────────────────────────┐  ┌─────────────────────────┐                   │
-│  │    RAG 检索服务          │  │    长期记忆服务 (Mem0)    │                   │
-│  │  Vector + BM25 + RRF   │  │    重要性评分 + 语义检索  │                   │
-│  │  + Cross-Encoder 精排   │  │    自动事实提取           │                   │
-│  └─────────────────────────┘  └─────────────────────────┘                   │
-└─────────────────────────────────────────────────────────────────────────────┘
-                                     │
-                                     ▼
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                              存储层                                          │
-│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────────────────┐ │
-│  │  Chroma 向量库   │  │  SQLite (Mem0)  │  │  PostgreSQL (LangGraph)     │ │
-│  │  文档/记忆存储   │  │  记忆历史记录    │  │  状态持久化 (Checkpointer)  │ │
-│  └─────────────────┘  └─────────────────┘  └─────────────────────────────┘ │
-└─────────────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────┐
+│                         前端 (HTML/SSE)                               │
+│                SSE 流式输出 / 任务控制 (停止/继续)                      │
+└──────────────────────────────────┬───────────────────────────────────┘
+                                   │ HTTP/SSE
+┌──────────────────────────────────▼───────────────────────────────────┐
+│                     Java Spring Boot 后端 (port 8087)                  │
+│  ┌──────────────┐  ┌──────────────────┐  ┌────────────────────────┐  │
+│  │ UserController│  │SessionController│  │  JWT / SSE 事件推送     │  │
+│  └──────────────┘  └──────────────────┘  └────────────────────────┘  │
+└──────────────────────────────────┬───────────────────────────────────┘
+                                   │ HTTP/SSE
+┌──────────────────────────────────▼───────────────────────────────────┐
+│                      Python FastAPI 服务 (port 8000)                   │
+│                                                                       │
+│  ┌─────────────────────────────────────────────────────────────────┐ │
+│  │                  Supervisor Agent (主编排)                        │ │
+│  │                                                                  │ │
+│  │  ┌──────────┐   ┌──────────┐   ┌──────────┐   ┌──────────┐     │ │
+│  │  │ Browser  │──▶│ Planner  │──▶│  Human   │──▶│Researcher│     │ │
+│  │  │ (初步调研)│   │ (规划大纲)│   │ (人工审批)│   │ (并行研究)│     │ │
+│  │  └──────────┘   └──────────┘   └────┬─────┘   └────┬─────┘     │ │
+│  │                      ▲              │ reject        │           │ │
+│  │                      └──────────────┘               │           │ │
+│  │  ┌──────────┐   ┌──────────┐   ┌──────────┐        │           │ │
+│  │  │Publisher │◀──│  Writer  │◀──│Researcher│◀───────┘           │ │
+│  │  │ (排版导出)│   │ (引言/结论)│   │ (并行研究)│                    │ │
+│  │  └──────────┘   └──────────┘   └──────────┘                    │ │
+│  └─────────────────────────────────────────────────────────────────┘ │
+│                                                                       │
+│  ┌──────────────────────────────┐  ┌──────────────────────────────┐  │
+│  │    子编排 (Editor Agent)      │  │   React Agent (通用助手)      │  │
+│  │  Researcher → Reviewer →     │  │  日期/天气/搜索/RAG/记忆      │  │
+│  │  Reviser (循环, 最多3轮)      │  │  兜底处理简单查询             │  │
+│  └──────────────────────────────┘  └──────────────────────────────┘  │
+│                                                                       │
+│  ┌──────────────────────────────┐  ┌──────────────────────────────┐  │
+│  │   三级并行研究流水线           │  │   可观测性 (TraceContext)      │  │
+│  │  L1: 子问题并行               │  │  步骤追踪 / 工具计时 / Token  │  │
+│  │  L2: 多搜索引擎并行           │  │  错误记录 / 调用链追踪        │  │
+│  │  L3: WorkerPool(15) URL抓取   │  │                              │  │
+│  └──────────────────────────────┘  └──────────────────────────────┘  │
+│                                                                       │
+│  ┌──────────────────────────────┐  ┌──────────────────────────────┐  │
+│  │  RAG 混合检索                 │  │  长期记忆 (Mem0)              │  │
+│  │  Vector + BM25 + RRF         │  │  重要性评分 + 语义检索        │  │
+│  │  + BGE Reranker 精排         │  │  自动清理 + 用户隔离          │  │
+│  └──────────────────────────────┘  └──────────────────────────────┘  │
+└──────────────────────────────────┬───────────────────────────────────┘
+                                   │
+┌──────────────────────────────────▼───────────────────────────────────┐
+│                            存储层                                      │
+│  ┌────────────────┐  ┌────────────────┐  ┌──────────────────────────┐│
+│  │ Chroma 向量库   │  │ SQLite (Mem0)  │  │ PostgreSQL (Checkpointer) ││
+│  │ 文档/报告/记忆  │  │ 记忆索引/历史  │  │ LangGraph 状态持久化      ││
+│  └────────────────┘  └────────────────┘  └──────────────────────────┘│
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
 ## 核心流程
 
-### 1. 用户请求处理流程
+### 1. 查询路由
 
 ```
 用户输入问题
      │
      ▼
-┌────────────────┐
-│ Java 后端接收   │ ←─ 认证鉴权 / 会话管理
-└───────┬────────┘
-        │ SSE 建立连接
-        ▼
-┌────────────────┐
-│ Python 后端接收 │ ←─ 流式响应准备
-└───────┬────────┘
-        │
-        ▼
-┌────────────────────────────────────────────────────────────────┐
-│                    Supervisor Agent 执行                         │
-│  ┌──────────────────────────────────────────────────────────┐  │
-│  │  1. 加载对话历史 (LangGraph Checkpointer)                 │  │
-│  │  2. 加载长期记忆 (Mem0)                                   │  │
-│  │  3. 任务分解 (Query Decomposition)                       │  │
-│  │  4. 并行执行子 Agent                                      │  │
-│  │  5. 结果聚合与 RAG 增强                                   │  │
-│  │  6. 生成最终回复                                          │  │
-│  └──────────────────────────────────────────────────────────┘  │
-└───────┬────────────────────────────────────────────────────────┘
-        │ 流式输出
-        ▼
-┌────────────────┐
-│ SSE 流式推送   │ → 前端逐字显示
-└───────┬────────┘
-        │
-        ▼
-┌────────────────┐
-│ 存储记忆 (Mem0)│ → 关键事实提取 + 重要性评分
-└────────────────┘
+┌─────────────────────┐
+│ _is_deep_research() │  ← LLM 分类
+└─────────┬───────────┘
+          │
+    ┌─────┴─────┐
+    ▼           ▼
+ 简单查询    深度研究
+    │           │
+    ▼           ▼
+React Agent  STORM 流水线
+(直接回答)   (6节点 DAG)
 ```
 
-### 2. 多 Agent 协作流程 (LangGraph)
+### 2. STORM 深度研究流水线
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                       LangGraph 工作流                           │
-│                                                                 │
-│   ┌─────────┐    ┌───────────────┐    ┌─────────────┐          │
-│   │  START  │───→│ supervisor     │───→│  agent_*    │          │
-│   └─────────┘    │ (任务分解)     │    │ (并行执行)   │          │
-│                  └───────────────┘    └──────┬──────┘          │
-│                                               │                  │
-│                  ┌───────────────────────────┘                  │
-│                  ▼                                              │
-│           ┌──────────────┐    ┌─────────────┐    ┌─────────┐  │
-│           │ is_sub_tasks │───→│ supervisor   │───→│  END    │  │
-│           │   finished?   │    │ (结果聚合)   │    └─────────┘  │
-│           └──────────────┘    └─────────────┘                   │
-└─────────────────────────────────────────────────────────────────┘
+browser → planner → human → researcher → writer → publisher → END
+(初步调研) (规划大纲) (审批)  (并行研究)   (引言/结论)  (排版导出)
+    │                    │
+    │        ┌───────────┘
+    │        ▼
+    │   子编排 (每个章节)
+    │   researcher → reviewer → reviser → reviewer (循环, 最多3轮)
+    │
+    ▼
+向量数据库存储报告 → 未来 RAG 检索可用
 ```
 
-### 3. RAG 检索流程 (两阶段检索)
+### 3. 三级并行研究流水线
 
 ```
 用户查询
     │
     ▼
-┌─────────────────────────────────────────────────────────────┐
-│                   第一阶段：粗排 (RRF 融合)                   │
-│  ┌─────────────────┐         ┌─────────────────┐           │
-│  │   Vector 检索    │         │   BM25 检索      │           │
-│  │   (语义相似度)   │         │   (关键词匹配)   │           │
-│  └────────┬────────┘         └────────┬────────┘           │
-│           │                            │                     │
-│           └──────────┬─────────────────┘                     │
-│                      ▼                                      │
-│              ┌───────────────┐                              │
-│              │  RRF 融合排序  │ ← score = Σ 1/(k + rank)    │
-│              │  (高召回)      │                              │
-│              └───────┬───────┘                              │
-│                      │ Top 50-100                           │
-└──────────────────────┼──────────────────────────────────────┘
-                       │
-┌──────────────────────┼──────────────────────────────────────┐
-│                   第二阶段：精排 (Reranker)                    │
-│                      │                                      │
-│              ┌───────▼───────┐                              │
-│              │ Cross-Encoder │ ← 深度语义匹配                │
-│              │ (BGE Reranker)│                              │
-│              └───────┬───────┘                              │
-│                      │                                      │
-│              ┌──────▼──────┐                               │
-│              │ 组合动态阈值  │ ← threshold = max(max*ratio, abs)│
-│              │ 过滤低质结果  │                              │
-│              └──────┬──────┘                               │
-│                     │ Top 5-10                             │
-└─────────────────────┼───────────────────────────────────────┘
-                      │
-                最终检索结果
+┌─────────────────────────────────────────────┐
+│  L1: 子问题并行 (asyncio.gather)              │
+│  查询 → LLM 生成 3-5 个子问题 → 并行执行       │
+└────────────────────┬────────────────────────┘
+                     │
+┌────────────────────▼────────────────────────┐
+│  L2: 多搜索引擎并行                           │
+│  百度搜索 → URL 去重 → 提取 Top-N URL         │
+└────────────────────┬────────────────────────┘
+                     │
+┌────────────────────▼────────────────────────┐
+│  L3: URL 并行抓取 (WorkerPool, Semaphore=15)  │
+│  aiohttp + BS4 → 提取正文 → 去噪              │
+└────────────────────┬────────────────────────┘
+                     │
+┌────────────────────▼────────────────────────┐
+│  ContextCompressor: Embedding 相似度过滤      │
+│  快速通道 (<8000 chars) / 标准管道 (阈值 0.35) │
+└────────────────────┬────────────────────────┘
+                     │
+┌────────────────────▼────────────────────────┐
+│  LLM 写草稿 (网页 + RAG 知识库)               │
+│  → 合并所有子草稿 → 最终章节草稿               │
+└─────────────────────────────────────────────┘
 ```
+
+### 4. RAG 混合检索流程
+
+```
+用户查询
+    │
+    ▼
+┌──────────────────────────────────────────────┐
+│  第一阶段: 粗排 (RRF 融合)                     │
+│  ┌──────────────┐    ┌──────────────┐        │
+│  │ Vector 检索   │    │  BM25 检索    │        │
+│  │ (语义相似度)  │    │ (关键词匹配)  │        │
+│  └──────┬───────┘    └──────┬───────┘        │
+│         └────────┬──────────┘                 │
+│                  ▼                            │
+│          RRF 融合排序 (高召回)                  │
+└──────────────────┬───────────────────────────┘
+                   │
+┌──────────────────▼───────────────────────────┐
+│  第二阶段: 精排 (BGE Reranker)                 │
+│  Cross-Encoder 深度语义匹配                    │
+│  threshold = max(max_score × 0.3, 0.1)        │
+│  → Top-K 结果返回                             │
+└──────────────────────────────────────────────┘
+```
+
+---
+
+## Agent 清单
+
+| Agent | 角色 | 职责 | 模型 |
+|-------|------|------|------|
+| **Supervisor** | 主编排 | 查询分类、STORM 流水线调度、上下文压缩 | deepseek-v4-pro |
+| **React** | 通用助手 | 日期/天气/搜索/RAG/记忆/兜底对话 | deepseek-v4-flash |
+| **Research** | 研究引擎 | 初步调研 + 深度研究（三级并行流水线） | deepseek-v4-pro |
+| **Editor** | 子编排 | 规划大纲 + 章节级 researcher→reviewer→reviser 循环 | deepseek-v4-pro |
+| **Writer** | 写作 | 引言、结论、目录、来源汇总 | deepseek-v4-pro |
+| **Reviewer** | 审查 | 草稿质量四维评估（准确性/完整性/逻辑/清晰度） | deepseek-v4-pro |
+| **Reviser** | 修订 | 根据审查意见修改草稿 | deepseek-v4-pro |
+| **Publisher** | 排版 | Markdown 报告组装 + 向量数据库存储 | deepseek-v4-flash |
+| **Human** | 审批 | 计划审批（模拟人工，可替换为真实人机交互） | deepseek-v4-flash |
 
 ---
 
 ## 核心功能
 
-### 1. 多 Agent 智能协作
+### 1. STORM 深度研究
 
-| Agent | 职责 | 工具能力 |
-|-------|------|----------|
-| **Supervisor Agent** | 任务分解与调度 | 无 |
-| **Date Agent** | 日期/时间查询 | 获取当前时间、时区转换、时间比较 |
-| **Weather Agent** | 天气查询 | 城市天气、历史天气、穿衣建议 |
-| **React Agent** | 通用推理与 RAG | 文档检索、计算、代码执行 |
+- **两级工作流**：主编排（6 节点 DAG）+ 子编排（review-revise 循环）
+- **三级并行**：子问题并行 → 多引擎搜索 → WorkerPool URL 抓取
+- **上下文压缩**：Embedding 相似度过滤（快速通道 + 标准管道）
+- **RAG 增强**：网页抓取 + 本地知识库双源输入 LLM
+- **报告存储**：生成的报告自动存入向量数据库，支持后续检索
 
-### 2. RAG 检索增强
+### 2. RAG 混合检索
 
 | 特性 | 说明 |
 |------|------|
 | **混合检索** | Vector (语义) + BM25 (关键词) + RRF 融合 |
-| **两阶段检索** | 粗排 (RRF) → 精排 (Cross-Encoder) |
-| **动态阈值过滤** | 基于最高分比例 + 绝对最低分的组合阈值 |
+| **两阶段检索** | 粗排 (RRF) → 精排 (BGE Cross-Encoder) |
+| **动态阈值** | `threshold = max(max_score × ratio, abs_threshold)` |
 | **多格式支持** | TXT, PDF, DOCX, PPTX, XLSX, HTML, CSV, JSON, XML, MD, 图片, 音频 |
+| **Markdown 分块** | 按标题层级智能分块，保持语义边界 |
 
-### 3. 长期记忆管理 (Mem0)
+### 3. 长期记忆 (Mem0)
 
 | 功能 | 说明 |
 |------|------|
-| **自动事实提取** | 从对话中自动提取关键事实 |
-| **语义检索** | 基于语义的历史记忆搜索 |
-| **重要性评分** | 自动评估记忆的重要性等级 |
-| **定期清理** | 每 7 天自动清理低价值记忆 |
+| **自动事实提取** | 10 轮对话后自动提取关键事实 |
+| **重要性评分** | LLM 评分 0-1，区分高/低价值记忆 |
+| **语义检索** | 基于 Chroma 的语义记忆搜索 |
+| **清理策略** | 低重要性 / 过期 (>30天) / 超容量 (>100条) 三层清理 |
 | **用户隔离** | 支持用户专属记忆与共享记忆 |
 
-### 4. 会话状态管理
+### 4. 可观测性
 
-| 功能 | 说明 |
+| 维度 | 内容 |
 |------|------|
-| **LangGraph Checkpointer** | 对话状态持久化，支持中断恢复 |
-| **PostgreSQL 持久化** | 生产环境的断点续传 |
-| **记忆导入导出** | 会话结束时自动保存关键记忆 |
+| **调用链路** | TraceContext: trace_id, agent_path, steps |
+| **工具调用** | 名称、参数、成功/失败、耗时 |
+| **Token 估算** | 输入/输出 token 估算（中英文混合算法） |
+| **错误追踪** | 失败节点、错误信息 |
+| **响应时间** | 总耗时 + 各阶段耗时 |
 
----
+### 5. 评估框架 (eval/)
 
-## 独特设计
-
-### 1. 任务中断与恢复机制
-
-```
-用户点击"停止"
-     │
-     ▼
-┌────────────────────────────────────┐
-│  Python: 取消 asyncio 任务          │
-│  Java: 关闭 SSE 连接               │
-│  LangGraph: 状态已持久化           │
-└────────────────────────────────────┘
-     │
-     ▼
-用户点击"继续执行"
-     │
-     ▼
-┌────────────────────────────────────┐
-│  Python: 从 Checkpointer 恢复状态  │
-│  Java: 建立新 SSE 连接             │
-│  任务从中断点继续执行               │
-└────────────────────────────────────┘
-```
-
-### 2. 组合动态阈值设计
-
-```python
-# 阈值公式：取"最高分比例"和"绝对保底"两者中的较大值
-threshold = max(max_score * score_ratio, abs_threshold)
-
-# 配置示例 (chroma.yaml)
-rerank_score_ratio: 0.3   # 保留与最高分相似度≥30%的文档
-rerank_abs_threshold: 0.1 # 但最低不能低于 0.1 分
-```
-
-### 3. Agent 并行执行模式
-
-```python
-# LangGraph Send API 实现子任务并行
-for task in tasks:
-    futures.append(Send("agent_node", {"task": task, ...}))
-
-# 返回并行执行指令
-return [Send("agent_node", t) for t in state["sub_tasks"]]
-```
-
-### 4. 单例模式的多层复用
-
-| 服务 | 单例模式 | 懒加载 |
-|------|----------|--------|
-| SupervisorAgent | 全局共享 | 启动时初始化 |
-| Mem0Service | 用户级隔离 | 按需初始化 |
-| RerankerService | 全局共享 | 首次使用时加载 |
-| VectorStoreService | 全局共享 | 启动时初始化 |
-
----
-
-## 项目亮点
-
-### 1. 生产级架构设计
-
-- **前后端分离**：Java 负责业务编排，Python 专注 AI 能力
-- **SSE 流式响应**：实时推送 token，真正的流式用户体验
-- **任务中断恢复**：用户可随时停止/继续，状态不丢失
-
-### 2. 先进的 RAG 技术
-
-- **两阶段检索**：RRF 粗排保证召回，Cross-Encoder 精排保证精度
-- **多路召回融合**：语义 + 关键词双重召回，覆盖不同检索场景
-- **智能阈值过滤**：组合动态阈值，避免低质量结果干扰
-
-### 3. 强大的记忆系统
-
-- **Mem0 集成**：开箱即用的长期记忆管理
-- **重要性评分**：自动区分高价值与低价值记忆
-- **定期维护**：自动化记忆清理，防止知识库膨胀
-
-### 4. 可扩展的 Agent 框架
-
-- **工具即 Agent**：基于 LangGraph 的灵活编排
-- **新增 Agent 简单**：只需定义 prompt + tools 即可扩展
-- **状态流透明**：Annotated + operator.add 实现自动消息聚合
-
-### 5. 完善的配置管理
-
-- **YAML 配置**：集中管理向量库、模型、阈值等参数
-- **环境变量支持**：API Key 等敏感信息通过环境变量注入
-- **配置热生效**：无需重启服务即可更新部分配置
+| 维度 | 指标 | 命令 |
+|------|------|------|
+| **RAG 检索** | Hit Rate@k, MRR, NDCG@k, Reranker 对比 | `python -m eval.cli rag` |
+| **Agent 回答** | 工具选择准确率, LLM Judge 四维评分 | `python -m eval.cli agent` |
+| **研究报告** | 章节覆盖率, 来源引用, 事实准确性 | `python -m eval.cli research` |
+| **端到端** | 延迟分布(p50/p95/p99), Token, 成本 | `python -m eval.cli e2e` |
 
 ---
 
@@ -308,36 +248,81 @@ return [Send("agent_node", t) for t in state["sub_tasks"]]
 
 ```
 AI assistant/
-├── agent/                        # Agent 核心模块
-│   ├── supervisor_agent.py     # 总调度 Agent (LangGraph)
-│   ├── date_agent.py            # 日期 Agent
-│   ├── weather_agent.py         # 天气 Agent
-│   ├── react_agent.py           # 通用推理 Agent
-│   └── tools/                    # Agent 工具集
-│       ├── base_agent_tools.py  # 基础工具
-│       ├── date_agent_tools.py  # 日期工具
-│       └── weather_agent_tools.py # 天气工具
-├── rag/                          # RAG 检索模块
-│   ├── vector_stores.py         # 向量存储服务 (混合检索)
-│   ├── reranker.py              # Cross-Encoder 精排
-│   ├── rag_service.py           # RAG 服务封装
-│   └── upload_service.py        # 文档上传处理
-├── memory/                       # 长期记忆模块
-│   ├── mem0_service.py          # Mem0 服务封装
-│   ├── memory_scorer.py         # 记忆重要性评分
-│   └── memory_cleanup.py        # 记忆清理任务
-├── utils/                        # 工具函数
-│   ├── config_handler.py        # 配置管理
-│   ├── prompts_loader.py        # Prompt 加载
-│   └── logger_handler.py        # 日志管理
-├── agent_service/               # Java Spring Boot 后端
-│   └── src/main/java/          # Java 源码
-├── config/                      # YAML 配置文件
-│   ├── chroma.yaml              # 向量库配置
-│   ├── memory.yaml              # 记忆配置
-│   └── rag.yaml                 # RAG 配置
-├── server.py                    # Python FastAPI 服务入口
-└── README.md                    # 项目文档
+├── agent/                          # Agent 核心模块
+│   ├── supervisor_agent.py         # 主编排 (STORM 流水线)
+│   ├── react_agent.py              # 通用助手 (ReAct)
+│   ├── research_agent.py           # 研究引擎 (初步调研 + 深度研究)
+│   ├── editor_agent.py             # 子编排 (planner + review-revise)
+│   ├── writer_agent.py             # 写引言/结论
+│   ├── reviewer_agent.py           # 审查草稿质量
+│   ├── reviser_agent.py            # 修订草稿
+│   ├── publisher_agent.py          # 排版导出 + 报告存储
+│   ├── human_agent.py              # 人工审批 (模拟)
+│   ├── infrastructure/             # 基础设施
+│   │   ├── research_pipeline.py    # 三级并行研究流水线
+│   │   ├── web_scraper.py          # BS4 + WorkerPool 网页抓取
+│   │   └── context_compressor.py   # Embedding 上下文压缩
+│   └── tools/                      # Agent 工具
+│       ├── base_agent_tools.py     # 搜索/RAG/记忆/日期/天气工具
+│       └── middleware.py           # 工具监控 + 可观测性 + 提示词切换
+├── rag/                            # RAG 检索模块
+│   ├── vector_stores.py            # Chroma + BM25 + RRF + Reranker
+│   ├── reranker.py                 # BGE Cross-Encoder 精排
+│   ├── markdown_chunker.py         # Markdown 智能分块
+│   ├── rag_service.py              # RAG 摘要服务
+│   └── upload_service.py           # 文档上传处理
+├── memory/                         # 长期记忆模块
+│   ├── mem0_service.py             # Mem0 服务封装
+│   ├── memory_tools.py             # 记忆工具 (save/search)
+│   ├── memory_scorer.py            # LLM 重要性评分
+│   ├── memory_index.py             # SQLite 记忆索引
+│   └── memory_cleanup.py           # 清理策略 (三层)
+├── eval/                           # 评估框架
+│   ├── cli.py                      # CLI 入口
+│   ├── reporter.py                 # JSON + Markdown 报告
+│   ├── config.yaml                 # 评估配置
+│   ├── metrics/                    # 指标计算 (纯函数)
+│   │   ├── rag_metrics.py          # Hit Rate, MRR, NDCG, Precision, Recall
+│   │   ├── agent_metrics.py        # 工具准确率, LLM Judge 评分
+│   │   ├── research_metrics.py     # 覆盖率, 引用率, 准确性
+│   │   └── e2e_metrics.py          # 延迟分布, Token, 成本
+│   ├── datasets/                   # 测试数据集
+│   │   ├── rag_test_queries.json   # 15 条 RAG 查询
+│   │   ├── agent_test_tasks.json   # 12 条 Agent 任务
+│   │   └── research_topics.json    # 3 个研究主题
+│   ├── runners/                    # 评估执行器
+│   │   ├── rag_runner.py           # 对接 VectorStoreService
+│   │   ├── agent_runner.py         # 对接 SupervisorAgent
+│   │   ├── research_runner.py      # 执行 STORM 流水线
+│   │   └── e2e_runner.py           # 延迟/Token/成本基准
+│   └── judges/                     # LLM-as-Judge
+│       ├── llm_judge.py            # 四维评分 + 事实准确性
+│       └── prompts/                # 评分 prompt 模板
+├── model/                          # 模型工厂
+│   └── factory.py                  # ChatTongyi + DashScopeEmbeddings
+├── utils/                          # 工具函数
+│   ├── config_handler.py           # YAML 配置加载
+│   ├── prompts_loader.py           # Prompt 文件加载
+│   ├── logger_handler.py           # 日志管理
+│   ├── observability.py            # TraceContext 可观测性
+│   ├── postgres_checkpointer.py    # PostgreSQL 检查点持久化
+│   ├── cancellation.py             # 协作式取消令牌
+│   └── file_handler.py             # 文件处理 (MD5/加载)
+├── config/                         # YAML 配置
+│   ├── agent.yaml                  # Agent 模型映射 + DB URI
+│   ├── chroma.yaml                 # 向量库 + Reranker 配置
+│   ├── memory.yaml                 # Mem0 记忆配置
+│   ├── prompts.yaml                # Prompt 文件路径映射
+│   └── rag.yaml                    # RAG 模型配置
+├── prompts/                        # Prompt 模板
+│   ├── supervisor_agent_prompt.txt # 主编排路由规则
+│   ├── react_agent_prompt.txt      # 通用助手决策流程
+│   ├── research_agent_prompt.txt   # 研究 Agent 指令
+│   └── rag_summarize.txt           # RAG 摘要模板
+├── agent_service/                  # Java Spring Boot 后端
+│   └── src/main/java/...           # Controller, Service, Mapper, Config
+├── server.py                       # Python FastAPI 入口
+└── README.md
 ```
 
 ---
@@ -348,8 +333,8 @@ AI assistant/
 
 - Python 3.10+
 - Java 17+
-- PostgreSQL 14+ (可选，用于生产环境)
-- 通义千问 API Key
+- PostgreSQL 14+（可选，用于生产环境 Checkpointer）
+- 阿里云 DashScope API Key
 
 ### 安装依赖
 
@@ -358,7 +343,7 @@ AI assistant/
 pip install langchain langgraph langchain-community langchain-chroma
 pip install sentence-transformers
 pip install mem0ai
-pip install fastapi uvicorn
+pip install fastapi uvicorn aiohttp beautifulsoup4 lxml
 pip install PyYAML
 
 # Java 依赖 (Maven)
@@ -378,39 +363,82 @@ echo "DASHSCOPE_API_KEY=your-api-key" > .env
 ### 启动服务
 
 ```bash
-# 启动 Python 服务
+# 启动 Python AI 服务
 python server.py
 
-# 启动 Java 服务
+# 启动 Java 后端服务
 cd agent_service && mvn spring-boot:run
+```
+
+### 运行评估
+
+```bash
+# 全量评估
+python -m eval.cli all
+
+# 快速评估（减少迭代次数）
+python -m eval.cli all --quick
+
+# 单项评估
+python -m eval.cli rag       # RAG 检索质量
+python -m eval.cli agent     # Agent 回答质量
+python -m eval.cli research  # 研究报告质量
+python -m eval.cli e2e       # 端到端性能
 ```
 
 ---
 
 ## 配置说明
 
-### chroma.yaml
+### agent.yaml — Agent 模型映射
+
+```yaml
+chat_model_name: deepseek-v4-pro
+agent_models:
+  supervisor:      deepseek-v4-pro
+  react_agent:     deepseek-v4-flash
+  research_agent:  deepseek-v4-pro
+  editor:          deepseek-v4-pro
+  writer:          deepseek-v4-pro
+  reviewer:        deepseek-v4-pro
+  reviser:         deepseek-v4-pro
+  publisher:       deepseek-v4-flash
+  human:           deepseek-v4-flash
+```
+
+### chroma.yaml — RAG 检索配置
 
 ```yaml
 collection_name: agent
 persist_directory: chroma_db
-k: 3
-
-# Reranker 配置
-rerank_enabled: true           # 启用精排
-coarse_k_multiplier: 3         # 粗排候选倍数
-rerank_top_k: 3               # 精排返回数量
-rerank_score_ratio: 0.3       # 动态阈值比例
-rerank_abs_threshold: 0.1     # 动态阈值保底
+k: 5
+rerank_enabled: true
+coarse_k_multiplier: 3
+rerank_top_k: 3
+rerank_score_ratio: 0.3
+rerank_abs_threshold: 0.1
 ```
 
-### memory.yaml
+### memory.yaml — 长期记忆配置
 
 ```yaml
-collection_name: memory
+collection_name: long_term_memory
 chroma_path: memory_db
-history_db_path: mem0_history.db
-default_user_id: default_user
-importance_threshold: 0.3     # 重要性阈值
-retention_days: 30            # 记忆保留天数
+k: 5
+memory_limit_per_user: 100
+importance_threshold: 0.3
+retention_days: 30
 ```
+
+---
+
+## 项目亮点
+
+1. **STORM 架构**：两级 LangGraph 工作流，生成结构化深度研究报告
+2. **三级并行研究**：子问题并行 → 多引擎搜索 → WorkerPool 抓取，最大化吞吐
+3. **两阶段 RAG**：RRF 粗排 + BGE Reranker 精排，兼顾召回与精度
+4. **RAG 增强研究**：网页抓取 + 本地知识库双源输入，报告自动存入向量库
+5. **可观测性**：全链路 TraceContext 追踪，工具计时、Token 估算、错误定位
+6. **评估框架**：四维自动化评估，LLM Judge 评分，JSON/Markdown 报告
+7. **任务中断恢复**：PostgreSQL Checkpointer 持久化状态，随时停止/继续
+8. **零侵入评估**：eval/ 目录完全独立，无需修改现有代码

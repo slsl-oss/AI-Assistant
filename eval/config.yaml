@@ -1,0 +1,63 @@
+# 评估框架配置文件
+# 所有路径相对于项目根目录，通过 get_abs_path 解析
+
+datasets:
+  rag_queries: "eval/datasets/rag_test_queries.json"
+  agent_tasks: "eval/datasets/agent_test_tasks.json"
+  research_topics: "eval/datasets/research_topics.json"
+
+rag:
+  k_values: [1, 3, 5, 10]
+  compare_reranker: true
+  rrf_k: 60
+  candidate_k: 15
+
+agent:
+  judge_model_role: "summarizer"
+  max_concurrent_tasks: 5
+  task_timeout_seconds: 120
+  evaluation_criteria:
+    - relevance
+    - completeness
+    - accuracy
+    - safety
+  criteria_weights:
+    relevance: 0.30
+    completeness: 0.20
+    accuracy: 0.20
+    safety: 0.10
+    tool_selection: 0.20
+
+research:
+  judge_model_role: "reviewer"
+  min_section_coverage: 0.8
+  requires_source_attribution: true
+  reviewer_acceptance_threshold: 0.7
+  max_report_chars: 50000
+
+e2e:
+  query_types:
+    - simple
+    - deep_research
+  iterations_per_type: 5
+  concurrent_sessions: 2
+  simple_queries:
+    - "今天天气怎么样"
+    - "你好，请介绍一下自己"
+    - "1+1等于几"
+    - "帮我查一下今天的日期"
+    - "什么是机器学习"
+  deep_research_queries:
+    - "2024年人工智能在医疗领域的应用趋势"
+    - "新能源汽车行业竞争格局分析"
+  warmup_iterations: 1
+
+judge:
+  model_name: "deepseek-v4-flash"
+  prompts_dir: "eval/judges/prompts"
+
+output:
+  reports_dir: "eval/reports"
+  format: "both"
+  timestamp_suffix: true
+  include_per_query_details: true

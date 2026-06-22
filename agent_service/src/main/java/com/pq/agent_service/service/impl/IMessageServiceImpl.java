@@ -19,6 +19,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicReference;
@@ -31,12 +32,19 @@ public class IMessageServiceImpl extends ServiceImpl<MessageMapper, Message> imp
     private final WebClient webClient;
     private final ExecutorService executorService = Executors.newCachedThreadPool();
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ConcurrentHashMap<String, SseEmitter> activeEmitters = new ConcurrentHashMap<>();
 
     @Override
     public SseEmitter sendMessage(String sessionId, MessageDTO dto, Long userId) {
         SseEmitter emitter = new SseEmitter(300000L);
         AtomicReference<String> fullResponse = new AtomicReference<>("");
         AtomicReference<Boolean> isCompleted = new AtomicReference<>(false);
+
+        // 注册活跃 emitter，支持取消操作
+        activeEmitters.put(sessionId, emitter);
+        emitter.onCompletion(() -> activeEmitters.remove(sessionId));
+        emitter.onTimeout(() -> activeEmitters.remove(sessionId));
+        emitter.onError(e -> activeEmitters.remove(sessionId));
 
         executorService.execute(() -> {
             try {
@@ -51,6 +59,35 @@ public class IMessageServiceImpl extends ServiceImpl<MessageMapper, Message> imp
         });
 
         return emitter;
+    }
+
+    @Override
+    public void cancelMessage(String sessionId) {
+        SseEmitter emitter = activeEmitters.remove(sessionId);
+        if (emitter != null) {
+            try {
+                emitter.send(SseEmitter.event()
+                    .data(objectMapper.writeValueAsString(Map.of("cancelled", true))));
+                emitter.complete();
+                log.info("取消流式消息: sessionId={}", sessionId);
+            } catch (IOException e) {
+                log.warn("发送取消事件失败: sessionId={}", sessionId, e);
+            }
+        }
+
+        // 通知 Python 后端取消
+        try {
+            webClient.post()
+                .uri("/sessions/{sessionId}/cancel", sessionId)
+                .retrieve()
+                .bodyToMono(String.class)
+                .subscribe(
+                    resp -> log.info("Python取消成功: sessionId={}", sessionId),
+                    err -> log.warn("Python取消失败: sessionId={}, error={}", sessionId, err.getMessage())
+                );
+        } catch (Exception e) {
+            log.warn("调用Python取消接口异常: sessionId={}", sessionId, e);
+        }
     }
 
     private void saveUserMessage(String sessionId, MessageDTO dto) {
@@ -99,6 +136,10 @@ public class IMessageServiceImpl extends ServiceImpl<MessageMapper, Message> imp
                                 saveAiMessage(dto.getSessionId(), finalResponse);
                                 emitter.send(SseEmitter.event()
                                     .data(objectMapper.writeValueAsString(Map.of("done", true))));
+                                safeComplete(emitter, isCompleted);
+                            } else if (jsonNode.has("cancelled") && jsonNode.get("cancelled").asBoolean()) {
+                                emitter.send(SseEmitter.event()
+                                    .data(objectMapper.writeValueAsString(Map.of("cancelled", true))));
                                 safeComplete(emitter, isCompleted);
                             }
                         } catch (Exception e) {

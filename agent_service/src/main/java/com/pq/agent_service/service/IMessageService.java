@@ -9,4 +9,6 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 public interface IMessageService extends IService<Message> {
 
     SseEmitter sendMessage(String id, MessageDTO dto, Long userId);
+
+    void cancelMessage(String sessionId);
 }

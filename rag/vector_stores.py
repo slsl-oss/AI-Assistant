@@ -194,6 +194,37 @@ class VectorStoreService(object):
 
         return HybridRetriever()
 
+    def add_report_to_store(self, title: str, content: str, user_id: str = "__shared__"):
+        """
+        将生成的报告存入向量数据库，供后续 RAG 检索。
+
+        Args:
+            title: 报告标题
+            content: 报告全文（Markdown）
+            user_id: 用户 ID
+        """
+        if not content or not content.strip():
+            return 0
+
+        source = f"[报告] {title}"
+        doc = Document(page_content=content, metadata={
+            "user_id": user_id, "source": source, "type": "generated_report",
+        })
+        split_docs = split_markdown(
+            [doc],
+            chunk_tokens=chroma_conf.get("chunk_tokens", 500),
+            overlap_sections=1
+        )
+        for d in split_docs:
+            d.metadata["user_id"] = user_id
+            d.metadata["source"] = source
+            d.metadata["type"] = "generated_report"
+
+        self.vector_store.add_documents(split_docs)
+        self._bm25_retriever = None
+        logger.info(f"[VectorStore] 报告已存入: {source} ({len(split_docs)} chunks)")
+        return len(split_docs)
+
     def load_document(self):
 
         def check_md5(md5_str: str):

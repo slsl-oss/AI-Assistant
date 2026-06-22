@@ -1,0 +1,40 @@
+{
+  "research_topics": [
+    {
+      "topic": "2024年生成式AI在企业应用中的趋势分析",
+      "expected_sections": [
+        "行业概览与市场规模",
+        "关键技术突破",
+        "主要应用场景",
+        "挑战与风险",
+        "未来展望"
+      ],
+      "expected_min_sources": 5,
+      "category": "technology"
+    },
+    {
+      "topic": "新能源汽车行业竞争格局与未来趋势",
+      "expected_sections": [
+        "行业现状与市场规模",
+        "主要竞争格局",
+        "技术路线对比",
+        "政策环境分析",
+        "投资机会与风险"
+      ],
+      "expected_min_sources": 5,
+      "category": "industry"
+    },
+    {
+      "topic": "健康饮食对慢性病预防的影响",
+      "expected_sections": [
+        "慢性病现状概述",
+        "饮食与疾病的关系",
+        "科学饮食建议",
+        "典型案例分析",
+        "总结与建议"
+      ],
+      "expected_min_sources": 4,
+      "category": "healthcare"
+    }
+  ]
+}

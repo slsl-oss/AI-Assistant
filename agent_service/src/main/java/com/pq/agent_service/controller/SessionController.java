@@ -101,4 +101,11 @@ public class SessionController {
 
     }
 
+    @PostMapping("/{id}/messages/cancel")
+    @ApiOperation("取消当前会话的流式消息")
+    public Map<String, Object> cancelMessage(@PathVariable String id) {
+        messageService.cancelMessage(id);
+        return Map.of("success", true, "sessionId", id);
+    }
+
 }

@@ -1,4 +1,5 @@
 from typing import Callable
+import time
 
 from utils.prompts_loader import load_system_prompt, load_rag_prompt
 from langchain.agents import AgentState
@@ -9,50 +10,71 @@ from langgraph.runtime import Runtime
 from langgraph.types import Command
 from utils.logger_handler import logger
 
-#同步中间间
-@wrap_tool_call  #这个是同步中间件，只有在agent使用invoke 和 stream 同步方法时起效
-def tool_monitor(
-        # 请求的数据封装
-        request: ToolCallRequest,
-        # 执行函数本身
-        handler: Callable[[ToolCallRequest], ToolMessage | Command],
-) -> ToolMessage | Command:   #工具执行的监控
-    logger.info(f"[tool monitor]执行工具：{request.tool_call['name']}")
-    logger.info(f"[tool monitor]传入参数：{request.tool_call['args']}")
 
+def _record_tool_trace(name: str, args: dict, success: bool, duration_ms: float, error: str = ""):
+    """将工具调用记录到当前追踪上下文"""
     try:
-        result =  handler(request)
+        from utils.observability import get_current_trace
+        trace = get_current_trace()
+        if trace:
+            trace.add_tool_call(name, str(args), success, duration_ms, error)
+    except Exception:
+        pass
 
-        logger.info(f"[tool monitor]调用工具{request.tool_call['name']}成功，")
 
-        if request.tool_call['name'] == "fill_context_for_other_prompt":
+#同步中间件
+@wrap_tool_call
+def tool_monitor(
+        request: ToolCallRequest,
+        handler: Callable[[ToolCallRequest], ToolMessage | Command],
+) -> ToolMessage | Command:
+    name = request.tool_call.get("name", "unknown")
+    args = request.tool_call.get("args", {})
+    logger.info(f"[tool monitor]执行工具：{name}")
+    logger.info(f"[tool monitor]传入参数：{args}")
+
+    start = time.time()
+    try:
+        result = handler(request)
+        elapsed = (time.time() - start) * 1000
+        logger.info(f"[tool monitor]调用工具{name}成功，耗时{elapsed:.0f}ms")
+        _record_tool_trace(name, args, True, elapsed)
+
+        if name == "fill_context_for_other_prompt":
             request.runtime.context["switch_prompt"] = True
         return result
     except Exception as e:
-        logger.error(f"[tool monitor]调用工具{request.tool_call['name']}失败，原因：{str(e)}")
+        elapsed = (time.time() - start) * 1000
+        logger.error(f"[tool monitor]调用工具{name}失败({elapsed:.0f}ms)，原因：{str(e)}")
+        _record_tool_trace(name, args, False, elapsed, str(e))
         raise e
 
+
 #异步中间件
-@wrap_tool_call  #这个是异步中间件，只有在agent使用ainvoke 和 astream 异异步方法时起效
+@wrap_tool_call
 async def tool_monitor(
-        # 请求的数据封装
         request: ToolCallRequest,
-        # 执行函数本身
         handler: Callable[[ToolCallRequest], ToolMessage | Command],
-) -> ToolMessage | Command:   #工具执行的监控
-    logger.info(f"[tool monitor]执行工具：{request.tool_call['name']}")
-    logger.info(f"[tool monitor]传入参数：{request.tool_call['args']}")
+) -> ToolMessage | Command:
+    name = request.tool_call.get("name", "unknown")
+    args = request.tool_call.get("args", {})
+    logger.info(f"[tool monitor]执行工具：{name}")
+    logger.info(f"[tool monitor]传入参数：{args}")
 
+    start = time.time()
     try:
-        result =  await handler(request)
+        result = await handler(request)
+        elapsed = (time.time() - start) * 1000
+        logger.info(f"[tool monitor]调用工具{name}成功，耗时{elapsed:.0f}ms")
+        _record_tool_trace(name, args, True, elapsed)
 
-        logger.info(f"[tool monitor]调用工具{request.tool_call['name']}成功，")
-
-        if request.tool_call['name'] == "fill_context_for_other_prompt":
+        if name == "fill_context_for_other_prompt":
             request.runtime.context["switch_prompt"] = True
         return result
     except Exception as e:
-        logger.error(f"[tool monitor]调用工具{request.tool_call['name']}失败，原因：{str(e)}")
+        elapsed = (time.time() - start) * 1000
+        logger.error(f"[tool monitor]调用工具{name}失败({elapsed:.0f}ms)，原因：{str(e)}")
+        _record_tool_trace(name, args, False, elapsed, str(e))
         raise e
 
 @before_model
@@ -63,6 +85,7 @@ def log_before_model(
     logger.info(f"[log_before_model]即将调用模型，带有{len(state['messages'])}条消息")
 
     latest_message = state["messages"][-1]
+    content = ""
     if latest_message.content:
         # content 可能是列表或字符串，统一处理为字符串
         content = latest_message.content

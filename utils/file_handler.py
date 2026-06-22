@@ -3,7 +3,7 @@ import os.path
 
 from langchain_community.document_loaders import PyPDFLoader, TextLoader
 from langchain_core.documents import Document
-
+from markitdown import MarkItDown
 from utils.logger_handler import logger
 
 
@@ -47,7 +47,6 @@ def txt_loader(file_path: str) -> list[Document]:
 
 def markitdown_loader(file_path: str) -> list[Document]:
     """使用 MarkItDown 将任意格式文档转为 Markdown，返回单个 Document"""
-    from markitdown import MarkItDown
     md = MarkItDown()
     result = md.convert(file_path)
     text = result.text_content.strip()
