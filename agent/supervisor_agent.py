@@ -25,6 +25,7 @@ from agent.editor_agent import editor_agent
 from agent.writer_agent import writer_agent
 from agent.publisher_agent import publisher_agent
 from agent.human_agent import human_agent
+from agent.infrastructure.research_loop import research_complete, incomplete_message
 
 CANCELLED_SIGNAL = object()
 
@@ -49,6 +50,7 @@ class ResearchState(TypedDict):
     messages: Annotated[List[BaseMessage], operator.add]
     session_id: str
     user_id: str
+    research_status: str
 
 
 # ==================== 节点函数 ====================
@@ -91,11 +93,19 @@ async def researcher_node(state: ResearchState) -> dict:
     sections = state.get("sections", [])
     logger.info(f"[Researcher] {len(sections)} 章节并行")
     data = await editor_agent.run_parallel_research(sections)
-    return {"research_data": data}
+    complete = research_complete(sections, data)
+    return {"research_data": data, "research_status": "completed" if complete else "incomplete",
+            "report": "" if complete else incomplete_message(data)}
+
+
+def route_after_research(state: ResearchState) -> str:
+    return "writer" if research_complete(state.get("sections", []), state.get("research_data", [])) else "stop"
 
 
 async def writer_node(state: ResearchState) -> dict:
     """writer: 引言/结论/目录/来源"""
+    if route_after_research(state) != "writer":
+        raise ValueError("Incomplete research cannot enter writer")
     result = await writer_agent.run(
         state.get("title", ""), state.get("sections", []),
         state.get("research_data", [])
@@ -106,6 +116,8 @@ async def writer_node(state: ResearchState) -> dict:
 
 async def publisher_node(state: ResearchState) -> dict:
     """publisher: 排版导出 → report"""
+    if route_after_research(state) != "writer":
+        raise ValueError("Incomplete research cannot enter publisher")
     report = await publisher_agent.run(
         title=state.get("title", ""),
         date=state.get("date", datetime.now().strftime("%Y年%m月%d日")),
@@ -171,7 +183,7 @@ class SupervisorAgent:
         wf.add_conditional_edges("human", route_after_human, {
             "planner": "planner", "researcher": "researcher",
         })
-        wf.add_edge("researcher", "writer")
+        wf.add_conditional_edges("researcher", route_after_research, {"writer": "writer", "stop": END})
         wf.add_edge("writer", "publisher")
         wf.add_edge("publisher", END)
 
@@ -247,7 +259,7 @@ class SupervisorAgent:
 
         initial = {
             "task": {"query": query}, "initial_research": "", "sections": [],
-            "research_data": [], "human_feedback": "", "plan_revision_count": 0,
+            "research_data": [], "research_status": "pending", "human_feedback": "", "plan_revision_count": 0,
             "title": "", "headers": {}, "date": "", "table_of_contents": "",
             "introduction": "", "conclusion": "", "sources": [], "report": "",
             "messages": [HumanMessage(content=aq)],
@@ -282,7 +294,11 @@ class SupervisorAgent:
                     elif name == "researcher":
                         trace.end_step()
                         for r in output.get("research_data", []):
-                            yield f"  [{r['section'][:30]}] 完成 (修改{r.get('revisions',0)}次)\n"
+                            status = r.get("research_status", "legacy")
+                            label = "完成" if status in {"completed", "legacy"} else f"未完成: {status}"
+                            yield f"  [{r['section'][:30]}] {label} (修改{r.get('revisions',0)}次)\n"
+                        if output.get("research_status") == "incomplete":
+                            yield output.get("report", "研究未完成") + "\n"
                     elif name == "writer":
                         trace.end_step()
                         yield f"  引言/结论/目录完成\n"

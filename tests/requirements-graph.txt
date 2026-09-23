@@ -1,0 +1,2 @@
+# Only for optional real-LangGraph integration tests; the loop/demo is stdlib-only.
+langgraph==1.2.4
