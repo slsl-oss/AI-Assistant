@@ -1,5 +1,18 @@
 # AI 智能助手 — 基于 STORM 架构的深度研究系统
 
+## 新增：Research Agent 三工具循环（离线框架）
+
+支持 `search_web`、`search_knowledge_base`、`fetch_page` 的可注入决策循环，
+工具结果回传后再次决策，带预算、证据引用校验和未完成状态拦截。
+**默认旧流程不变；演示使用模拟模型/资料，不接真实 API。**
+
+```bash
+python -B -m agent.infrastructure.research_demo --scenario conflict
+python -B -m unittest discover -s tests -p test_research_loop.py -v
+```
+
+运行方式、接入点、预算及安全边界见 [三工具框架说明](docs/research-tool-loop.md)。
+
 ## 项目简介
 
 基于 **STORM（Synthesis of Topic Outlines through Retrieval and Multi-perspective）** 架构实现的多智能体深度研究系统，集成 RAG 混合检索、长期记忆管理、三级并行研究流水线、可观测性追踪和评估框架，能够根据用户问题自动生成结构化的深度研究报告。

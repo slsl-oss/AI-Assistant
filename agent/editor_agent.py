@@ -23,6 +23,9 @@ class DraftState(TypedDict):
     draft: str
     review: Optional[str]
     revision_count: int
+    sources: list[str]
+    research_status: str
+    research_result: dict
 
 
 class EditorAgent:
@@ -30,8 +33,9 @@ class EditorAgent:
 
     MAX_REVISIONS = 3
 
-    def __init__(self):
+    def __init__(self, *, researcher=None):
         self.model = research_agent_model
+        self.researcher = researcher if researcher is not None else research_agent
         self._graph = self._build_graph()
 
     def _build_graph(self) -> StateGraph:
@@ -40,7 +44,8 @@ class EditorAgent:
         wf.add_node("reviewer", self._reviewer_node)
         wf.add_node("reviser", self._reviser_node)
         wf.set_entry_point("researcher")
-        wf.add_edge("researcher", "reviewer")
+        wf.add_conditional_edges("researcher", self._route_after_research,
+                                 {"review": "reviewer", "stop": END})
         wf.add_edge("reviser", "reviewer")
         wf.add_conditional_edges(
             "reviewer", self._route_after_review,
@@ -51,8 +56,14 @@ class EditorAgent:
     async def _researcher_node(self, state: DraftState) -> dict:
         section = state["section"]
         logger.info(f"[Editor] 研究章节: {section[:40]}")
-        result = await research_agent.run_depth_research(section)
-        return {"draft": result["draft"], "revision_count": 0, "review": None}
+        result = await self.researcher.run_depth_research(section)
+        return {"draft": result["draft"], "revision_count": 0, "review": None,
+                "sources": result.get("sources", []),
+                "research_status": result.get("research_status", "legacy"),
+                "research_result": result.get("research_result", {})}
+
+    def _route_after_research(self, state: DraftState) -> str:
+        return "review" if state.get("research_status") in {"completed", "legacy"} else "stop"
 
     async def _reviewer_node(self, state: DraftState) -> dict:
         count = state.get("revision_count", 0)
@@ -105,7 +116,10 @@ class EditorAgent:
         async def _run_one(section: str) -> dict:
             initial = {"section": section, "draft": "", "review": None, "revision_count": 0}
             result = await self._graph.ainvoke(initial)
-            return {"section": section, "draft": result["draft"], "revisions": result.get("revision_count", 0)}
+            return {"section": section, "draft": result["draft"], "revisions": result.get("revision_count", 0),
+                    "sources": result.get("sources", []),
+                    "research_status": result.get("research_status", "legacy"),
+                    "research_result": result.get("research_result", {})}
 
         return await asyncio.gather(*[_run_one(s) for s in sections])
 

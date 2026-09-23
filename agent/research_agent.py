@@ -4,16 +4,29 @@
   - run_depth_research: 子工作流 researcher 节点，三级并行深度研究
 """
 import asyncio
+import logging
 
-from agent.infrastructure.research_pipeline import ResearchPipeline
-from utils.logger_handler import logger
+from agent.infrastructure.research_loop import incomplete_message
+
+logger = logging.getLogger(__name__)
 
 
 class ResearchAgent:
     """研究型 Agent：初步调研 + 深度研究"""
 
-    def __init__(self):
-        self.pipeline = ResearchPipeline()
+    def __init__(self, *, research_loop=None, pipeline=None):
+        self.research_loop = research_loop
+        self._pipeline = pipeline
+
+    @property
+    def pipeline(self):
+        # Importing the offline scaffold must not initialize models/RAG/databases.
+        if self._pipeline is None:
+            if self.research_loop is not None:
+                raise RuntimeError("Offline tool-loop mode has no legacy model pipeline")
+            from agent.infrastructure.research_pipeline import ResearchPipeline
+            self._pipeline = ResearchPipeline()
+        return self._pipeline
 
     async def run_initial_research(self, query: str) -> str:
         """主工作流 browser 节点：快速初步调研，返回简要概述"""
@@ -32,9 +45,17 @@ class ResearchAgent:
             logger.error(f"[ResearchAgent] 初步调研失败: {e}")
             return ""
 
-    async def run_depth_research(self, topic: str) -> dict:
+    async def run_depth_research(self, topic: str, *, cancel_event=None) -> dict:
         """子工作流 researcher 节点：三级并行深度研究，返回结构化草稿"""
         logger.info(f"[ResearchAgent] 深度研究: {topic[:50]}")
+        if self.research_loop is not None:
+            result = await self.research_loop.run(topic, cancel_event=cancel_event)
+            return {
+                "section": topic, "draft": result["answer"], "revisions": 0,
+                "sources": list(dict.fromkeys(e["url"] for e in result["evidence"]
+                                               if e["id"] in result["citations"] and e["url"])),
+                "research_status": result["status"], "research_result": result,
+            }
         result = await self.pipeline.process(topic)
         return {
             "section": topic,
@@ -49,8 +70,12 @@ class ResearchAgent:
         """流式执行（兼容旧接口）"""
         try:
             yield "[研究开始]\n"
-            result = await self.pipeline.process(query)
-            yield result["merged_draft"]
+            if self.research_loop is not None:
+                result = await self.run_depth_research(query)
+                yield result["draft"] if result["research_status"] == "completed" else incomplete_message([result])
+            else:
+                result = await self.pipeline.process(query)
+                yield result["merged_draft"]
         except Exception as e:
             logger.error(f"[ResearchAgent] 执行失败: {e}")
             yield f"\n研究过程出错: {str(e)}"
@@ -63,7 +88,8 @@ class ResearchAgent:
         return "".join(chunks)
 
     async def close(self):
-        await self.pipeline.close()
+        if self._pipeline is not None:
+            await self._pipeline.close()
 
 
 research_agent = ResearchAgent()
